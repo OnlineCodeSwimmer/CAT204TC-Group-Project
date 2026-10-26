@@ -4,50 +4,31 @@ using UnityEngine.InputSystem;
 
 public class InputSystemManager : MonoBehaviour
 {
-    public PlayerInputSystem InputSystem;
+    public PlayerInputSystem inputSystem;
     public static InputSystemManager instance;
+
 
     private void Awake()
     {
-        InputSystem =new PlayerInputSystem();
+        Init();
     }
 
-    private void OnEnable()
+    private void Init()
     {
-        UIInputSubscribe();
-        InputSystem.Player.Enable();
-    }
-
-    private void OnDisable()
-    {
-        UIInputUnSubscribe();
-        InputSystem.Player.Disable();
-    }
-
-
-    private void InitInstance()
-    {
-        if (instance != this)
-        {
-            Destroy(this);
-        }
-        else if(instance == null) 
+        if (instance == null)
         {
             DontDestroyOnLoad(gameObject);
             instance = this;
+            inputSystem = new PlayerInputSystem();
+        }
+        else if(instance != this) 
+        {
+            Destroy(gameObject);
         }
     }
 
 
-    private void UIInputSubscribe()
-    {
-
-    }
 
 
-
-    private void UIInputUnSubscribe()
-    {
-    }
 }
 
