@@ -1,0 +1,241 @@
+{
+  "canvas": {
+    "width": 128,
+    "height": 192
+  },
+  "cardsContainText": false,
+  "mode": "built-in imagegen",
+  "order": "Screenshot effects, top to bottom. File order is for lookup only; no names or numbers are printed on cards.",
+  "cards": [
+    {
+      "row": 1,
+      "id": "01_extra_throw",
+      "effect": "投掷次数+1",
+      "direction": "Bright nautical adventure pixel art. Turquoise sea, ivory sailcloth, coral-red accents, warm weathered wood. A wooden ship's slingshot cradles a pearl marble as a fresh marble arcs overhead like a guiding comet. Breezy open sky and curling waves, bold storybook silhouettes, nautical rope-and-wood frame. Optimistic, airy, NOT a night sky.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\01_extra_throw.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\01_extra_throw-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\01_extra_throw-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 2,
+      "id": "02_value_mage",
+      "effect": "弹珠进入槽位时弹珠价值+50",
+      "direction": "Vivid theatrical magician in a violet and hot-pink velvet chamber, white hair, burgundy cape, a turquoise marble transforming into an oversized amber gemstone above a silver chalice. Rich purple, magenta, amber and silver. Gothic arcade pixel art, dramatic spotlit figure, angular silver filigree frame.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\02_value_mage.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\02_value_mage-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\02_value_mage-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 3,
+      "id": "03_risk_balance",
+      "effect": "两端槽位倍率降低，中间槽位倍率提高",
+      "direction": "Jade-green and pale sandstone monumental temple, classic isometric strategy-game pixel art. Three large archway scoring gates: central gate stands tallest and glows white jade, low side gates muted sage. One white marble chooses the middle. Misty daylight, geometric stepped jade-stone frame, monumental architectural composition.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\03_risk_balance.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\03_risk_balance-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\03_risk_balance-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 4,
+      "id": "04_relay",
+      "effect": "每击中挡钉40次额外生成一颗普通弹珠",
+      "direction": "Volcanic phoenix ritual, dramatic silhouette-based retro pixel art. A white-hot marble bounces over three obsidian peg pillars and a fresh red-orange marble hatches at the last pillar. The bounce arcs form a fiery phoenix wing. Black charcoal, vermilion, orange and pale yellow. Cracked obsidian frame with lava seams.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\04_relay.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\04_relay-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\04_relay-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 5,
+      "id": "05_fortune",
+      "effect": "槽位倍率×1.5",
+      "direction": "Lavish harvest merchant still life in a warm Renaissance-inspired pixel style: oversized copper cornucopia spilling bright coins, ruby pomegranates and one emerald marble into a burgundy velvet bowl. Cream background, burgundy, ruby, emerald, copper. Carved dark walnut and copper frame. Broad simple still-life shapes, warm and opulent.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\05_fortune.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\05_fortune-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\05_fortune-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 6,
+      "id": "06_calibration",
+      "effect": "回合开始前自选X±0.15f",
+      "direction": "Steampunk precision laboratory in chunky mechanical pixel art. One enormous brass gyroscope suspends an ivory marble over an aiming launcher, with two clear directional lever-arms and a cyan spirit-level vial. Tobacco brown, aged brass, pale mint and cream; parchment background. Riveted copper industrial frame, mechanical side-on diagram composition with NO lettering.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\06_calibration.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\06_calibration-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\06_calibration-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 7,
+      "id": "07_split",
+      "effect": "击中挡钉有5%的概率分裂成两个弹珠",
+      "direction": "Electric neon cyberpunk arcade pixel art. A single hot-pink marble hits a sharp chrome diamond peg and branches into two cyan marbles along a giant luminous Y. Deep black-purple void, saturated fuchsia, electric cyan and white, jagged angular circuit-board border. High-energy graphic composition with huge clean connected shapes and NO glow blur.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\07_split.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\07_split-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\07_split-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 8,
+      "id": "08_first_arrival",
+      "effect": "每回合第一个进槽的弹珠获得10倍得分",
+      "direction": "Majestic sunrise coronation in medieval tapestry-inspired pixel art. One crowned pearl marble enters an elevated red-and-white royal chalice atop broad ivory steps, with a rising sun and unfurled crimson drapery. Sunlit ivory, crimson, warm gold, pale peach. Heraldic red banner-like outer frame but NO text or empty label.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\08_first_arrival.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\08_first_arrival-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\08_first_arrival-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 9,
+      "id": "09_accumulation",
+      "effect": "每次击中挡钉可获得1/20的弹珠价值",
+      "direction": "Autumn woodland fable, earthy hand-clustered adventure-game pixel art. A round jade marble descends three broad moss-covered pegs like stepping stones, collecting oversized amber seed-coins into a small clay jar. Ochre, russet, olive, pale tan. Rustic interwoven branch frame with a few big autumn leaves. Gentle daylight, close-up woodland composition.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\09_accumulation.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\09_accumulation-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\09_accumulation-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 10,
+      "id": "10_lucky_slot",
+      "effect": "随机选中一个槽位，进入者获得2倍得分",
+      "direction": "Art-deco casino of chance in bold symmetrical pixel poster style. Giant ivory-and-black wheel of fortune with alternating mint and cherry-red sections and a red pointer; one selected goblet glows seafoam below. Cream, ink black, mint, cherry red, muted champagne. Angular geometric deco frame, no numerals, no letters.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\10_lucky_slot.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\10_lucky_slot-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\10_lucky_slot-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 11,
+      "id": "11_echo",
+      "effect": "卡牌效果触发时15%概率额外触发一次，且不递归",
+      "direction": "Eerie moonlit silver mirror in gothic horror pixel art. A pale marble floats before an ornate violet standing mirror, reflected as one ghostly mint marble. Long dark plum curtains and two huge pale moth wings frame the mirror. Desaturated lavender, silver, seafoam, near-black plum. Baroque silver-violet frame, quiet ghostly mood.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\11_echo.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\11_echo-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\11_echo-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 12,
+      "id": "12_alchemy",
+      "effect": "金币×2，但每回合目标分数增加20%",
+      "direction": "Ancient alchemy manuscript in ink-and-parchment pixel woodcut style. A monumental bronze balance scale holds two gold coins on one pan and a heavy black stone obelisk on the other; a red crucible at the base. Aged parchment, dark sepia, oxidized bronze and vermilion. Decorative ink hatching only in large deliberate clusters, no noise. Thin ochre manuscript frame with simple geometric alchemy shapes, NO writing.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\12_alchemy.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\12_alchemy-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\12_alchemy-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 13,
+      "id": "13_return",
+      "effect": "进入槽位时有5%概率重新投掷一次",
+      "direction": "Snowy celestial rebirth, clean crystalline fantasy pixel art. A pearl marble rises out of an ice-blue chalice along a sweeping crescent-shaped silver path, carried by one broad white swan/phoenix wing. Ice blue, periwinkle, snowy white, soft rose. Pale crystalline stepped frame. Vertical spiraling motion, vast pale lavender sky, no gold.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\13_return.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\13_return-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\13_return-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 14,
+      "id": "14_reinforcement",
+      "effect": "回合开始获得临时弹珠+5或弹珠价值增加20",
+      "direction": "Bold knightly military supply illustration in classic console RPG pixel art. A cobalt shield with white cross-like geometric emblem guards an open steel supply chest, five broad ivory and red marbles arranged in a semicircle overhead. Cobalt, steel silver, red and bone white. Heavy fortress-stone border, compact strong silhouette, no lettering.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\14_reinforcement.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\14_reinforcement-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\14_reinforcement-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 15,
+      "id": "15_growth",
+      "effect": "进C槽价值+5，每次触发额外价值+1",
+      "direction": "Lush enchanted greenhouse, art-nouveau botanical pixel art. A jade marble planted in a terracotta cup grows a tall sinuous tree with three broad branches and pearl fruits. Emerald, lime, cream, terracotta and pale pink. Flowing green vine frame with large simple leaves. Asymmetrical organic growth, warm creamy daylight background, no mountains or stars.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\15_growth.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\15_growth-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\15_growth-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 16,
+      "id": "16_devil_bargain",
+      "effect": "回合结束50%概率+4金币",
+      "direction": "Black-and-white infernal playing-card woodcut translated to stark pixel art, with blood-red and antique-gold accents only. A stylish horned shadow offers four large coins on an open palm; a red two-sided coin balances upright above the hand. High-contrast ink silhouette, red flame-shaped frame, sinister and theatrical, no gore, no text.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\16_devil_bargain.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\16_devil_bargain-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\16_devil_bargain-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 17,
+      "id": "17_endless_life",
+      "effect": "击中挡钉有3%概率额外生成一个弹珠",
+      "direction": "Sacred forest regeneration in soft-color pastoral RPG pixel art. A pale green vine forms a clear infinity loop around a warm brown diamond peg; one ivory marble strikes it while another hatches from a large leaf bud. Sage green, sage shadows, butter yellow, pale lilac, cream. Interlaced living-root border, luminous spring daylight, serene.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\17_endless_life.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\17_endless_life-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\17_endless_life-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 18,
+      "id": "18_surprise",
+      "effect": "每投掷16个弹珠获得1金币",
+      "direction": "Playful candy-colored treasure in cheerful chibi arcade pixel art. A squat coral-pink treasure chest pops open with one oversized bright yellow coin, surrounded by three turquoise marbles and large chunky confetti diamonds. Peach, coral, bright teal, lemon and cream. Rounded pixel-cut pink confection-like border, bold cartoon shapes, no text.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\18_surprise.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\18_surprise-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\18_surprise-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 19,
+      "id": "19_harvest",
+      "effect": "剩余投掷次数每次额外获得+2弹珠和+8弹珠价值",
+      "direction": "Golden late-summer pastoral landscape in rustic fantasy pixel art. A pale wheat sickle arcs over a wicker basket filled with oversized ivory and blue marbles; two broad wheat heads and a low orange sun complete the scene. Honey yellow, wheat cream, denim blue, warm brown. Woven wheat border, spacious warm earth and sky, no night stars.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\19_harvest.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\19_harvest-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\19_harvest-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 20,
+      "id": "20_magnifier",
+      "effect": "所有得分×1.5",
+      "direction": "Celestial detective still life in cool Victorian pixel art. One oversized silver magnifying glass held diagonally over a small pearl marble, enlarging it into a brilliant turquoise orb through the circular lens. Blue-gray desk, deep teal, silver, white and one orange accent. Polished dark teal geometric frame, magnifier is the clear dominant silhouette, no letters.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\20_magnifier.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\20_magnifier-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\20_magnifier-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 21,
+      "id": "21_rank_up",
+      "effect": "每次进A槽弹珠数量+1",
+      "direction": "Japanese shrine ascent reimagined in clean ukiyo-e-inspired pixel art. Vermilion torii gate above wide ivory stone steps; one pearl marble enters a shrine chalice and a second teal marble rises beside it; a large stylized white crane wing curves upward. Vermilion, indigo, rice-paper cream, jade. Dark indigo lacquer frame with simple red corners, no kanji or other text.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\21_rank_up.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\21_rank_up-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\21_rank_up-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 22,
+      "id": "22_capacity",
+      "effect": "卡牌上限+1，商店可刷新出已拥有的牌",
+      "direction": "Magical traveling merchant's bag in saturated storybook pixel art. A purple leather card case opens to fan out three large turquoise-backed cards with simple crescent emblems, plus one clearly empty bright card-shaped slot; a broad copper circular arrow wraps the bag. Plum purple, turquoise, pumpkin orange, pale cream. Stitched purple-leather frame, playful cozy market mood, no text on the cards.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\22_capacity.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\22_capacity-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\22_capacity-prompt.txt",
+      "status": "exported"
+    },
+    {
+      "row": 23,
+      "id": "23_half_supply",
+      "effect": "获得现有弹珠数量一半的临时弹珠",
+      "direction": "Dreamy lunar reserve in restrained cosmic pixel art. A broad pale porcelain moon-bowl contains six large teal pearls; exactly three lavender pearls descend into a smaller crescent bowl beneath. A giant half-moon behind them. Dusty rose, midnight plum, pale lavender, porcelain white, turquoise. Thin silver-and-rose crescent border. Calm spacious celestial composition, no gold, no lettering.",
+      "asset": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck-v2\\23_half_supply.png",
+      "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\23_half_supply-source.png",
+      "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-effect-deck-v2\\23_half_supply-prompt.txt",
+      "status": "exported"
+    }
+  ]
+}

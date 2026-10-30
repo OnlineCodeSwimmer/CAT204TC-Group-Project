@@ -1,0 +1,42 @@
+[
+  {
+    "id": "01_extra_throw",
+    "target": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck\\01_extra_throw.png",
+    "size": "128x192",
+    "colors": 24,
+    "metaUnchanged": true,
+    "backup": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\01_extra_throw-before.png",
+    "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\01_extra_throw-source.png",
+    "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\01_extra_throw-prompt.txt"
+  },
+  {
+    "id": "02_value_mage",
+    "target": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck\\02_value_mage.png",
+    "size": "128x192",
+    "colors": 24,
+    "metaUnchanged": true,
+    "backup": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\02_value_mage-before.png",
+    "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\02_value_mage-source.png",
+    "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\02_value_mage-prompt.txt"
+  },
+  {
+    "id": "03_risk_balance",
+    "target": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck\\03_risk_balance.png",
+    "size": "128x192",
+    "colors": 24,
+    "metaUnchanged": true,
+    "backup": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\03_risk_balance-before.png",
+    "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\03_risk_balance-source.png",
+    "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\03_risk_balance-prompt.txt"
+  },
+  {
+    "id": "04_relay",
+    "target": "E:\\UnityTest\\CAT204_TC_Group\\Assets\\AIGC Source\\Taro Image\\EffectDeck\\04_relay.png",
+    "size": "128x192",
+    "colors": 24,
+    "metaUnchanged": true,
+    "backup": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\04_relay-before.png",
+    "source": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\04_relay-source.png",
+    "prompt": "E:\\UnityTest\\CAT204_TC_Group\\output\\imagegen\\tarot-four-redraw-20261026\\04_relay-prompt.txt"
+  }
+]

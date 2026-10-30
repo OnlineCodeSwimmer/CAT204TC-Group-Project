@@ -1,4 +1,6 @@
+using System.Linq.Expressions;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class UIManager : MonoBehaviour
 {
@@ -7,6 +9,7 @@ public class UIManager : MonoBehaviour
     //Game Object
     [Header("UI GameObject")]
     public GameObject shop;
+    public GameObject skillCardTest;
 
     [Header("Sence Object GameObject")]
     public GameObject matrix;
@@ -16,6 +19,18 @@ public class UIManager : MonoBehaviour
         instance = this; 
     }
 
+
+    private void OnEnable()
+    {
+        InputSubscribe();
+    }
+
+    private void OnDisable()
+    {
+        InputUnsubscribe();
+    }
+
+    //Open and Close Shop
     public void OpenShop()
     {
         //Player input switch
@@ -34,6 +49,27 @@ public class UIManager : MonoBehaviour
 
         shop.SetActive(false);
         matrix.SetActive(true);
+    }
+
+    //testCardPool
+    private void OpenTestCardPool(InputAction.CallbackContext context)
+    {
+        if (!shop.activeSelf && !skillCardTest.activeSelf) return;
+
+        shop.SetActive(!shop.activeSelf);
+        skillCardTest.SetActive(!shop.activeSelf);
+    }
+
+
+    //Input Realted
+    private void InputSubscribe()
+    {
+        InputSystemManager.instance.inputSystem.UI.SwitchPage.started += OpenTestCardPool;
+    }
+
+    private void InputUnsubscribe()
+    {
+        InputSystemManager.instance.inputSystem.UI.SwitchPage.started -= OpenTestCardPool;
     }
 
 

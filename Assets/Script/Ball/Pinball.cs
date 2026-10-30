@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Ball : MonoBehaviour
+public class Pinball : MonoBehaviour
 {
     //Physics Varible
     private Rigidbody2D rb;
@@ -15,6 +15,7 @@ public class Ball : MonoBehaviour
     {
         if (other.CompareTag("Dot") && rb.linearVelocity.y < 0f)
         {
+            GameManager.instance.NotifyPinballHitPeg();//Notification ball hits the stop pin
 
             float direction = Random.value < 0.5f ? -1f : 1f;
             float duration = 0.8f;

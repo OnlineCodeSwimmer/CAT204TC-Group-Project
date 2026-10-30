@@ -49,7 +49,7 @@ public class HUDGeneralPackage : MonoBehaviour
                 break;
 
             case HUDType.Ball:
-                text.text = string.Format("{0}", GameManager.instance.ballNumber);
+                text.text = string.Format("{0}", GameManager.instance.pinballNumber);
                 break;
 
             case HUDType.Gold:

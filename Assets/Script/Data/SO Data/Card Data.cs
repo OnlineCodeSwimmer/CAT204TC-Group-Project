@@ -4,7 +4,19 @@ using UnityEngine;
 public class CardData : ScriptableObject
 {
     //Use for Card Skill
-    public enum EffectType { None, AddBall }
+    public enum EffectType { 
+        None, 
+        AddOnePinball,
+        AddPinballScore, 
+        HalfSidesCenter075,
+        Hit40AddOnePinball,
+        SlotMultiplier15,
+        FirstPinballTenTimes,
+        PegHitScore,
+        RandomDoubleSlot,
+        DoubleGoldTargetUp,
+        RethrowPinball
+    }
 
 
 
@@ -15,6 +27,5 @@ public class CardData : ScriptableObject
 
     //Card Skill Related
     public EffectType effectType;
-    public int effectValue = 1;
 
 }

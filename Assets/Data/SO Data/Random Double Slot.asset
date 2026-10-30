@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13fe337465b7b334bab3020fb14d8935, type: 3}
-  m_Name: Add Ball
+  m_Name: Random Double Slot
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardName: Add Ball
-  description: Add 1 Ball
-  cardSprite: {fileID: 21300000, guid: 4c8c9cf19f6e4b32a77a910162ae5038, type: 3}
+  cardName: Random Luck
+  description: At the start of each round, randomly select a slot. Pinballs entering
+    that slot score twice as much.
+  cardSprite: {fileID: 21300000, guid: 53df52b9f05145bfa4bb555e2e75143d, type: 3}
   price: 6
-  effectType: 1
-  effectValue: 1
+  effectType: 8
