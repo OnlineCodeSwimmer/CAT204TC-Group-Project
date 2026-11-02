@@ -48,8 +48,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         //Display Price
         pricePanel.SetActive(!isTestCard && GetComponentInParent<CardInventory>() == null && GetComponent<Button>().interactable);
         //Sell Related
-        sellPanel.SetActive(GetComponentInParent<CardInventory>() != null);
-
+        sellPanel.SetActive((UIManager.instance.shop.activeInHierarchy || UIManager.instance.skillCardTest.activeInHierarchy) && GetComponentInParent<CardInventory>() != null);
     }
 
     public void OnPointerExit(PointerEventData eventData)

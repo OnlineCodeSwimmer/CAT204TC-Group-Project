@@ -56,6 +56,8 @@ public class CardInventory : MonoBehaviour
 
     public void SellCard(Card card)
     {
+        if (!UIManager.instance.shop.activeInHierarchy && !UIManager.instance.skillCardTest.activeInHierarchy) return;
+
         card.RemoveEffect();
         card.RecycleCard();
         GameManager.instance.AddGold(2);

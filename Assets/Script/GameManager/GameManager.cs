@@ -20,6 +20,11 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public int activePinballs;
     private int pinHitCount;
 
+    //Throw Chance
+    public int throwChancesPerRound = 2;
+    [HideInInspector] public int throwChance;
+    private bool hasStartedThrow;
+
 
 
     //Gold Setting
@@ -103,7 +108,17 @@ public class GameManager : MonoBehaviour
     private void CheckRound()
     {
         if (allRoundsFinished) return;
+
+        //If the target is not met but there's still a chance, add more balls and continue the current round.
+        if (score < currentTargetScore && throwChance > 0)
+        {
+            pinballNumber = pinballsPerRound;
+            hasStartedThrow = false;
+            return;
+        }
+
         RoundEnded?.Invoke(); //Notify Round End
+
 
         //Check if the game has failed
         if (score < currentTargetScore)
@@ -114,12 +129,11 @@ public class GameManager : MonoBehaviour
         //Check if the game has Finsih
         if (currentRound >= targetScores.Length)
         {
-            if (score >= currentTargetScore)
-            {
+            
                 allRoundsFinished = true;
                 Debug.Log("Finish all round");
                 return;
-            }
+            
         }
 
         AddGold(4);
@@ -136,6 +150,10 @@ public class GameManager : MonoBehaviour
         pinballNumber = pinballsPerRound;
         score = 0f;
 
+        //Rstore Thorw Chance
+        throwChance = throwChancesPerRound;
+        hasStartedThrow = false;
+
         firstPinballScored = false; //FirstPinballTenTimes Effect
 
         RoundStarted?.Invoke();
@@ -147,6 +165,15 @@ public class GameManager : MonoBehaviour
     public bool TryUseBall()//
     {
         if (pinballNumber <= 0 || allRoundsFinished) return false;
+
+        if (!hasStartedThrow) //Deduct ball opportunity
+        {
+            if (throwChance <= 0) return false;
+
+            throwChance--;
+            hasStartedThrow = true;
+        }
+
 
         pinballNumber--;
         activePinballs++;
@@ -174,6 +201,10 @@ public class GameManager : MonoBehaviour
         UpdateTargetScore();
         pinballNumber = pinballsPerRound;
         Pinball.leftBounceChance = 0.5f;
+
+        throwChance = throwChancesPerRound;
+        hasStartedThrow = false;
+
     }
 
 

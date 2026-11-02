@@ -1750,7 +1750,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef42ae79b25729a44a0997580811ad26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  pinballScore: 50
+  pinballScore: 20
   targetScores: 64000000c80000002c01000090010000f401000058020000
   currentTargetScore: 0
   score: 0
@@ -1758,6 +1758,8 @@ MonoBehaviour:
   pinballsPerRound: 8
   pinballNumber: 0
   activePinballs: 0
+  throwChancesPerRound: 2
+  throwChance: 0
   gold: 100
   rounds: 0
   currentRound: 0
@@ -6754,7 +6756,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -80, y: -3}
+  m_AnchoredPosition: {x: -90, y: -3}
   m_SizeDelta: {x: 116.0349, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1132819776
@@ -6777,7 +6779,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Ball Value:'
+  m_text: 'Throw Chance:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6843,7 +6845,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -57.225983, w: 0}
+  m_margin: {x: 0, y: 0, z: -166.18127, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -10212,7 +10214,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 108, y: -5}
+  m_AnchoredPosition: {x: 166, y: -5}
   m_SizeDelta: {x: 116.0349, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1879042324
@@ -10227,7 +10229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6a55b617c6e30944b24dc2d53f6c218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDGeneralPackage
-  hUDType: 5
+  hUDType: 6
 --- !u!114 &1879042325
 MonoBehaviour:
   m_ObjectHideFlags: 0
