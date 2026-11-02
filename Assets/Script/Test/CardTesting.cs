@@ -42,6 +42,7 @@ public class CardTesting : MonoBehaviour
     {
         Debug.Log("Update");
         Debug.Log("SB Tian");
+        Debug.Log("123");
     }
 
 }
