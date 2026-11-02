@@ -222,6 +222,14 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             case CardData.EffectType.FirstSlotAddOnePinball:
                 GameManager.instance.PinballEnteredSlot += GameManager.instance.AddPinballOnFirstSlot;
                 break;
+
+            case CardData.EffectType.PegHitSplitPinball:
+                GameManager.instance.PinballHitPeg += GameManager.instance.TrySplitPinball;
+                break;
+
+            case CardData.EffectType.RandomLeftBounceChance:
+                GameManager.instance.RoundStarted += GameManager.instance.RandomizeLeftBounceChance;
+                break;
         }
     }
 
@@ -314,6 +322,14 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 GameManager.instance.PinballEnteredSlot -= GameManager.instance.AddPinballOnFirstSlot;
                 break;
 
+            case CardData.EffectType.PegHitSplitPinball:
+                GameManager.instance.PinballHitPeg -= GameManager.instance.TrySplitPinball;
+                break;
+
+            case CardData.EffectType.RandomLeftBounceChance:
+                GameManager.instance.RoundStarted -= GameManager.instance.RandomizeLeftBounceChance;
+                Pinball.leftBounceChance = 0.5f;
+                break;
         }
     }
 

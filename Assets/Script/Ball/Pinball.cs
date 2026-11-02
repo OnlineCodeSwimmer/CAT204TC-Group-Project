@@ -7,6 +7,9 @@ public class Pinball : MonoBehaviour
     private Rigidbody2D rb;
     private CircleCollider2D pinballCollider;
 
+    //Pinball Bounce Left Chance
+    public static float leftBounceChance = 0.5f;
+
 
     private void Awake()
     {
@@ -19,9 +22,11 @@ public class Pinball : MonoBehaviour
     {
         if (other.CompareTag("Peg") && rb.linearVelocity.y < 0f)
         {
-            GameManager.instance.NotifyPinballHitPeg(this, other);//Notification ball hits the stop pin
 
-            BounceFromPeg(other, Random.value < 0.5f ? -1f : 1f);
+            BounceFromPeg(other, Random.value < leftBounceChance ? -1f : 1f);
+            //Notification ball hits the stop pin
+            GameManager.instance.NotifyPinballHitPeg(this, other);
+
         }
     }
 

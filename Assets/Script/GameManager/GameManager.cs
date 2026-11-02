@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     private int pinHitCount;
 
 
+
     //Gold Setting
     public int gold = 5;
 
@@ -172,6 +173,7 @@ public class GameManager : MonoBehaviour
         rounds = targetScores.Length;
         UpdateTargetScore();
         pinballNumber = pinballsPerRound;
+        Pinball.leftBounceChance = 0.5f;
     }
 
 
@@ -321,5 +323,11 @@ public class GameManager : MonoBehaviour
         if (Random.value >= 0.05f) return;
 
         pinball.Split(peg);
+    }
+
+    //RandomLeftBounceChance Effect
+    public void RandomizeLeftBounceChance()
+    {
+        Pinball.leftBounceChance = 0.5f + (Random.value < 0.5f ? -0.15f : 0.15f);
     }
 }
