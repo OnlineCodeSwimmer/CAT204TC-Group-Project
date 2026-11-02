@@ -40,7 +40,7 @@ public class CardTesting : MonoBehaviour
     //Card Test
     private void Test2()
     {
-        
+        Debug.Log("Update");
     }
 
 }
