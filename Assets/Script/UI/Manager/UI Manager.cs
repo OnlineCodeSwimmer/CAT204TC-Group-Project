@@ -10,6 +10,8 @@ public class UIManager : MonoBehaviour
     [Header("UI GameObject")]
     public GameObject shop;
     public GameObject skillCardTest;
+    public ShopSkillCardPool shopSkillCardPool;
+
 
     [Header("Sence Object GameObject")]
     public GameObject matrix;
@@ -39,6 +41,10 @@ public class UIManager : MonoBehaviour
 
         shop.SetActive(true);
         matrix.SetActive(false);
+
+        //Refresh Card Pool
+        shopSkillCardPool.RefreshCards();
+
     }
 
     public void CloseShop()

@@ -150,7 +150,10 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             case CardData.EffectType.HalfSidesCenter075:
                 foreach (ScoreSlot slot in FindObjectsByType<ScoreSlot>(FindObjectsInactive.Include))
                 {
-                    if (slot.position == ScoreSlot.SlotPosition.Side) slot.multiplier *= 0.5f;
+                    if (slot.position == ScoreSlot.SlotPosition.First || slot.position == ScoreSlot.SlotPosition.Second)
+                    {
+                        slot.multiplier *= 0.5f;
+                    } 
                     else if (slot.position == ScoreSlot.SlotPosition.Center)
                     {
                         originalCenterMultiplier = HasEffect(CardData.EffectType.SlotMultiplier15) ? slot.multiplier / 1.5f : slot.multiplier;
@@ -175,7 +178,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 break;
 
             case CardData.EffectType.FirstPinballTenTimes:
-                GameManager.instance.ScoreCalculating += GameManager.instance.FirstPinballTenTimes;
+                GameManager.instance.ScoreCalculationInScoreSlot += GameManager.instance.FirstPinballTenTimes;
                 break;
 
             case CardData.EffectType.PegHitScore:
@@ -184,7 +187,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
             case CardData.EffectType.RandomDoubleSlot:
                 GameManager.instance.RoundStarted += GameManager.instance.SelectDoubleSlot;
-                GameManager.instance.ScoreCalculating += GameManager.instance.DoubleSlotScore; 
+                GameManager.instance.ScoreCalculationInScoreSlot += GameManager.instance.DoubleSlotScore; 
                 break;
 
             case CardData.EffectType.DoubleGoldTargetUp:
@@ -194,6 +197,30 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
             case CardData.EffectType.RethrowPinball:
                 GameManager.instance.PinballEnteredSlot += GameManager.instance.TryRethrowPinball;
+                break;
+
+            case CardData.EffectType.ThirdSlotGrowth:
+                GameManager.instance.PinballEnteredSlot += GameManager.instance.GrowThirdSlotValue;
+                break;
+
+            case CardData.EffectType.RoundEndGoldChance:
+                GameManager.instance.RoundEnded += GameManager.instance.TryGainRoundEndGold;
+                break;
+
+            case CardData.EffectType.PegHitExtraPinball:
+                GameManager.instance.PinballHitPeg += GameManager.instance.TrySpawnExtraPinballOnPegHit;
+                break;
+
+            case CardData.EffectType.Spawn16AddOneGold:
+                GameManager.instance.PinballSpawned += GameManager.instance.RecordSpawnedPinball;
+                break;
+
+            case CardData.EffectType.AllScoreMultiplier15:
+                GameManager.instance.ScoreCalculating += GameManager.instance.MultiplyAllScore15;
+                break;
+
+            case CardData.EffectType.FirstSlotAddOnePinball:
+                GameManager.instance.PinballEnteredSlot += GameManager.instance.AddPinballOnFirstSlot;
                 break;
         }
     }
@@ -214,8 +241,10 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             case CardData.EffectType.HalfSidesCenter075:
                 foreach (ScoreSlot slot in FindObjectsByType<ScoreSlot>(FindObjectsInactive.Include))
                 {
-                    if (slot.position == ScoreSlot.SlotPosition.Side) slot.multiplier *= 2f;
-
+                    if (slot.position == ScoreSlot.SlotPosition.First || slot.position == ScoreSlot.SlotPosition.Second)
+                    {
+                        slot.multiplier *= 2f;
+                    }
                     else if (slot.position == ScoreSlot.SlotPosition.Center) slot.multiplier = originalCenterMultiplier * (HasEffect(CardData.EffectType.SlotMultiplier15) ? 1.5f : 1f);
                     else continue;
 
@@ -236,7 +265,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 break;
 
             case CardData.EffectType.FirstPinballTenTimes:
-                GameManager.instance.ScoreCalculating -= GameManager.instance.FirstPinballTenTimes;
+                GameManager.instance.ScoreCalculationInScoreSlot -= GameManager.instance.FirstPinballTenTimes;
                 break;
 
             case CardData.EffectType.PegHitScore:
@@ -245,7 +274,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
             case CardData.EffectType.RandomDoubleSlot:
                 GameManager.instance.RoundStarted -= GameManager.instance.SelectDoubleSlot;
-                GameManager.instance.ScoreCalculating -= GameManager.instance.DoubleSlotScore;
+                GameManager.instance.ScoreCalculationInScoreSlot -= GameManager.instance.DoubleSlotScore;
                 GameManager.instance.ClearDoubleSlot(); GameManager.instance.SelectDoubleSlot();
                 break;
 
@@ -257,6 +286,34 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             case CardData.EffectType.RethrowPinball:
                 GameManager.instance.PinballEnteredSlot -= GameManager.instance.TryRethrowPinball;
                 break;
+
+            case CardData.EffectType.ThirdSlotGrowth:
+                GameManager.instance.PinballEnteredSlot -= GameManager.instance.GrowThirdSlotValue;
+                GameManager.instance.ResetThirdSlotGrowth();
+                break;
+
+
+            case CardData.EffectType.RoundEndGoldChance:
+                GameManager.instance.RoundEnded -= GameManager.instance.TryGainRoundEndGold;
+                break;
+
+            case CardData.EffectType.PegHitExtraPinball:
+                GameManager.instance.PinballHitPeg -= GameManager.instance.TrySpawnExtraPinballOnPegHit;
+                break;
+
+            case CardData.EffectType.Spawn16AddOneGold:
+                GameManager.instance.PinballSpawned -= GameManager.instance.RecordSpawnedPinball;
+                GameManager.instance.ResetSpawnedPinballCount();
+                break;
+
+            case CardData.EffectType.AllScoreMultiplier15:
+                GameManager.instance.ScoreCalculating -= GameManager.instance.MultiplyAllScore15;
+                break;
+
+            case CardData.EffectType.FirstSlotAddOnePinball:
+                GameManager.instance.PinballEnteredSlot -= GameManager.instance.AddPinballOnFirstSlot;
+                break;
+
         }
     }
 

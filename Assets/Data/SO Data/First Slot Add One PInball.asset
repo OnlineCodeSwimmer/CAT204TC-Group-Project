@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13fe337465b7b334bab3020fb14d8935, type: 3}
+  m_Name: First Slot Add One PInball
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  cardName: Rank First
+  description: Each time a pinball enters the first slot on the left or the first
+    slot on the right, gain +1 pinball
+  cardSprite: {fileID: 21300000, guid: 3ccdaeb910904cc0a71241f4cce57422, type: 3}
+  price: 6
+  effectType: 16

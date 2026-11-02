@@ -12,7 +12,8 @@ public class HUDGeneralPackage : MonoBehaviour
     TargetScore,
     Round,
     Ball,
-    Gold
+    Gold,
+    BallValue,
     }
 
     [Header("HUD Type")]
@@ -56,6 +57,9 @@ public class HUDGeneralPackage : MonoBehaviour
                 text.text = string.Format("{0}", GameManager.instance.gold);
                 break;
 
+            case HUDType.BallValue:
+                text.text = string.Format("{0}", GameManager.instance.pinballScore);
+                break;
         }
     }
 }

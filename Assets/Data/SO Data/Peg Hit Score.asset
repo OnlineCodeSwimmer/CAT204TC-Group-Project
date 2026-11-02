@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Peg Hit Score
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: Little by Little
-  description: Each time a marble hits a peg, it gains 1/20 of the marble's value
+  description: Each time a pinball hits a peg, it gains 1/20 of the marble's value
   cardSprite: {fileID: 21300000, guid: c7d50c0982da40ddb113e27b02e3a711, type: 3}
   price: 6
   effectType: 7

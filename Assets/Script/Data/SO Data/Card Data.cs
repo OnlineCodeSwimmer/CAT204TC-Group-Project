@@ -15,7 +15,14 @@ public class CardData : ScriptableObject
         PegHitScore,
         RandomDoubleSlot,
         DoubleGoldTargetUp,
-        RethrowPinball
+        RethrowPinball,
+        ThirdSlotGrowth,
+        RoundEndGoldChance,
+        PegHitExtraPinball,
+        Spawn16AddOneGold,
+        AllScoreMultiplier15,
+        FirstSlotAddOnePinball,
+        PegHitSplitPinball
     }
 
 

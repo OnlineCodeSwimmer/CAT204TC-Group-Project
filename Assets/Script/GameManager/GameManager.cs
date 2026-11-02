@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
     public float pinballScore = 20f;
     public int[] targetScores;
 
-   [HideInInspector] public float currentTargetScore;
-   [HideInInspector] public float score = 0f;
+    [HideInInspector] public float currentTargetScore;
+    [HideInInspector] public float score = 0f;
 
     //Pinball Setting
     [Header("Pinball Setting")]
@@ -32,19 +32,27 @@ public class GameManager : MonoBehaviour
     //Effect Checking
     private ScoreSlot doubleScoreSlot;
     private bool firstPinballScored;
+    private int thirdSlotTriggerCount; //Third Slot Growth Card Effect
+    private int spawnedPinballCount;  //Spawn16AddOneGold Effect
+
+
 
     //Round Checking
     private bool allRoundsFinished;
 
 
     //Event
-    public event System.Action PinballEnteredSlot;
-    public event System.Action PinballHitPeg;
-    public event ScoreCalculationHandler ScoreCalculating;
+    public event System.Action<ScoreSlot> PinballEnteredSlot;
+    public event System.Action<Pinball, Collider2D> PinballHitPeg;
+    public event ScoreCalculationInScoreSlotHandler ScoreCalculationInScoreSlot; 
+    public event ScoreCalculationHandler ScoreCalculating; //Triggered upon scoring
     public event System.Action RoundStarted;
+    public event System.Action RoundEnded;
+    public event System.Action PinballSpawned;
     public event GoldCalculationHandler GoldCalculating;
     public event TargetScoreCalculationHandler TargetScoreCalculating;
-    public delegate void ScoreCalculationHandler(ScoreSlot slot, ref float multiplier);
+    public delegate void ScoreCalculationInScoreSlotHandler(ScoreSlot slot, ref float multiplier);
+    public delegate void ScoreCalculationHandler(ref float amount);
     public delegate void GoldCalculationHandler(ref int amount);
     public delegate void TargetScoreCalculationHandler(ref float targetScore);
 
@@ -57,18 +65,26 @@ public class GameManager : MonoBehaviour
         InitInAwake();
     }
 
-    
+
 
     public void AddScore(ScoreSlot slot)
     {
         float multiplier = slot.multiplier;
 
-        ScoreCalculating?.Invoke(slot, ref multiplier); //FirstPinballTenTimes Card Effect
+        ScoreCalculationInScoreSlot?.Invoke(slot, ref multiplier); 
 
         firstPinballScored = true;
 
-        score += pinballScore * multiplier;
+        GainScore(pinballScore * multiplier);
     }
+
+    public void GainScore(float amount)
+    {
+        ScoreCalculating?.Invoke(ref amount); 
+        score += amount;
+    }
+
+
 
     public void AddGold(int amount)
     {
@@ -86,6 +102,8 @@ public class GameManager : MonoBehaviour
     private void CheckRound()
     {
         if (allRoundsFinished) return;
+        RoundEnded?.Invoke(); //Notify Round End
+
         //Check if the game has failed
         if (score < currentTargetScore)
         {
@@ -159,20 +177,25 @@ public class GameManager : MonoBehaviour
 
 
     //Broadcast a notification
-    public void NotifyPinballEnteredSlot()
+    public void NotifyPinballEnteredSlot(ScoreSlot slot)
     {
-        PinballEnteredSlot?.Invoke();
+        PinballEnteredSlot?.Invoke(slot);
     }
 
-    public void NotifyPinballHitPeg()
+    public void NotifyPinballHitPeg(Pinball pinball, Collider2D peg)
     {
-        PinballHitPeg?.Invoke();
+        PinballHitPeg?.Invoke(pinball, peg);
+    }
+
+    public void NotifyPinballSpawned()
+    {
+        PinballSpawned?.Invoke();
     }
 
 
     //Skill Card Realted
     //Pinball Hit Pegs Realted
-    public void RecordPinHit()// This method only works after the corresponding skill card has been purchased
+    public void RecordPinHit(Pinball pinball, Collider2D peg)// This method only works after the corresponding skill card has been purchased
     {
         pinHitCount++;
         if (pinHitCount < 40) return;
@@ -202,7 +225,7 @@ public class GameManager : MonoBehaviour
 
 
     //RethrowPinball Skill Card Effect
-    public void TryRethrowPinball()
+    public void TryRethrowPinball(ScoreSlot slot)
     {
         if (Random.value >= 0.05f) return;
 
@@ -211,9 +234,9 @@ public class GameManager : MonoBehaviour
 
 
     //PegHitScore Skill Card Effect
-    public void AddPegHitScore()
+    public void AddPegHitScore(Pinball pinball, Collider2D peg)
     {
-        score += pinballScore / 20f;
+        GainScore(pinballScore / 20f);
     }
 
     //FirstPinballTenTimes Skill Card Effect
@@ -231,5 +254,72 @@ public class GameManager : MonoBehaviour
     public void IncreaseTargetScore20Percent(ref float targetScore)
     {
         targetScore = (float)(targetScore * 1.2);
+    }
+
+    //Third Slot Growth Card Effect
+    public void GrowThirdSlotValue(ScoreSlot slot)
+    {
+        if (slot.position != ScoreSlot.SlotPosition.Third) return;
+
+        pinballScore += 5 + thirdSlotTriggerCount;
+        thirdSlotTriggerCount++;
+    }
+
+    public void ResetThirdSlotGrowth()
+    {
+        thirdSlotTriggerCount = 0;
+
+    }
+
+
+    //RoundEndGoldChance Realted
+    public void TryGainRoundEndGold() 
+    { 
+        if (Random.value < 0.5f) AddGold(4); 
+    }
+
+    //PegHitExtraPinball Effect
+    public void TrySpawnExtraPinballOnPegHit(Pinball pinball, Collider2D peg)
+    {
+        if (Random.value >= 0.03f) return;
+
+        spawnPinballPoint.SpawnExtraBall();
+    }
+
+    //Spawn16AddOneGold Effect
+    public void RecordSpawnedPinball()
+    {
+        spawnedPinballCount++;
+        if (spawnedPinballCount < 16) return;
+
+        spawnedPinballCount = 0;
+        AddGold(1);
+    }
+
+    public void ResetSpawnedPinballCount()
+    {
+        spawnedPinballCount = 0;
+    }
+
+    //AllScoreMultiplier15 Effect
+    public void MultiplyAllScore15(ref float amount)
+    {
+        amount *= 1.5f;
+    }
+
+    //FirstSlotAddOnePinball Effect
+    public void AddPinballOnFirstSlot(ScoreSlot slot)
+    {
+        if (slot.position != ScoreSlot.SlotPosition.First) return;
+
+        pinballNumber++;
+    }
+
+    //PegHitSplitPinball Effect
+    public void TrySplitPinball(Pinball pinball, Collider2D peg)
+    {
+        if (Random.value >= 0.05f) return;
+
+        pinball.Split(peg);
     }
 }

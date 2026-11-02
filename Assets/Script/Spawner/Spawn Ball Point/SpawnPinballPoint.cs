@@ -51,11 +51,11 @@ public class SpawnPinballPoint : MonoBehaviour
 
         if (!GameManager.instance.TryUseBall()) return;
 
-        SpawnBall();
+        SpawnBall(transform.position);
         StartCoroutine(SpawnCooldown());
     }
 
-    private void SpawnBall()
+    private GameObject SpawnBall(Vector2 position)
     {
         GameObject ball = PoolManager.instance.Get(ballPrefab);
         ball.transform.SetParent(null);
@@ -64,12 +64,20 @@ public class SpawnPinballPoint : MonoBehaviour
         Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
+
+        GameManager.instance.NotifyPinballSpawned();//Notify Pinball Spawn
+        return ball;
     }
 
-    public void SpawnExtraBall() //Use for Auto generation
+    public void SpawnExtraBall()
     {
-        SpawnBall();
+        SpawnExtraBall(transform.position);
+    }
+
+    public GameObject SpawnExtraBall(Vector2 position)
+    {
         GameManager.instance.activePinballs++;
+        return SpawnBall(position);
     }
 
     private void StartSpawnBall(InputAction.CallbackContext context)

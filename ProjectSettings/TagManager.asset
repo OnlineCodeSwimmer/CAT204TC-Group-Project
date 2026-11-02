@@ -4,8 +4,8 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Dot
   - Pinball
+  - Peg
   layers:
   - Default
   - TransparentFX

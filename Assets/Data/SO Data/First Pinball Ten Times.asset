@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: First Pinball Ten Times
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: The Adventurer
-  description: "First marble entering the slot each turn gains \xD710 score multiplier."
+  description: "First pinball entering the slot each turn gains \xD710 score multiplier."
   cardSprite: {fileID: 21300000, guid: afb7854436d54fe0b8da7a5fde90133a, type: 3}
   price: 6
   effectType: 6
