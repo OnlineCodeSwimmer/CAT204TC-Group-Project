@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spawn 16 Add One Gold
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: Bonus Surprise
-  description: Gain 1 gold for every 16 pinballs launched
+  description: Gain 1 gold for every 16 pinballs enter score slot
   cardSprite: {fileID: 21300000, guid: 4d6ffa10fcea4bf5bf33aca40b9680df, type: 3}
   price: 6
   effectType: 14

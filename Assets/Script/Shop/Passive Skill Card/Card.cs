@@ -191,7 +191,8 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
             case CardData.EffectType.DoubleGoldTargetUp:
                 GameManager.instance.GoldCalculating += GameManager.instance.DoubleGold;
-                GameManager.instance.TargetScoreCalculating += GameManager.instance.IncreaseTargetScore20Percent; 
+                GameManager.instance.TargetScoreCalculating += GameManager.instance.IncreaseTargetScore20Percent;
+                GameManager.instance.ClearDoubleSlot();
                 break;
 
             case CardData.EffectType.RethrowPinball:
@@ -229,6 +230,12 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             case CardData.EffectType.RandomLeftBounceChance:
                 GameManager.instance.RoundStarted += GameManager.instance.RandomizeLeftBounceChance;
                 break;
+
+            case CardData.EffectType.UnusedThrowBonus:
+                GameManager.instance.RoundEnded += GameManager.instance.RecordUnusedThrowBonus;
+                GameManager.instance.RoundStarted += GameManager.instance.ApplyUnusedThrowBonus;
+                break;
+
         }
     }
 
@@ -282,7 +289,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             case CardData.EffectType.RandomDoubleSlot:
                 GameManager.instance.RoundStarted -= GameManager.instance.SelectDoubleSlot;
                 GameManager.instance.ScoreCalculationInScoreSlot -= GameManager.instance.DoubleSlotScore;
-                GameManager.instance.ClearDoubleSlot(); GameManager.instance.SelectDoubleSlot();
+                GameManager.instance.ClearDoubleSlot(); 
                 break;
 
             case CardData.EffectType.DoubleGoldTargetUp:
@@ -328,6 +335,12 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             case CardData.EffectType.RandomLeftBounceChance:
                 GameManager.instance.RoundStarted -= GameManager.instance.RandomizeLeftBounceChance;
                 Pinball.leftBounceChance = 0.5f;
+                break;
+
+            case CardData.EffectType.UnusedThrowBonus:
+                GameManager.instance.RoundEnded -= GameManager.instance.RecordUnusedThrowBonus;
+                GameManager.instance.RoundStarted -= GameManager.instance.ApplyUnusedThrowBonus;
+                GameManager.instance.ClearUnusedThrowBonus();
                 break;
         }
     }

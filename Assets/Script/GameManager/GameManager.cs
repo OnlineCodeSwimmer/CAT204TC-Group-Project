@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     public int throwChancesPerRound = 2;
     [HideInInspector] public int throwChance;
     private bool hasStartedThrow;
+    private int pendingUnusedThrowCount;
+    private int activeUnusedThrowCount;
 
 
 
@@ -147,7 +149,6 @@ public class GameManager : MonoBehaviour
         //Reset when entering the next round
         currentRound++;
         UpdateTargetScore();
-        pinballNumber = pinballsPerRound;
         score = 0f;
 
         //Rstore Thorw Chance
@@ -157,6 +158,8 @@ public class GameManager : MonoBehaviour
         firstPinballScored = false; //FirstPinballTenTimes Effect
 
         RoundStarted?.Invoke();
+
+        pinballNumber = pinballsPerRound;
 
         UIManager.instance.CloseShop();
     }
@@ -360,5 +363,29 @@ public class GameManager : MonoBehaviour
     public void RandomizeLeftBounceChance()
     {
         Pinball.leftBounceChance = 0.5f + (Random.value < 0.5f ? -0.15f : 0.15f);
+    }
+
+    //UnusedThrowBonus Effect
+    public void RecordUnusedThrowBonus()
+    {
+        pendingUnusedThrowCount = throwChance;
+    }
+
+    public void ApplyUnusedThrowBonus()
+    {
+        int bonusCount = pendingUnusedThrowCount;
+        ClearUnusedThrowBonus();
+
+        activeUnusedThrowCount = bonusCount;
+        pinballsPerRound += bonusCount * 2;
+        pinballScore += bonusCount * 8f;
+    }
+
+    public void ClearUnusedThrowBonus()
+    {
+        pinballsPerRound -= activeUnusedThrowCount * 2;
+        pinballScore -= activeUnusedThrowCount * 8f;
+        activeUnusedThrowCount = 0;
+        pendingUnusedThrowCount = 0;
     }
 }

@@ -24,6 +24,7 @@ public class CardData : ScriptableObject
         FirstSlotAddOnePinball,
         PegHitSplitPinball,
         RandomLeftBounceChance,
+        UnusedThrowBonus,
     }
 
 
