@@ -1760,9 +1760,11 @@ MonoBehaviour:
   activePinballs: 0
   throwChancesPerRound: 2
   throwChance: 0
+  previousRoundUnusedThrows: 0
   gold: 100
   rounds: 0
   currentRound: 0
+  firstPinballScored: 0
 --- !u!1 &346593957
 GameObject:
   m_ObjectHideFlags: 0
@@ -1882,20 +1884,24 @@ MonoBehaviour:
   cardDatas:
   - {fileID: 11400000, guid: cc122f2f67db09042a66647f9151a74d, type: 2}
   - {fileID: 11400000, guid: b89da231f317ede489615e253a4bfb65, type: 2}
-  - {fileID: 11400000, guid: 96bba98c94171dd41b43a296cb52d3ff, type: 2}
-  - {fileID: 11400000, guid: bc30025e62a7ae04eb3ebfda622b582f, type: 2}
-  - {fileID: 11400000, guid: 711fcf97592174b4dba14c4cdfc08249, type: 2}
-  - {fileID: 11400000, guid: c9e6438e086c3fe42875bad0416d7976, type: 2}
   - {fileID: 11400000, guid: 051b1750648d85d4da97af1fde6f2930, type: 2}
   - {fileID: 11400000, guid: 41eb875657189a449869f801b6d7d2c9, type: 2}
-  - {fileID: 11400000, guid: edf2834fa1e4d7c4d9bc77b4beb8a273, type: 2}
+  - {fileID: 11400000, guid: 6de803ad665752249992efefbd3c2cec, type: 2}
+  - {fileID: 11400000, guid: 711fcf97592174b4dba14c4cdfc08249, type: 2}
   - {fileID: 11400000, guid: f9a4f7a53ff50964eab7d89445009ca5, type: 2}
   - {fileID: 11400000, guid: 8f78abef47e930b49b06df8151e2e9cb, type: 2}
+  - {fileID: 11400000, guid: bc30025e62a7ae04eb3ebfda622b582f, type: 2}
   - {fileID: 11400000, guid: 781a81b20405f2c448d611638435cd9b, type: 2}
-  - {fileID: 11400000, guid: d36c9bae95b157e488348ea71bb0d88a, type: 2}
-  - {fileID: 11400000, guid: 6de803ad665752249992efefbd3c2cec, type: 2}
-  - {fileID: 11400000, guid: 18191bfb9052e1b4f8cb0a14d838f9f2, type: 2}
   - {fileID: 11400000, guid: f339b71e1fb142b4a94df8c05f3121b3, type: 2}
+  - {fileID: 11400000, guid: d36c9bae95b157e488348ea71bb0d88a, type: 2}
+  - {fileID: 11400000, guid: edf2834fa1e4d7c4d9bc77b4beb8a273, type: 2}
+  - {fileID: 11400000, guid: 18191bfb9052e1b4f8cb0a14d838f9f2, type: 2}
+  - {fileID: 11400000, guid: 96bba98c94171dd41b43a296cb52d3ff, type: 2}
+  - {fileID: 11400000, guid: c9e6438e086c3fe42875bad0416d7976, type: 2}
+  - {fileID: 11400000, guid: 1cf644be9344353418ac1b31d9f530ea, type: 2}
+  - {fileID: 11400000, guid: a470688d042e6454fbf98fbedd518e62, type: 2}
+  - {fileID: 11400000, guid: a667e0d30639a0c45b07b9db8f6c2914, type: 2}
+  - {fileID: 11400000, guid: 486b0d881335af844be6647218497997, type: 2}
   cardPrefab: {fileID: 2955025603639441964, guid: d8cdfc50ee46b374faa874ba32b99363, type: 3}
 --- !u!1 &366756867
 GameObject:
@@ -5034,6 +5040,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c9e6438e086c3fe42875bad0416d7976, type: 2}
   - {fileID: 11400000, guid: 1cf644be9344353418ac1b31d9f530ea, type: 2}
   - {fileID: 11400000, guid: a470688d042e6454fbf98fbedd518e62, type: 2}
+  - {fileID: 11400000, guid: a667e0d30639a0c45b07b9db8f6c2914, type: 2}
+  - {fileID: 11400000, guid: 486b0d881335af844be6647218497997, type: 2}
   cardPrefab: {fileID: 2955025603639441964, guid: d8cdfc50ee46b374faa874ba32b99363, type: 3}
   testCardPool: {fileID: 737794905}
 --- !u!222 &939674669

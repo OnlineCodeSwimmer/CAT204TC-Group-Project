@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class ShopSkillCardPool : MonoBehaviour
@@ -17,19 +19,29 @@ public class ShopSkillCardPool : MonoBehaviour
 
     public void RefreshCards()
     {
+        foreach (Card card in GetComponentsInChildren<Card>(true))
+        {
+            card.RecycleCard();
+        }
 
-        foreach (Card card in GetComponentsInChildren<Card>(true)) card.RecycleCard();
-
+        CardInventory inventory = CardInventory.instance;
+        bool hasCapacityCard = inventory.CountEffect(CardData.EffectType.DuplicateShopSeventhSlot) > 0;
         List<CardData> shuffledCards = new List<CardData>();
 
         foreach (CardData data in cardDatas)
         {
-            if (data != null && !shuffledCards.Contains(data)) shuffledCards.Add(data);
+            if (data == null || shuffledCards.Contains(data)) continue;
+            if (hasCapacityCard && data.effectType == CardData.EffectType.DuplicateShopSeventhSlot) continue;
+            shuffledCards.Add(data);
         }
 
-        foreach (Card ownedCard in CardInventory.instance.GetComponentsInChildren<Card>(true))
+        //If there is no DuplicateShopSeventhSlot card, duplicate cards will not appear in the refresh pool.
+        if (!hasCapacityCard)
         {
-            shuffledCards.Remove(ownedCard.data);
+            foreach (Card ownedCard in inventory.GetComponentsInChildren<Card>(true))
+            {
+                shuffledCards.Remove(ownedCard.data);
+            }
         }
 
         Shuffle(shuffledCards);
