@@ -14,6 +14,7 @@ public class HUDGeneralPackage : MonoBehaviour
     Ball,
     Gold,
     BallValue,
+    ThrowChance,
     }
 
     [Header("HUD Type")]
@@ -59,6 +60,10 @@ public class HUDGeneralPackage : MonoBehaviour
 
             case HUDType.BallValue:
                 text.text = string.Format("{0}", GameManager.instance.pinballScore);
+                break;
+
+            case HUDType.ThrowChance:
+                text.text = string.Format("{0}", GameManager.instance.throwChance);
                 break;
         }
     }

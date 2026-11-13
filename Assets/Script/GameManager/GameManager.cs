@@ -18,7 +18,13 @@ public class GameManager : MonoBehaviour
     public int pinballsPerRound = 8;
     [HideInInspector] public int pinballNumber;
     [HideInInspector] public int activePinballs;
-    private int pinHitCount;
+
+    //Throw Chance
+    public int throwChancesPerRound = 2;
+    [HideInInspector] public int throwChance;
+    private bool hasStartedThrow;
+    public int previousRoundUnusedThrows;
+
 
 
     //Gold Setting
@@ -30,10 +36,8 @@ public class GameManager : MonoBehaviour
 
     //Checking Varible
     //Effect Checking
-    private ScoreSlot doubleScoreSlot;
-    private bool firstPinballScored;
-    private int thirdSlotTriggerCount; //Third Slot Growth Card Effect
-    private int spawnedPinballCount;  //Spawn16AddOneGold Effect
+    public bool firstPinballScored;
+
 
 
 
@@ -102,7 +106,17 @@ public class GameManager : MonoBehaviour
     private void CheckRound()
     {
         if (allRoundsFinished) return;
+
+        //If the target is not met but there's still a chance, add more balls and continue the current round.
+        if (score < currentTargetScore && throwChance > 0)
+        {
+            pinballNumber = pinballsPerRound;
+            hasStartedThrow = false;
+            return;
+        }
+
         RoundEnded?.Invoke(); //Notify Round End
+
 
         //Check if the game has failed
         if (score < currentTargetScore)
@@ -113,12 +127,11 @@ public class GameManager : MonoBehaviour
         //Check if the game has Finsih
         if (currentRound >= targetScores.Length)
         {
-            if (score >= currentTargetScore)
-            {
+            
                 allRoundsFinished = true;
                 Debug.Log("Finish all round");
                 return;
-            }
+            
         }
 
         AddGold(4);
@@ -132,12 +145,18 @@ public class GameManager : MonoBehaviour
         //Reset when entering the next round
         currentRound++;
         UpdateTargetScore();
-        pinballNumber = pinballsPerRound;
         score = 0f;
+
+        //Rstore Thorw Chance
+        previousRoundUnusedThrows = throwChance;
+        throwChance = throwChancesPerRound;
+        hasStartedThrow = false;
 
         firstPinballScored = false; //FirstPinballTenTimes Effect
 
         RoundStarted?.Invoke();
+
+        pinballNumber = pinballsPerRound;
 
         UIManager.instance.CloseShop();
     }
@@ -146,6 +165,15 @@ public class GameManager : MonoBehaviour
     public bool TryUseBall()//
     {
         if (pinballNumber <= 0 || allRoundsFinished) return false;
+
+        if (!hasStartedThrow) //Deduct ball opportunity
+        {
+            if (throwChance <= 0) return false;
+
+            throwChance--;
+            hasStartedThrow = true;
+        }
+
 
         pinballNumber--;
         activePinballs++;
@@ -172,6 +200,11 @@ public class GameManager : MonoBehaviour
         rounds = targetScores.Length;
         UpdateTargetScore();
         pinballNumber = pinballsPerRound;
+        Pinball.leftBounceChance = 0.5f;
+
+        throwChance = throwChancesPerRound;
+        hasStartedThrow = false;
+
     }
 
 
@@ -193,133 +226,5 @@ public class GameManager : MonoBehaviour
     }
 
 
-    //Skill Card Realted
-    //Pinball Hit Pegs Realted
-    public void RecordPinHit(Pinball pinball, Collider2D peg)// This method only works after the corresponding skill card has been purchased
-    {
-        pinHitCount++;
-        if (pinHitCount < 40) return;
 
-        pinHitCount = 0;
-        spawnPinballPoint.SpawnExtraBall();
-    }
-
-    //Select Double Slot Card Realted
-    public void SelectDoubleSlot()
-    {
-        doubleScoreSlot = null;
-
-        ScoreSlot[] slots = FindObjectsByType<ScoreSlot>(FindObjectsInactive.Include);
-        if (slots.Length == 0) return;
-
-        doubleScoreSlot = slots[Random.Range(0, slots.Length)];
-    }
-    public void DoubleSlotScore(ScoreSlot slot, ref float multiplier)
-    {
-        if (slot == doubleScoreSlot) multiplier *= 2f;
-    }
-    public void ClearDoubleSlot()
-    {
-        doubleScoreSlot = null;
-    }
-
-
-    //RethrowPinball Skill Card Effect
-    public void TryRethrowPinball(ScoreSlot slot)
-    {
-        if (Random.value >= 0.05f) return;
-
-        spawnPinballPoint.SpawnExtraBall();
-    }
-
-
-    //PegHitScore Skill Card Effect
-    public void AddPegHitScore(Pinball pinball, Collider2D peg)
-    {
-        GainScore(pinballScore / 20f);
-    }
-
-    //FirstPinballTenTimes Skill Card Effect
-    public void FirstPinballTenTimes(ScoreSlot slot, ref float multiplier)
-    {
-        if (!firstPinballScored) multiplier *= 10f;
-    }
-
-    //IncreaseTargetScore20Percent Skill Card Effect
-    public void DoubleGold(ref int amount)
-    {
-        amount *= 2;
-    }
-
-    public void IncreaseTargetScore20Percent(ref float targetScore)
-    {
-        targetScore = (float)(targetScore * 1.2);
-    }
-
-    //Third Slot Growth Card Effect
-    public void GrowThirdSlotValue(ScoreSlot slot)
-    {
-        if (slot.position != ScoreSlot.SlotPosition.Third) return;
-
-        pinballScore += 5 + thirdSlotTriggerCount;
-        thirdSlotTriggerCount++;
-    }
-
-    public void ResetThirdSlotGrowth()
-    {
-        thirdSlotTriggerCount = 0;
-
-    }
-
-
-    //RoundEndGoldChance Realted
-    public void TryGainRoundEndGold() 
-    { 
-        if (Random.value < 0.5f) AddGold(4); 
-    }
-
-    //PegHitExtraPinball Effect
-    public void TrySpawnExtraPinballOnPegHit(Pinball pinball, Collider2D peg)
-    {
-        if (Random.value >= 0.03f) return;
-
-        spawnPinballPoint.SpawnExtraBall();
-    }
-
-    //Spawn16AddOneGold Effect
-    public void RecordSpawnedPinball()
-    {
-        spawnedPinballCount++;
-        if (spawnedPinballCount < 16) return;
-
-        spawnedPinballCount = 0;
-        AddGold(1);
-    }
-
-    public void ResetSpawnedPinballCount()
-    {
-        spawnedPinballCount = 0;
-    }
-
-    //AllScoreMultiplier15 Effect
-    public void MultiplyAllScore15(ref float amount)
-    {
-        amount *= 1.5f;
-    }
-
-    //FirstSlotAddOnePinball Effect
-    public void AddPinballOnFirstSlot(ScoreSlot slot)
-    {
-        if (slot.position != ScoreSlot.SlotPosition.First) return;
-
-        pinballNumber++;
-    }
-
-    //PegHitSplitPinball Effect
-    public void TrySplitPinball(Pinball pinball, Collider2D peg)
-    {
-        if (Random.value >= 0.05f) return;
-
-        pinball.Split(peg);
-    }
 }

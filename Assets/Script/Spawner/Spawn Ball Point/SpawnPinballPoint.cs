@@ -59,9 +59,10 @@ public class SpawnPinballPoint : MonoBehaviour
     {
         GameObject ball = PoolManager.instance.Get(ballPrefab);
         ball.transform.SetParent(null);
-        ball.transform.position = transform.position;
+        ball.transform.position = position;
 
         Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
+        rb.position = position; //Prevent pinball spawns from using physics calculations from old positions.
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
 

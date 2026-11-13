@@ -42,6 +42,8 @@ public class CardTesting : MonoBehaviour
     {
         Debug.Log("Update");
         Debug.Log("123");
+        Debug.Log("XD");
+        Debug.Log("321");
     }
 
 }

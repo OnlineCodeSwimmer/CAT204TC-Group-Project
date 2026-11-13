@@ -22,7 +22,10 @@ public class CardData : ScriptableObject
         Spawn16AddOneGold,
         AllScoreMultiplier15,
         FirstSlotAddOnePinball,
-        PegHitSplitPinball
+        PegHitSplitPinball,
+        RandomLeftBounceChance,
+        UnusedThrowBonus,
+        DuplicateShopSeventhSlot,
     }
 
 

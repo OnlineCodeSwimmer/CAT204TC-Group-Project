@@ -51,7 +51,13 @@ public class UIManager : MonoBehaviour
     {
         //Player input switch
         InputSystemManager.instance.inputSystem.UI.Disable(); 
-        InputSystemManager.instance.inputSystem.Player.Enable(); 
+        InputSystemManager.instance.inputSystem.Player.Enable();
+
+        //Immediately hide displayed sell prompts when closing the Shop
+        foreach (Card card in CardInventory.instance.GetComponentsInChildren<Card>(true))
+        {
+            card.sellPanel.SetActive(false);
+        }
 
         shop.SetActive(false);
         matrix.SetActive(true);

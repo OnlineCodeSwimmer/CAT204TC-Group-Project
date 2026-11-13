@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13fe337465b7b334bab3020fb14d8935, type: 3}
-  m_Name: Spawn 16 Add One Gold
+  m_Name: Duplicate Shop Seventh Slot
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardName: Bonus Surprise
-  description: Gain 1 gold for every 16 pinballs launched
-  cardSprite: {fileID: 21300000, guid: 4d6ffa10fcea4bf5bf33aca40b9680df, type: 3}
+  cardName: Capacity Expansion
+  description: Cards you already own can appear in the shop refresh. Unlocking the
+    seventh card slot , but this card can only be placed in the first six card slots
+  cardSprite: {fileID: 21300000, guid: 4fa6f58b8cb9407e82161c605fc811bf, type: 3}
   price: 6
-  effectType: 14
+  effectType: 20
