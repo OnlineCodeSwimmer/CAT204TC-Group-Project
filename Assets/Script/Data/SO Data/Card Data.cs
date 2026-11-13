@@ -25,6 +25,7 @@ public class CardData : ScriptableObject
         PegHitSplitPinball,
         RandomLeftBounceChance,
         UnusedThrowBonus,
+        DuplicateShopSeventhSlot,
     }
 
 
