@@ -42,7 +42,7 @@ public class UIManager : MonoBehaviour
         shop.SetActive(true);
         matrix.SetActive(false);
 
-        //Refresh Card Pool
+        //Refresh PassiveCard Pool
         shopSkillCardPool.RefreshCards();
 
     }
@@ -54,7 +54,7 @@ public class UIManager : MonoBehaviour
         InputSystemManager.instance.inputSystem.Player.Enable();
 
         //Immediately hide displayed sell prompts when closing the Shop
-        foreach (Card card in CardInventory.instance.GetComponentsInChildren<Card>(true))
+        foreach (PassiveCard card in CardInventory.instance.GetComponentsInChildren<PassiveCard>(true))
         {
             card.sellPanel.SetActive(false);
         }

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class CardTesting : MonoBehaviour
 {
-    [Header("Card Pool Setting")]
+    [Header("PassiveCard Pool Setting")]
     public CardData[] cardDatas;
     public GameObject cardPrefab;
     public Transform testCardPool;
@@ -17,7 +17,7 @@ public class CardTesting : MonoBehaviour
     {
         foreach (CardData data in cardDatas)
         {
-            Card card = PoolManager.instance.Get(cardPrefab).GetComponent<Card>();
+            PassiveCard card = PoolManager.instance.Get(cardPrefab).GetComponent<PassiveCard>();
             card.transform.SetParent(testCardPool, false);
             card.transform.localScale = Vector3.one;
             card.isTestCard = true;
@@ -27,7 +27,7 @@ public class CardTesting : MonoBehaviour
 
     public void RestoreCard(CardData cardData)
     {
-        foreach (Card card in testCardPool.GetComponentsInChildren<Card>(true))
+        foreach (PassiveCard card in testCardPool.GetComponentsInChildren<PassiveCard>(true))
         {
             if (card.data != cardData) continue;
 
@@ -37,7 +37,7 @@ public class CardTesting : MonoBehaviour
         }
     }
 
-    //Card Test
+    //PassiveCard Test
     private void Test2()
     {
         Debug.Log("Update");

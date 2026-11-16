@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ShopSkillCardPool : MonoBehaviour
 {
-    [Header("Card Pool Setting")]
+    [Header("PassiveCard Pool Setting")]
     public CardData[] cardDatas = new CardData[0];
     public GameObject cardPrefab;
 
@@ -19,7 +19,7 @@ public class ShopSkillCardPool : MonoBehaviour
 
     public void RefreshCards()
     {
-        foreach (Card card in GetComponentsInChildren<Card>(true))
+        foreach (PassiveCard card in GetComponentsInChildren<PassiveCard>(true))
         {
             card.RecycleCard();
         }
@@ -38,7 +38,7 @@ public class ShopSkillCardPool : MonoBehaviour
         //If there is no DuplicateShopSeventhSlot card, duplicate cards will not appear in the refresh pool.
         if (!hasCapacityCard)
         {
-            foreach (Card ownedCard in inventory.GetComponentsInChildren<Card>(true))
+            foreach (PassiveCard ownedCard in inventory.GetComponentsInChildren<PassiveCard>(true))
             {
                 shuffledCards.Remove(ownedCard.data);
             }
@@ -48,7 +48,7 @@ public class ShopSkillCardPool : MonoBehaviour
 
         for (int i = 0; i < Mathf.Min(3, shuffledCards.Count); i++)
         {
-            Card card = PoolManager.instance.Get(cardPrefab).GetComponent<Card>();
+            PassiveCard card = PoolManager.instance.Get(cardPrefab).GetComponent<PassiveCard>();
             card.transform.SetParent(transform);
             card.isTestCard = false;
             card.SetData(shuffledCards[i]);

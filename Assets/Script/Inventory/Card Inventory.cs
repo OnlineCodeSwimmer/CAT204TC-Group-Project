@@ -23,7 +23,7 @@ public class CardInventory : MonoBehaviour
     }
 
 
-    public bool TryAddCard(Card card)
+    public bool TryAddCard(PassiveCard card)
     {
         //If an DuplicateShopSeventhSlot card is already in inventory, another DuplicateShopSeventhSlot card cannot be added.
         bool isCapacityCard = card.data.effectType == CardData.EffectType.DuplicateShopSeventhSlot;
@@ -33,7 +33,7 @@ public class CardInventory : MonoBehaviour
         //Requires expansion card to add duplicate cards to inventory
         if (!hasCapacityCard)
         {
-            foreach (Card ownedCard in GetComponentsInChildren<Card>(true))
+            foreach (PassiveCard ownedCard in GetComponentsInChildren<PassiveCard>(true))
             {
                 if (ownedCard.data == card.data) return false;
             }
@@ -48,17 +48,17 @@ public class CardInventory : MonoBehaviour
 
         for (int i = 0; i < slotCount; i++)
         {
-            if (slots[i].GetComponentInChildren<Card>(true) != null) continue;
+            if (slots[i].GetComponentInChildren<PassiveCard>(true) != null) continue;
 
-            Card inventoryCard = PoolManager.instance.Get(cardPrefab).GetComponent<Card>();
+            PassiveCard inventoryCard = PoolManager.instance.Get(cardPrefab).GetComponent<PassiveCard>();
             inventoryCard.isTestCard = false; //All cards entering the Inventory are regular cards
             inventoryCard.SetData(card.data);
 
-            //Card Size Setting
+            //PassiveCard Size Setting
             RectTransform cardRect = inventoryCard.GetComponent<RectTransform>();
             cardRect.SetParent(slots[i]);
             cardRect.anchoredPosition = Vector2.zero;
-            cardRect.sizeDelta = new Vector2(163f, 241f);
+            cardRect.sizeDelta = new Vector2(138.2412f, 196.2f);
 
             //Apply Effect
             inventoryCard.ApplyEffect();
@@ -72,7 +72,7 @@ public class CardInventory : MonoBehaviour
         return false;
     }
 
-    public void SellCard(Card card)
+    public void SellCard(PassiveCard card)
     {
         if (!UIManager.instance.shop.activeInHierarchy && !UIManager.instance.skillCardTest.activeInHierarchy) return;
 
@@ -84,7 +84,7 @@ public class CardInventory : MonoBehaviour
         //If the DuplicateShopSeventhSlot card is sold, the card in the 7th slot will be moved to the position of the sold card.
         if (soldData.effectType == CardData.EffectType.DuplicateShopSeventhSlot)
         {
-            Card seventhCard = slots.Length > 6 ? slots[6].GetComponentInChildren<Card>(true) : null;
+            PassiveCard seventhCard = slots.Length > 6 ? slots[6].GetComponentInChildren<PassiveCard>(true) : null;
             if (seventhCard != null)
             {
                 RectTransform cardRect = seventhCard.GetComponent<RectTransform>();
@@ -110,7 +110,7 @@ public class CardInventory : MonoBehaviour
     public int CountEffect(CardData.EffectType effectType)
     {
         int count = 0;
-        foreach (Card card in GetComponentsInChildren<Card>(true))
+        foreach (PassiveCard card in GetComponentsInChildren<PassiveCard>(true))
         {
             if (card.data.effectType == effectType) count++;
         }

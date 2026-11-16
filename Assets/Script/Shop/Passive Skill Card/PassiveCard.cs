@@ -3,10 +3,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    //Card Data
-    [Header("Card Data")]
+    //PassiveCard Data
+    [Header("PassiveCard Data")]
     public CardData data;
 
     //Original slot
@@ -35,10 +35,10 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     //Each card stores its own effect state record
     private int pinHitCount;
     private int spawnedPinballCount;
-    private int thirdSlotTriggerCount; // ThirdSlotGrowth Card will use this
-    private ScoreSlot doubleScoreSlot; // RandomDoubleSlot Card will use this
-    private float leftBounceOffset; //RandomLeftBounceChance Card will use this
-    private int activeUnusedThrowCount; //UnusedThrowBonus Card will use this
+    private int thirdSlotTriggerCount; // ThirdSlotGrowth PassiveCard will use this
+    private ScoreSlot doubleScoreSlot; // RandomDoubleSlot PassiveCard will use this
+    private float leftBounceOffset; //RandomLeftBounceChance PassiveCard will use this
+    private int activeUnusedThrowCount; //UnusedThrowBonus PassiveCard will use this
 
 
     private void Awake()
@@ -100,7 +100,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 
 
-    //Card Inventory Related
+    //PassiveCard Inventory Related
     public void GeneraInInventory() //Button Subscribe
     {
         //Sell Related
@@ -151,7 +151,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 
 
-    //Card Effect Related
+    //PassiveCard Effect Related
     public void ApplyEffect()
     {
         switch (data.effectType)
@@ -336,7 +336,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 
 
-    //Skill Card Realted
+    //Skill PassiveCard Realted
     //Pinball Hit Pegs Realted
     // This method only works after the corresponding skill card has been purchased
     private void RecordPinHit(Pinball pinball, Collider2D peg)
@@ -348,7 +348,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         GameManager.instance.spawnPinballPoint.SpawnExtraBall();
     }
 
-    //Select Double Slot Card Realted
+    //Select Double Slot PassiveCard Realted
     private void SelectDoubleSlot()
     {
         doubleScoreSlot = null;
@@ -363,13 +363,13 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (slot == doubleScoreSlot) multiplier *= 2f;
     }
 
-    //HalfSidesCenter075 Skill Card Effect
+    //HalfSidesCenter075 Skill PassiveCard Effect
     private void UpdateHalfSidesCenter075(bool applying)
     {
         //Find matching cards and apply the same effect if found
         CardInventory inventory = CardInventory.instance;
-        Card otherCard = null;
-        foreach (Card ownedCard in inventory.GetComponentsInChildren<Card>(true))
+        PassiveCard otherCard = null;
+        foreach (PassiveCard ownedCard in inventory.GetComponentsInChildren<PassiveCard>(true))
         {
             if (ownedCard == this || ownedCard.data.effectType != CardData.EffectType.HalfSidesCenter075) continue;
             otherCard = ownedCard;
@@ -401,7 +401,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 
 
-    //RethrowPinball Skill Card Effect
+    //RethrowPinball Skill PassiveCard Effect
     private void TryRethrowPinball(ScoreSlot slot)
     {
         if (Random.value >= 0.05f) return;
@@ -409,20 +409,20 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
 
-    //PegHitScore Skill Card Effect
+    //PegHitScore Skill PassiveCard Effect
     private void AddPegHitScore(Pinball pinball, Collider2D peg)
     {
         GameManager game = GameManager.instance;
         game.GainScore(game.pinballScore / 20f);
     }
 
-    //FirstPinballTenTimes Skill Card Effect
+    //FirstPinballTenTimes Skill PassiveCard Effect
     private void FirstPinballTenTimes(ScoreSlot slot, ref float multiplier)
     {
         if (!GameManager.instance.firstPinballScored) multiplier *= 10f;
     }
 
-    //IncreaseTargetScore20Percent Skill Card Effect
+    //IncreaseTargetScore20Percent Skill PassiveCard Effect
     public void DoubleGold(ref int amount)
     {
         amount *= 2;
@@ -433,7 +433,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         targetScore = (float)(targetScore * 1.2);
     }
 
-    //Third Slot Growth Card Effect
+    //Third Slot Growth PassiveCard Effect
     private void GrowThirdSlotValue(ScoreSlot slot)
     {
         if (slot.position != ScoreSlot.SlotPosition.Third) return;
@@ -497,7 +497,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private void RefreshLeftBounceChance()
     {
         float chance = 0.5f;
-        foreach (Card card in CardInventory.instance.GetComponentsInChildren<Card>(true))
+        foreach (PassiveCard card in CardInventory.instance.GetComponentsInChildren<PassiveCard>(true))
         {
             if (card.data.effectType == CardData.EffectType.RandomLeftBounceChance) chance += card.leftBounceOffset;
         }
