@@ -7323,7 +7323,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -8234,7 +8234,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1398001263
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9606,7 +9606,7 @@ GameObject:
   m_Icon: {fileID: 7148428337604731935, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1627868267
 Transform:
   m_ObjectHideFlags: 0
@@ -10077,7 +10077,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1764630095
 Transform:
   m_ObjectHideFlags: 0
@@ -10611,7 +10611,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.2901961, g: 0.30551583, b: 0.30588236, a: 0.392}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -12097,7 +12097,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3779544124397986876, guid: d8cdfc50ee46b374faa874ba32b99363, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3779544124397986876, guid: d8cdfc50ee46b374faa874ba32b99363, type: 3}
       propertyPath: m_AnchorMin.x
@@ -12105,7 +12105,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3779544124397986876, guid: d8cdfc50ee46b374faa874ba32b99363, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3779544124397986876, guid: d8cdfc50ee46b374faa874ba32b99363, type: 3}
       propertyPath: m_SizeDelta.x
@@ -12145,11 +12145,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3779544124397986876, guid: d8cdfc50ee46b374faa874ba32b99363, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 190.2325
       objectReference: {fileID: 0}
     - target: {fileID: 3779544124397986876, guid: d8cdfc50ee46b374faa874ba32b99363, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -173.47626
       objectReference: {fileID: 0}
     - target: {fileID: 3779544124397986876, guid: d8cdfc50ee46b374faa874ba32b99363, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
