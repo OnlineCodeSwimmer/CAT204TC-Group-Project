@@ -25,6 +25,12 @@ public class CardInventory : MonoBehaviour
 
     public bool TryAddCard(PassiveCard card)
     {
+        return TryAddCard(card, out _);
+    }
+
+    public bool TryAddCard(PassiveCard card, out PassiveCard inventoryCard)
+    {
+        inventoryCard = null;
         //If an DuplicateShopSeventhSlot card is already in inventory, another DuplicateShopSeventhSlot card cannot be added.
         bool isCapacityCard = card.data.effectType == CardData.EffectType.DuplicateShopSeventhSlot;
         bool hasCapacityCard = CountEffect(CardData.EffectType.DuplicateShopSeventhSlot) > 0;
@@ -50,13 +56,14 @@ public class CardInventory : MonoBehaviour
         {
             if (slots[i].GetComponentInChildren<PassiveCard>(true) != null) continue;
 
-            PassiveCard inventoryCard = PoolManager.instance.Get(cardPrefab).GetComponent<PassiveCard>();
+            inventoryCard = PoolManager.instance.Get(cardPrefab).GetComponent<PassiveCard>();
             inventoryCard.isTestCard = false; //All cards entering the Inventory are regular cards
             inventoryCard.SetData(card.data);
 
             //PassiveCard Size Setting
             RectTransform cardRect = inventoryCard.GetComponent<RectTransform>();
-            cardRect.SetParent(slots[i]);
+            cardRect.SetParent(slots[i], false);
+            cardRect.localScale = Vector3.one;
             cardRect.anchoredPosition = Vector2.zero;
             cardRect.sizeDelta = new Vector2(138.2412f, 196.2f);
 
@@ -78,6 +85,7 @@ public class CardInventory : MonoBehaviour
 
         CardData soldData = card.data;
         Transform freedSlot = card.transform.parent;
+        GameFeedback.Instance?.PlaySale(card);
         card.RemoveEffect();
         card.RecycleCard();
 
@@ -96,8 +104,8 @@ public class CardInventory : MonoBehaviour
         }
 
 
-        GameManager.instance.AddGold(2);
-        cardTesting.RestoreCard(card.data);
+        GameManager.instance.ChangeShopGold(2);
+        cardTesting.RestoreCard(soldData);
     }
 
 

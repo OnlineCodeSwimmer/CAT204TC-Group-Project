@@ -63,6 +63,14 @@ public class UIManager : MonoBehaviour
         matrix.SetActive(true);
     }
 
+    public void ShowResults(int score, bool cleared)
+    {
+        InputSystemManager.instance.inputSystem.Player.Disable();
+        shop.SetActive(false);
+        skillCardTest.SetActive(false);
+        GameFeedback.Instance.ShowResults(score, cleared, CardInventory.instance);
+    }
+
     //testCardPool
     private void OpenTestCardPool(InputAction.CallbackContext context)
     {

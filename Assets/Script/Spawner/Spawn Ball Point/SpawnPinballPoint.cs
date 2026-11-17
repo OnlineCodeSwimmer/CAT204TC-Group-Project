@@ -51,11 +51,11 @@ public class SpawnPinballPoint : MonoBehaviour
 
         if (!GameManager.instance.TryUseBall()) return;
 
-        SpawnBall(transform.position);
+        SpawnBall(transform.position, false);
         StartCoroutine(SpawnCooldown());
     }
 
-    private GameObject SpawnBall(Vector2 position)
+    private GameObject SpawnBall(Vector2 position, bool temporary)
     {
         GameObject ball = PoolManager.instance.Get(ballPrefab);
         ball.transform.SetParent(null);
@@ -65,8 +65,9 @@ public class SpawnPinballPoint : MonoBehaviour
         rb.position = position; //Prevent pinball spawns from using physics calculations from old positions.
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
+        ball.GetComponent<Pinball>().IsTemporary = temporary;
 
-        GameManager.instance.NotifyPinballSpawned();//Notify Pinball Spawn
+        GameManager.instance.NotifyPinballSpawned(position);
         return ball;
     }
 
@@ -75,10 +76,12 @@ public class SpawnPinballPoint : MonoBehaviour
         SpawnExtraBall(transform.position);
     }
 
-    public GameObject SpawnExtraBall(Vector2 position)
+    public GameObject SpawnExtraBall(Vector2 position, CardEffectVisual effect = CardEffectVisual.TemporarySpawn)
     {
         GameManager.instance.activePinballs++;
-        return SpawnBall(position);
+        GameObject ball = SpawnBall(position, true);
+        GameFeedback.Instance?.Burst(effect, position);
+        return ball;
     }
 
     private void StartSpawnBall(InputAction.CallbackContext context)
