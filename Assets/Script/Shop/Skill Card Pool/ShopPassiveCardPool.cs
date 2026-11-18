@@ -3,10 +3,10 @@ using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class ShopSkillCardPool : MonoBehaviour
+public class ShopPassiveCardPool : MonoBehaviour
 {
     [Header("PassiveCard Pool Setting")]
-    public CardData[] cardDatas = new CardData[0];
+    public PassiveCardData[] cardDatas = new PassiveCardData[0];
     public GameObject cardPrefab;
 
     public void RefreshCardsWithGold()
@@ -24,14 +24,14 @@ public class ShopSkillCardPool : MonoBehaviour
             card.RecycleCard();
         }
 
-        CardInventory inventory = CardInventory.instance;
-        bool hasCapacityCard = inventory.CountEffect(CardData.EffectType.DuplicateShopSeventhSlot) > 0;
-        List<CardData> shuffledCards = new List<CardData>();
+        PassiveCardInventory inventory = PassiveCardInventory.instance;
+        bool hasCapacityCard = inventory.CountEffect(PassiveCardData.EffectType.DuplicateShopSeventhSlot) > 0;
+        List<PassiveCardData> shuffledCards = new List<PassiveCardData>();
 
-        foreach (CardData data in cardDatas)
+        foreach (PassiveCardData data in cardDatas)
         {
             if (data == null || shuffledCards.Contains(data)) continue;
-            if (hasCapacityCard && data.effectType == CardData.EffectType.DuplicateShopSeventhSlot) continue;
+            if (hasCapacityCard && data.effectType == PassiveCardData.EffectType.DuplicateShopSeventhSlot) continue;
             shuffledCards.Add(data);
         }
 
@@ -58,12 +58,12 @@ public class ShopSkillCardPool : MonoBehaviour
 
 
     //Knuth¨CDurstenfeld Shuffle
-    private void Shuffle(List<CardData> cards)
+    private void Shuffle(List<PassiveCardData> cards)
     {
         for (int i = 0; i < cards.Count - 1; i++)
         {
             int randomIndex = Random.Range(i, cards.Count);
-            CardData temp = cards[i];
+            PassiveCardData temp = cards[i];
             cards[i] = cards[randomIndex];
             cards[randomIndex] = temp;
         }

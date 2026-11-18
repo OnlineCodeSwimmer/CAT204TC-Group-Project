@@ -7,7 +7,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 {
     //PassiveCard Data
     [Header("PassiveCard Data")]
-    public CardData data;
+    public PassiveCardData data;
 
     //Original slot
     private float originalCenterMultiplier;
@@ -55,9 +55,9 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         //Diplay Description
         descriptionPanel.SetActive(true);
         //Display Price
-        pricePanel.SetActive(!isTestCard && GetComponentInParent<CardInventory>() == null && GetComponent<Button>().interactable);
+        pricePanel.SetActive(!isTestCard && GetComponentInParent<PassiveCardInventory>() == null && GetComponent<Button>().interactable);
         //Sell Related
-        sellPanel.SetActive((UIManager.instance.shop.activeInHierarchy || UIManager.instance.skillCardTest.activeInHierarchy) && GetComponentInParent<CardInventory>() != null);
+        sellPanel.SetActive((UIManager.instance.shop.activeInHierarchy || UIManager.instance.skillCardTest.activeInHierarchy) && GetComponentInParent<PassiveCardInventory>() != null);
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -87,7 +87,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
 
     //SO Data Related
-    public void SetData(CardData cardData)
+    public void SetData(PassiveCardData cardData)
     {
         data = cardData;
         nameText.text = data.cardName;
@@ -104,9 +104,9 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void GeneraInInventory() //Button Subscribe
     {
         //Sell Related
-        if (GetComponentInParent<CardInventory>() != null)
+        if (GetComponentInParent<PassiveCardInventory>() != null)
         {
-            CardInventory.instance.SellCard(this);
+            PassiveCardInventory.instance.SellCard(this);
             return;
         }
 
@@ -115,7 +115,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         //Purchase Related
         if (!isTestCard && GameManager.instance.gold < data.price) return;
 
-        if (!CardInventory.instance.TryAddCard(this)) return;
+        if (!PassiveCardInventory.instance.TryAddCard(this)) return;
 
         if (!isTestCard) GameManager.instance.gold -= data.price;
         GetComponent<Button>().interactable = false;
@@ -128,8 +128,8 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         PoolManager.instance.Recycle(gameObject);
 
         //Restore Size
-        GetComponent<RectTransform>().sizeDelta = CardInventory.instance.cardPrefab.GetComponent<RectTransform>().sizeDelta;
-        transform.localScale = CardInventory.instance.cardPrefab.transform.localScale;
+        GetComponent<RectTransform>().sizeDelta = PassiveCardInventory.instance.cardPrefab.GetComponent<RectTransform>().sizeDelta;
+        transform.localScale = PassiveCardInventory.instance.cardPrefab.transform.localScale;
 
         //Restore Color
         cardImage.GetComponent<Image>().color = Color.white;
@@ -156,23 +156,23 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         switch (data.effectType)
         {
-            case CardData.EffectType.AddOnePinball:
+            case PassiveCardData.EffectType.AddOnePinball:
                 GameManager.instance.pinballsPerRound += 1;
                 break;
 
-            case CardData.EffectType.AddPinballScore:
+            case PassiveCardData.EffectType.AddPinballScore:
                 GameManager.instance.pinballScore += 50;
                 break;
 
-            case CardData.EffectType.HalfSidesCenter075:
+            case PassiveCardData.EffectType.HalfSidesCenter075:
                 UpdateHalfSidesCenter075(true);
                 break;
 
-            case CardData.EffectType.Hit40AddOnePinball:
+            case PassiveCardData.EffectType.Hit40AddOnePinball:
                 GameManager.instance.PinballHitPeg += RecordPinHit;
                 break;
 
-            case CardData.EffectType.SlotMultiplier15:
+            case PassiveCardData.EffectType.SlotMultiplier15:
                 foreach (ScoreSlot slot in FindObjectsByType<ScoreSlot>(FindObjectsInactive.Include))
                 {
                     slot.multiplier *= 1.5f;
@@ -180,61 +180,61 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
                 }
                 break;
 
-            case CardData.EffectType.FirstPinballTenTimes:
+            case PassiveCardData.EffectType.FirstPinballTenTimes:
                 GameManager.instance.ScoreCalculationInScoreSlot += FirstPinballTenTimes;
                 break;
 
-            case CardData.EffectType.PegHitScore:
+            case PassiveCardData.EffectType.PegHitScore:
                 GameManager.instance.PinballHitPeg += AddPegHitScore;
                 break;
 
-            case CardData.EffectType.RandomDoubleSlot:
+            case PassiveCardData.EffectType.RandomDoubleSlot:
                 GameManager.instance.RoundStarted += SelectDoubleSlot;
                 GameManager.instance.ScoreCalculationInScoreSlot += DoubleSlotScore; 
                 break;
 
-            case CardData.EffectType.DoubleGoldTargetUp:
+            case PassiveCardData.EffectType.DoubleGoldTargetUp:
                 GameManager.instance.GoldCalculating += DoubleGold;
                 GameManager.instance.TargetScoreCalculating += IncreaseTargetScore20Percent;
                 break;
 
-            case CardData.EffectType.RethrowPinball:
+            case PassiveCardData.EffectType.RethrowPinball:
                 GameManager.instance.PinballEnteredSlot += TryRethrowPinball;
                 break;
 
-            case CardData.EffectType.ThirdSlotGrowth:
+            case PassiveCardData.EffectType.ThirdSlotGrowth:
                 GameManager.instance.PinballEnteredSlot += GrowThirdSlotValue;
                 break;
 
-            case CardData.EffectType.RoundEndGoldChance:
+            case PassiveCardData.EffectType.RoundEndGoldChance:
                 GameManager.instance.RoundEnded += TryGainRoundEndGold;
                 break;
 
-            case CardData.EffectType.PegHitExtraPinball:
+            case PassiveCardData.EffectType.PegHitExtraPinball:
                 GameManager.instance.PinballHitPeg += TrySpawnExtraPinballOnPegHit;
                 break;
 
-            case CardData.EffectType.Spawn16AddOneGold:
+            case PassiveCardData.EffectType.Spawn16AddOneGold:
                 GameManager.instance.PinballSpawned += RecordSpawnedPinball;
                 break;
 
-            case CardData.EffectType.AllScoreMultiplier15:
+            case PassiveCardData.EffectType.AllScoreMultiplier15:
                 GameManager.instance.ScoreCalculating += MultiplyAllScore15;
                 break;
 
-            case CardData.EffectType.FirstSlotAddOnePinball:
+            case PassiveCardData.EffectType.FirstSlotAddOnePinball:
                 GameManager.instance.PinballEnteredSlot += AddPinballOnFirstSlot;
                 break;
 
-            case CardData.EffectType.PegHitSplitPinball:
+            case PassiveCardData.EffectType.PegHitSplitPinball:
                 GameManager.instance.PinballHitPeg += TrySplitPinball;
                 break;
 
-            case CardData.EffectType.RandomLeftBounceChance:
+            case PassiveCardData.EffectType.RandomLeftBounceChance:
                 GameManager.instance.RoundStarted += RandomizeLeftBounceChance;
                 break;
 
-            case CardData.EffectType.UnusedThrowBonus:
+            case PassiveCardData.EffectType.UnusedThrowBonus:
                 GameManager.instance.RoundStarted += ApplyUnusedThrowBonus;
                 break;
 
@@ -246,23 +246,23 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         switch (data.effectType)
         {
-            case CardData.EffectType.AddOnePinball:
+            case PassiveCardData.EffectType.AddOnePinball:
                 GameManager.instance.pinballsPerRound -= 1;
                 break;
 
-            case CardData.EffectType.AddPinballScore:
+            case PassiveCardData.EffectType.AddPinballScore:
                 GameManager.instance.pinballScore -= 50;
                 break;
 
-            case CardData.EffectType.HalfSidesCenter075:
+            case PassiveCardData.EffectType.HalfSidesCenter075:
                 UpdateHalfSidesCenter075(false);
                 break;
 
-            case CardData.EffectType.Hit40AddOnePinball:
+            case PassiveCardData.EffectType.Hit40AddOnePinball:
                 GameManager.instance.PinballHitPeg -= RecordPinHit;
                 break;
 
-            case CardData.EffectType.SlotMultiplier15:
+            case PassiveCardData.EffectType.SlotMultiplier15:
                 foreach (ScoreSlot slot in FindObjectsByType<ScoreSlot>(FindObjectsInactive.Include))
                 {
                     slot.multiplier /= 1.5f;
@@ -270,63 +270,64 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
                 }
                 break;
 
-            case CardData.EffectType.FirstPinballTenTimes:
+            case PassiveCardData.EffectType.FirstPinballTenTimes:
                 GameManager.instance.ScoreCalculationInScoreSlot -= FirstPinballTenTimes;
                 break;
 
-            case CardData.EffectType.PegHitScore:
+            case PassiveCardData.EffectType.PegHitScore:
                 GameManager.instance.PinballHitPeg -= AddPegHitScore;
                 break;
 
-            case CardData.EffectType.RandomDoubleSlot:
+            case PassiveCardData.EffectType.RandomDoubleSlot:
                 GameManager.instance.RoundStarted -= SelectDoubleSlot;
                 GameManager.instance.ScoreCalculationInScoreSlot -= DoubleSlotScore;
                 break;
 
-            case CardData.EffectType.DoubleGoldTargetUp:
+            case PassiveCardData.EffectType.DoubleGoldTargetUp:
                 GameManager.instance.GoldCalculating -= DoubleGold;
                 GameManager.instance.TargetScoreCalculating -= IncreaseTargetScore20Percent; 
                 break;
 
-            case CardData.EffectType.RethrowPinball:
+            case PassiveCardData.EffectType.RethrowPinball:
                 GameManager.instance.PinballEnteredSlot -= TryRethrowPinball;
                 break;
 
-            case CardData.EffectType.ThirdSlotGrowth:
+            case PassiveCardData.EffectType.ThirdSlotGrowth:
                 GameManager.instance.PinballEnteredSlot -= GrowThirdSlotValue;
                 break;
 
 
-            case CardData.EffectType.RoundEndGoldChance:
+            case PassiveCardData.EffectType.RoundEndGoldChance:
                 GameManager.instance.RoundEnded -= TryGainRoundEndGold;
                 break;
 
-            case CardData.EffectType.PegHitExtraPinball:
+            case PassiveCardData.EffectType.PegHitExtraPinball:
                 GameManager.instance.PinballHitPeg -= TrySpawnExtraPinballOnPegHit;
                 break;
 
-            case CardData.EffectType.Spawn16AddOneGold:
+            case PassiveCardData.EffectType.Spawn16AddOneGold:
                 GameManager.instance.PinballSpawned -= RecordSpawnedPinball;
                 break;
 
-            case CardData.EffectType.AllScoreMultiplier15:
+            case PassiveCardData.EffectType.AllScoreMultiplier15:
                 GameManager.instance.ScoreCalculating -= MultiplyAllScore15;
                 break;
 
-            case CardData.EffectType.FirstSlotAddOnePinball:
+            case PassiveCardData.EffectType.FirstSlotAddOnePinball:
                 GameManager.instance.PinballEnteredSlot -= AddPinballOnFirstSlot;
                 break;
 
-            case CardData.EffectType.PegHitSplitPinball:
+            case PassiveCardData.EffectType.PegHitSplitPinball:
                 GameManager.instance.PinballHitPeg -= TrySplitPinball;
                 break;
 
-            case CardData.EffectType.RandomLeftBounceChance:
+            case PassiveCardData.EffectType.RandomLeftBounceChance:
                 GameManager.instance.RoundStarted -= RandomizeLeftBounceChance;
-                Pinball.leftBounceChance = 0.5f;
+                leftBounceOffset = 0f;
+                RefreshLeftBounceChance();
                 break;
 
-            case CardData.EffectType.UnusedThrowBonus:
+            case PassiveCardData.EffectType.UnusedThrowBonus:
                 GameManager.instance.RoundStarted -= ApplyUnusedThrowBonus;
                 GameManager.instance.pinballsPerRound -= activeUnusedThrowCount * 2;
                 GameManager.instance.pinballScore -= activeUnusedThrowCount * 8f;
@@ -367,17 +368,17 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private void UpdateHalfSidesCenter075(bool applying)
     {
         //Find matching cards and apply the same effect if found
-        CardInventory inventory = CardInventory.instance;
+        PassiveCardInventory inventory = PassiveCardInventory.instance;
         PassiveCard otherCard = null;
         foreach (PassiveCard ownedCard in inventory.GetComponentsInChildren<PassiveCard>(true))
         {
-            if (ownedCard == this || ownedCard.data.effectType != CardData.EffectType.HalfSidesCenter075) continue;
+            if (ownedCard == this || ownedCard.data.effectType != PassiveCardData.EffectType.HalfSidesCenter075) continue;
             otherCard = ownedCard;
             break;
         }
 
         //Effect Implementation
-        float slotFactor = Mathf.Pow(1.5f, inventory.CountEffect(CardData.EffectType.SlotMultiplier15));
+        float slotFactor = Mathf.Pow(1.5f, inventory.CountEffect(PassiveCardData.EffectType.SlotMultiplier15));
         foreach (ScoreSlot slot in FindObjectsByType<ScoreSlot>(FindObjectsInactive.Include))
         {
             if (slot.position == ScoreSlot.SlotPosition.First || slot.position == ScoreSlot.SlotPosition.Second)
@@ -413,7 +414,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private void AddPegHitScore(Pinball pinball, Collider2D peg)
     {
         GameManager game = GameManager.instance;
-        game.GainScore(game.pinballScore / 20f);
+        game.GainScore(game.GetCurrentPinballScore() / 20f);
     }
 
     //FirstPinballTenTimes Skill PassiveCard Effect
@@ -497,9 +498,9 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private void RefreshLeftBounceChance()
     {
         float chance = 0.5f;
-        foreach (PassiveCard card in CardInventory.instance.GetComponentsInChildren<PassiveCard>(true))
+        foreach (PassiveCard card in PassiveCardInventory.instance.GetComponentsInChildren<PassiveCard>(true))
         {
-            if (card.data.effectType == CardData.EffectType.RandomLeftBounceChance) chance += card.leftBounceOffset;
+            if (card.data.effectType == PassiveCardData.EffectType.RandomLeftBounceChance) chance += card.leftBounceOffset;
         }
         Pinball.leftBounceChance = Mathf.Clamp01(chance);
     }

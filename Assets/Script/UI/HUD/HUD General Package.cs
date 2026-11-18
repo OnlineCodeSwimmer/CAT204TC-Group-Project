@@ -59,7 +59,7 @@ public class HUDGeneralPackage : MonoBehaviour
                 break;
 
             case HUDType.BallValue:
-                text.text = string.Format("{0}", GameManager.instance.pinballScore);
+                text.text = string.Format("{0}", GameManager.instance.GetCurrentPinballScore());
                 break;
 
             case HUDType.ThrowChance:

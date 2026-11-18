@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51ef40808e4239041af90405295426ef, type: 3}
+  m_Name: Add Throw Chance
+  m_EditorClassIdentifier: Assembly-CSharp::ActiveCardData
+  cardName: Strength
+  description: Gain 1 extra launch this round
+  cardSprite: {fileID: 21300000, guid: 755933f162624446b380bb8bf918f765, type: 3}
+  effectType: 5

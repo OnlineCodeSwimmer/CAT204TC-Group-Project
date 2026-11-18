@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "CardData", menuName = "Shop Data/PassiveCard Data")]
-public class CardData : ScriptableObject
+[CreateAssetMenu(fileName = "PassiveCardData", menuName = "Card Data/PassiveCard Data")]
+public class PassiveCardData : ScriptableObject
 {
     //Use for PassiveCard Skill
     public enum EffectType { 

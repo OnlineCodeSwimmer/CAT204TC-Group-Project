@@ -10,7 +10,7 @@ public class UIManager : MonoBehaviour
     [Header("UI GameObject")]
     public GameObject shop;
     public GameObject skillCardTest;
-    public ShopSkillCardPool shopSkillCardPool;
+    public ShopPassiveCardPool shopSkillCardPool;
 
 
     [Header("Sence Object GameObject")]
@@ -54,10 +54,19 @@ public class UIManager : MonoBehaviour
         InputSystemManager.instance.inputSystem.Player.Enable();
 
         //Immediately hide displayed sell prompts when closing the Shop
-        foreach (PassiveCard card in CardInventory.instance.GetComponentsInChildren<PassiveCard>(true))
+        foreach (PassiveCard card in PassiveCardInventory.instance.GetComponentsInChildren<PassiveCard>(true))
         {
             card.sellPanel.SetActive(false);
         }
+
+        ActiveCardInventory activeInventory = ActiveCardInventory.instance;
+        
+      foreach (ActiveCard card in activeInventory.GetComponentsInChildren<ActiveCard>(true))
+      {
+            card.sellPanel.SetActive(false);
+       }
+        
+
 
         shop.SetActive(false);
         matrix.SetActive(true);

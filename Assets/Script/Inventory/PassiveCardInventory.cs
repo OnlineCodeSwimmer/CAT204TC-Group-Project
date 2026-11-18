@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CardInventory : MonoBehaviour
+public class PassiveCardInventory : MonoBehaviour
 {
     //Singleton
-    public static CardInventory instance;
+    public static PassiveCardInventory instance;
 
     //Inventory slots setting
     [Header("Inventory Slots Setting")]
@@ -13,6 +14,9 @@ public class CardInventory : MonoBehaviour
 
     //Prefab
     public GameObject cardPrefab;
+
+    //Use for record purchase order of cards in inventory
+    private  List<PassiveCard> purchaseOrder = new List<PassiveCard>();
 
     //Test
     public CardTesting cardTesting;
@@ -26,8 +30,8 @@ public class CardInventory : MonoBehaviour
     public bool TryAddCard(PassiveCard card)
     {
         //If an DuplicateShopSeventhSlot card is already in inventory, another DuplicateShopSeventhSlot card cannot be added.
-        bool isCapacityCard = card.data.effectType == CardData.EffectType.DuplicateShopSeventhSlot;
-        bool hasCapacityCard = CountEffect(CardData.EffectType.DuplicateShopSeventhSlot) > 0;
+        bool isCapacityCard = card.data.effectType == PassiveCardData.EffectType.DuplicateShopSeventhSlot;
+        bool hasCapacityCard = CountEffect(PassiveCardData.EffectType.DuplicateShopSeventhSlot) > 0;
         if (isCapacityCard && hasCapacityCard) return false;
 
         //Requires expansion card to add duplicate cards to inventory
@@ -60,6 +64,9 @@ public class CardInventory : MonoBehaviour
             cardRect.anchoredPosition = Vector2.zero;
             cardRect.sizeDelta = new Vector2(138.2412f, 196.2f);
 
+            //Record purchase order of cards in inventory
+            purchaseOrder.Add(inventoryCard);
+
             //Apply Effect
             inventoryCard.ApplyEffect();
 
@@ -72,17 +79,37 @@ public class CardInventory : MonoBehaviour
         return false;
     }
 
+    //Sell and Remove Card
     public void SellCard(PassiveCard card)
     {
         if (!UIManager.instance.shop.activeInHierarchy && !UIManager.instance.skillCardTest.activeInHierarchy) return;
 
-        CardData soldData = card.data;
+        RemoveOwnedCard(card);
+        GameManager.instance.AddGold(2);
+    }
+
+    //Destroy the last card in the inventory
+    public bool TryDestroyLastBoughtCard()
+    {
+        if (purchaseOrder.Count == 0) return false;
+
+        PassiveCard card = purchaseOrder[purchaseOrder.Count - 1];
+        bool changesTarget = card.data.effectType == PassiveCardData.EffectType.DoubleGoldTargetUp;
+        RemoveOwnedCard(card);
+        if (changesTarget) GameManager.instance.UpdateTargetScore();
+        return true;
+    }
+
+    private void RemoveOwnedCard(PassiveCard card)
+    {
+        PassiveCardData removedData = card.data;
         Transform freedSlot = card.transform.parent;
         card.RemoveEffect();
+        purchaseOrder.Remove(card);
         card.RecycleCard();
 
-        //If the DuplicateShopSeventhSlot card is sold, the card in the 7th slot will be moved to the position of the sold card.
-        if (soldData.effectType == CardData.EffectType.DuplicateShopSeventhSlot)
+        //If the DuplicateShopSeventhSlot card is sold, the card in the 7th slot will be moved to the position of the sold card
+        if (removedData.effectType == PassiveCardData.EffectType.DuplicateShopSeventhSlot)
         {
             PassiveCard seventhCard = slots.Length > 6 ? slots[6].GetComponentInChildren<PassiveCard>(true) : null;
             if (seventhCard != null)
@@ -95,9 +122,7 @@ public class CardInventory : MonoBehaviour
             unlockedSlots = 6;
         }
 
-
-        GameManager.instance.AddGold(2);
-        cardTesting.RestoreCard(card.data);
+        cardTesting.RestoreCard(removedData);
     }
 
 
@@ -107,7 +132,7 @@ public class CardInventory : MonoBehaviour
     }
 
     //Count the number of cards in the inventory that have the same effect
-    public int CountEffect(CardData.EffectType effectType)
+    public int CountEffect(PassiveCardData.EffectType effectType)
     {
         int count = 0;
         foreach (PassiveCard card in GetComponentsInChildren<PassiveCard>(true))

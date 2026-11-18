@@ -7,7 +7,10 @@ public class GameManager : MonoBehaviour
     //Score Setting
     [Header("Socre Setting")]
     public float pinballScore = 20f;
+    [HideInInspector] public float pinballScoreMultiplier = 1f;
+    [HideInInspector] public float temporaryPinballScoreBonus; //Record temporary pinball bonus
     public int[] targetScores;
+
 
     [HideInInspector] public float currentTargetScore;
     [HideInInspector] public float score = 0f;
@@ -20,7 +23,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public int activePinballs;
 
     //Throw Chance
-    public int throwChancesPerRound = 2;
+    public int throwChancesPerRound = 3;
     [HideInInspector] public int throwChance;
     private bool hasStartedThrow;
     public int previousRoundUnusedThrows;
@@ -38,9 +41,6 @@ public class GameManager : MonoBehaviour
     //Effect Checking
     public bool firstPinballScored;
 
-
-
-
     //Round Checking
     private bool allRoundsFinished;
 
@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
     public event System.Action RoundStarted;
     public event System.Action RoundEnded;
     public event System.Action PinballSpawned;
+    public event System.Action ThrowChanceEnded;
     public event GoldCalculationHandler GoldCalculating;
     public event TargetScoreCalculationHandler TargetScoreCalculating;
     public delegate void ScoreCalculationInScoreSlotHandler(ScoreSlot slot, ref float multiplier);
@@ -75,11 +76,16 @@ public class GameManager : MonoBehaviour
     {
         float multiplier = slot.multiplier;
 
-        ScoreCalculationInScoreSlot?.Invoke(slot, ref multiplier); 
+        ScoreCalculationInScoreSlot?.Invoke(slot, ref multiplier);  //Calculate goal score
 
         firstPinballScored = true;
 
-        GainScore(pinballScore * multiplier);
+        GainScore(GetCurrentPinballScore() * multiplier);
+    }
+
+    public float GetCurrentPinballScore()
+    {
+        return (pinballScore + temporaryPinballScoreBonus) * pinballScoreMultiplier;
     }
 
     public void GainScore(float amount)
@@ -90,10 +96,10 @@ public class GameManager : MonoBehaviour
 
 
 
-    public void AddGold(int amount)
+    public void AddGold(int amount, int maxGain = int.MaxValue)
     {
         GoldCalculating?.Invoke(ref amount);
-        gold += amount;
+        gold += Mathf.Min(amount, maxGain);
     }
 
     public void UpdateTargetScore()
@@ -107,9 +113,12 @@ public class GameManager : MonoBehaviour
     {
         if (allRoundsFinished) return;
 
+        ThrowChanceEnded?.Invoke();
+
         //If the target is not met but there's still a chance, add more balls and continue the current round.
         if (score < currentTargetScore && throwChance > 0)
         {
+            throwChance--;
             pinballNumber = pinballsPerRound;
             hasStartedThrow = false;
             return;
@@ -138,6 +147,7 @@ public class GameManager : MonoBehaviour
         UIManager.instance.OpenShop();
     }
 
+
     //Enter Next Round
     public void NextRound() //Button listening
     {
@@ -161,20 +171,16 @@ public class GameManager : MonoBehaviour
         UIManager.instance.CloseShop();
     }
 
+
+
+
+
     //Pinball-related methods 
     public bool TryUseBall()//
     {
         if (pinballNumber <= 0 || allRoundsFinished) return false;
 
-        if (!hasStartedThrow) //Deduct ball opportunity
-        {
-            if (throwChance <= 0) return false;
-
-            throwChance--;
-            hasStartedThrow = true;
-        }
-
-
+        hasStartedThrow = true;
         pinballNumber--;
         activePinballs++;
         return true;
@@ -201,12 +207,19 @@ public class GameManager : MonoBehaviour
         UpdateTargetScore();
         pinballNumber = pinballsPerRound;
         Pinball.leftBounceChance = 0.5f;
+        Pinball.activeLeftBounceOffset = 0f;
 
         throwChance = throwChancesPerRound;
         hasStartedThrow = false;
 
     }
 
+
+    //Active Card Related
+    public bool CanUseActiveCard()
+    {
+        return !allRoundsFinished && !hasStartedThrow && pinballNumber > 0;
+    }
 
 
     //Broadcast a notification
@@ -225,6 +238,24 @@ public class GameManager : MonoBehaviour
         PinballSpawned?.Invoke();
     }
 
+    //Test
+    [ContextMenu("Test Pass Round")]
+    private void TestPassRound()
+    {
+        if (!Application.isPlaying || allRoundsFinished) return;
 
+        UIManager ui = UIManager.instance;
+        if (ui.shop.activeSelf || ui.skillCardTest.activeSelf) return;
+
+        foreach (Pinball pinball in FindObjectsByType<Pinball>(FindObjectsInactive.Exclude))
+        {
+            PoolManager.instance.Recycle(pinball.gameObject);
+        }
+
+        activePinballs = 0;
+        pinballNumber = 0;
+        score = Mathf.Max(score, currentTargetScore);
+        CheckRound();
+    }
 
 }
