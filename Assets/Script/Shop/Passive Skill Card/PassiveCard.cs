@@ -40,6 +40,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private float leftBounceOffset; //RandomLeftBounceChance PassiveCard will use this
     private int activeUnusedThrowCount; //UnusedThrowBonus PassiveCard will use this
     private CanvasGroup purchaseGroup;
+    private bool refreshAnimating;
 
 
     private void Awake()
@@ -51,6 +52,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (refreshAnimating) return;
         //Zoom in and out
         cardImage.localScale = originalScale * 1.1f;
         //Diplay Description
@@ -63,6 +65,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (refreshAnimating) return;
         //Zoom in and out
         cardImage.localScale = originalScale;
         //Hidden Description
@@ -75,6 +78,8 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void OnDisable()
     {
+        refreshAnimating = false;
+        transform.localRotation = Quaternion.identity;
         SetPurchaseAnimation(false);
         //Size
         cardImage.localScale = originalScale;
@@ -135,6 +140,22 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         purchaseGroup.alpha = playing ? 0f : 1f;
         purchaseGroup.interactable = !playing;
         purchaseGroup.blocksRaycasts = !playing;
+    }
+
+    public void SetRefreshAnimation(bool playing)
+    {
+        if (purchaseGroup == null)
+            purchaseGroup = gameObject.AddComponent<CanvasGroup>();
+
+        refreshAnimating = playing;
+        purchaseGroup.alpha = 1f;
+        purchaseGroup.interactable = !playing;
+        purchaseGroup.blocksRaycasts = !playing;
+    }
+
+    public void SetRefreshRotation(float angle)
+    {
+        transform.localRotation = Quaternion.Euler(0f, angle, 0f);
     }
 
     public void RecycleCard()
@@ -561,12 +582,14 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private void Flash()
     {
         GameFeedback.Instance?.FlashCard(this);
+        GameFeedback.Instance?.PlaySkillEffect(data.effectType, cardImage.position);
     }
 
     private void Flash(CardEffectVisual effect, Vector3 position)
     {
-        Flash();
+        GameFeedback.Instance?.FlashCard(this);
         GameFeedback.Instance?.Burst(effect, position);
+        GameFeedback.Instance?.PlaySkillEffect(data.effectType, position);
     }
 
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -33,10 +34,13 @@ public class GameFeedback : MonoBehaviour
     private RectTransform goldHud;
     private RectTransform ballValueHud;
     private bool showingResults;
+    private Material glowParticleMaterial;
+    private readonly Dictionary<CardData.EffectType, GameObject> skillEffectPrefabs = new();
 
     private void Awake()
     {
         Instance = this;
+        glowParticleMaterial = Resources.Load<Material>("SkillEffects/Effect_Glow");
         layer = CreateRect("Gameplay Feedback", transform, Center, Vector2.zero, Vector2.zero);
         foreach (HUDGeneralPackage hud in GetComponentsInChildren<HUDGeneralPackage>(true))
         {
@@ -169,20 +173,10 @@ public class GameFeedback : MonoBehaviour
 
     public void Burst(CardEffectVisual effect, Vector3 position)
     {
-        if (particleMaterial == null) return;
+        Material material = glowParticleMaterial != null ? glowParticleMaterial : particleMaterial;
+        if (material == null) return;
 
-        GameObject burst = new GameObject(effect + " Particles");
-        burst.SetActive(false);
-        burst.transform.position = position;
-        ParticleSystem particles = burst.AddComponent<ParticleSystem>();
-        ParticleSystem.MainModule main = particles.main;
-        main.playOnAwake = false;
-        main.loop = false;
-        main.duration = 0.5f;
-        main.startLifetime = new ParticleSystem.MinMaxCurve(0.23f, 0.49f);
-        main.startSpeed = new ParticleSystem.MinMaxCurve(0.9f, 2.5f);
-        main.startSize = new ParticleSystem.MinMaxCurve(0.06f, 0.16f);
-        main.startColor = effect switch
+        Color effectColor = effect switch
         {
             CardEffectVisual.Split => splitColor,
             CardEffectVisual.TemporarySpawn => spawnColor,
@@ -192,25 +186,130 @@ public class GameFeedback : MonoBehaviour
             CardEffectVisual.Gold => goldColor,
             _ => ballStockColor,
         };
+
+        GameObject burst = new GameObject(effect + " Firework");
+        burst.SetActive(false);
+        burst.transform.position = position;
+
+        // Small, dense sparks form the firework. The additive material makes every
+        // overlapping spark read as emissive even without a Bloom post-process pass.
+        ParticleSystem sparks = burst.AddComponent<ParticleSystem>();
+        ParticleSystem.MainModule main = sparks.main;
+        main.playOnAwake = false;
+        main.loop = false;
+        main.duration = 0.08f;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(0.38f, 0.72f);
+        main.startSpeed = new ParticleSystem.MinMaxCurve(2.1f, 5.8f);
+        main.startSize = new ParticleSystem.MinMaxCurve(0.025f, 0.06f);
+        main.startColor = effectColor;
+        main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
+        main.gravityModifier = 0.16f;
+        main.maxParticles = 80;
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
         main.stopAction = ParticleSystemStopAction.Destroy;
 
-        var emission = particles.emission;
+        ParticleSystem.EmissionModule emission = sparks.emission;
         emission.rateOverTime = 0f;
-        emission.SetBursts(new[] { new ParticleSystem.Burst(0f, 16) });
-        var shape = particles.shape;
+        emission.SetBursts(new[]
+        {
+            new ParticleSystem.Burst(0f, 44),
+            new ParticleSystem.Burst(0.035f, 16)
+        });
+
+        ParticleSystem.ShapeModule shape = sparks.shape;
         shape.shapeType = ParticleSystemShapeType.Circle;
-        shape.radius = 0.08f;
-        var fade = particles.colorOverLifetime;
+        shape.radius = 0.045f;
+        shape.arc = 360f;
+
+        ParticleSystem.SizeOverLifetimeModule size = sparks.sizeOverLifetime;
+        size.enabled = true;
+        size.size = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.EaseInOut(0f, 1f, 1f, 0.24f));
+
+        ParticleSystem.ColorOverLifetimeModule fade = sparks.colorOverLifetime;
+        fade.enabled = true;
+        Gradient sparkGradient = new Gradient();
+        sparkGradient.SetKeys(
+            new[]
+            {
+                new GradientColorKey(Color.white, 0f),
+                new GradientColorKey(effectColor, 0.2f),
+                new GradientColorKey(effectColor, 1f)
+            },
+            new[]
+            {
+                new GradientAlphaKey(1f, 0f),
+                new GradientAlphaKey(1f, 0.62f),
+                new GradientAlphaKey(0f, 1f)
+            });
+        fade.color = sparkGradient;
+
+        ParticleSystemRenderer sparkRenderer = burst.GetComponent<ParticleSystemRenderer>();
+        sparkRenderer.sharedMaterial = material;
+        sparkRenderer.renderMode = ParticleSystemRenderMode.Billboard;
+        sparkRenderer.sortingOrder = 22;
+
+        ParticleSystem halo = AddGlowHalo(burst.transform, effectColor, material);
+        burst.SetActive(true);
+        halo.Play();
+        sparks.Play();
+    }
+
+    private static ParticleSystem AddGlowHalo(Transform parent, Color color, Material material)
+    {
+        GameObject haloObject = new GameObject("Soft Glow Halo");
+        haloObject.transform.SetParent(parent, false);
+        ParticleSystem halo = haloObject.AddComponent<ParticleSystem>();
+
+        ParticleSystem.MainModule main = halo.main;
+        main.playOnAwake = false;
+        main.loop = false;
+        main.duration = 0.08f;
+        main.startLifetime = 0.2f;
+        main.startSpeed = 0f;
+        main.startSize = 0.42f;
+        main.startColor = WithAlpha(color, 0.34f);
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.stopAction = ParticleSystemStopAction.None;
+
+        ParticleSystem.EmissionModule emission = halo.emission;
+        emission.rateOverTime = 0f;
+        emission.SetBursts(new[] { new ParticleSystem.Burst(0f, 1) });
+
+        ParticleSystem.ColorOverLifetimeModule fade = halo.colorOverLifetime;
         fade.enabled = true;
         Gradient gradient = new Gradient();
-        gradient.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+        gradient.SetKeys(
+            new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(color, 1f) },
             new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) });
         fade.color = gradient;
-        var renderer = burst.GetComponent<ParticleSystemRenderer>();
-        renderer.sharedMaterial = particleMaterial;
-        renderer.sortingOrder = 20;
-        burst.SetActive(true);
-        particles.Play();
+
+        ParticleSystemRenderer renderer = haloObject.GetComponent<ParticleSystemRenderer>();
+        renderer.sharedMaterial = material;
+        renderer.sortingOrder = 21;
+        return halo;
+    }
+
+    public void PlaySkillEffect(CardData.EffectType effectType, Vector3 position)
+    {
+        if (effectType == CardData.EffectType.None) return;
+
+        if (!skillEffectPrefabs.TryGetValue(effectType, out GameObject prefab))
+        {
+            prefab = Resources.Load<GameObject>("SkillEffects/Effect_" + (int)effectType);
+            skillEffectPrefabs.Add(effectType, prefab);
+        }
+
+        if (prefab == null) return;
+
+        GameObject instance = Instantiate(prefab, position, Quaternion.identity);
+        instance.name = "Effect_" + (int)effectType + " (" + effectType + ")";
+        ParticleSystem[] systems = instance.GetComponentsInChildren<ParticleSystem>(true);
+        foreach (ParticleSystem system in systems)
+            system.Play(true);
+
+        // Cleanup only protects against abandoned instances. Hand-made effects
+        // can run for several seconds and still finish normally.
+        Destroy(instance, 8f);
     }
 
     public void ShowResults(int score, bool cleared, CardInventory inventory)
