@@ -14,7 +14,7 @@ public class ShopSkillCardPool : MonoBehaviour
     [SerializeField, Range(0f, 0.1f)] private float centerFlipDelay = 0.045f;
 
     [Header("Centered Card Layout")]
-    [SerializeField, Min(0f)] private float cardSpacing = 218f;
+    [SerializeField, Min(0f)] private float cardSpacing = 272f;
     [SerializeField] private float centerCardHeight = 18f;
 
     private bool refreshing;

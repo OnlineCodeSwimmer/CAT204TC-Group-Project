@@ -4,6 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 
 [InitializeOnLoad]
 public static class CodexChangeVerifier
@@ -113,6 +114,7 @@ public static class CodexChangeVerifier
             Vector2 right = ((RectTransform)cards[2].transform).anchoredPosition;
             Require(Mathf.Abs(left.x + right.x) < 0.5f, "Side cards are not centered around the middle card.");
             Require(Mathf.Abs(middle.x) < 0.5f, "Middle shop card is not horizontally centered.");
+        Require(middle.x - left.x >= 260f, "Shop card spacing was not widened enough.");
             Require(middle.y > left.y && Mathf.Approximately(left.y, right.y),
                 "Middle card is not slightly above the side cards.");
             Require(Quaternion.Angle(cards[1].transform.localRotation, Quaternion.identity) < 1f,
@@ -122,8 +124,10 @@ public static class CodexChangeVerifier
         GameFeedback.Instance.Burst(CardEffectVisual.Gold, Vector3.zero);
         GameObject firework = GameObject.Find("Gold Firework");
         Require(firework != null, "Firework burst was not created.");
-        Require(firework != null && firework.GetComponentsInChildren<ParticleSystem>().Length == 2,
-            "Firework burst does not contain both sparks and glow halo.");
+        Require(firework != null && firework.GetComponentsInChildren<ParticleSystem>().Length >= 3,
+            "Firework burst does not contain sparks, hard star flash and falling shards.");
+        Require(GameObject.Find("Gold Coin Burst") != null,
+            "Gold effect did not create the coin-shaped falling burst.");
 
         GameFeedback.Instance.PlaySkillEffect(CardData.EffectType.Spawn16AddOneGold, Vector3.zero);
         GameObject skillEffect = GameObject.Find("Effect_14 (Spawn16AddOneGold)");
@@ -132,12 +136,66 @@ public static class CodexChangeVerifier
         {
             ParticleSystem particles = skillEffect.GetComponent<ParticleSystem>();
             Require(particles != null && particles.isPlaying, "Mapped skill effect did not start playing.");
+            foreach (ParticleSystem system in skillEffect.GetComponentsInChildren<ParticleSystem>(true))
+            {
+                Color color = system.main.startColor.colorMax;
+                Require(IsGoldPalette(color),
+                    system.name + " still uses a color outside the white/gold/gold-red palette.");
+                ParticleSystemRenderer renderer = system.GetComponent<ParticleSystemRenderer>();
+                Require(renderer != null && renderer.renderMode == ParticleSystemRenderMode.Billboard,
+                    system.name + " was not normalized to the 2D billboard particle style.");
+            }
+        }
+
+        GameFeedback.Instance.Burst(CardEffectVisual.TemporarySpawn, Vector3.zero);
+        GameFeedback.Instance.Burst(CardEffectVisual.Split, Vector3.zero);
+        Require(GameObject.Find("Arcane +1") != null, "Extra-ball effect did not show its +1 glyph.");
+        Require(GameObject.Find("Arcane \u221E") != null, "Split effect did not show its infinity glyph.");
+
+        GameFeedback.Instance.PlaySkillEffect(CardData.EffectType.SlotMultiplier15,
+            Vector3.left * 5f);
+        GameObject triangleBurst = GameObject.Find("Triangle Line Burst");
+        Require(triangleBurst != null, "Multiplier effects did not create the triangle-line burst.");
+        Require(triangleBurst != null && triangleBurst.GetComponentsInChildren<ParticleSystem>().Length >= 2,
+            "Triangle-line burst is missing its main lines or small sparks.");
+
+        GameFeedback.Instance.PlaySkillEffect(CardData.EffectType.HalfSidesCenter075,
+            Vector3.right * 5f);
+        GameObject flowerBloom = GameObject.Find("Rotating Flower Bloom");
+        Require(flowerBloom != null, "State effects did not create the rotating flower bloom.");
+        Require(flowerBloom != null && flowerBloom.GetComponentsInChildren<ParticleSystem>().Length >= 2,
+            "Flower bloom is missing its rotating ring or small petals.");
+
+        GameFeedback.Instance.ShowResults(12345, true, CardInventory.instance);
+        RectTransform results = GameObject.Find("Tarot Reading")?.GetComponent<RectTransform>();
+        Require(results != null, "The redesigned tarot results panel was not created.");
+        if (results != null)
+        {
+            Require(results.sizeDelta.x >= 1000f && results.sizeDelta.y >= 700f,
+                "The tarot results panel is too small for the red/cream/gold layout.");
+            Require(results.GetComponentInChildren<Button>(true) != null,
+                "The tarot results panel has no interactive button.");
+        }
+
+        GameManager.instance.score = GameManager.instance.currentTargetScore;
+        GameFeedback.Instance.SendMessage("Update");
+        GameObject edgeFlow = GameObject.Find("Target Reached - Golden Edge Flow");
+        Require(edgeFlow != null, "Reaching the score target did not start the golden edge flow.");
+        if (edgeFlow != null)
+        {
+            foreach (Image image in edgeFlow.GetComponentsInChildren<Image>(true))
+                Require(!image.raycastTarget, "Golden edge flow contains a UI raycast blocker.");
         }
     }
 
     private static void Require(bool condition, string failure)
     {
         if (!condition) Failures.Add(failure);
+    }
+
+    private static bool IsGoldPalette(Color color)
+    {
+        return color.r >= 0.75f && color.r >= color.g * 0.9f && color.g >= color.b;
     }
 
     private static void CaptureLog(string message, string stackTrace, LogType type)

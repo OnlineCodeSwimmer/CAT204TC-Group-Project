@@ -1,3 +1,4 @@
+using System;
 using System.Linq.Expressions;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -35,16 +36,20 @@ public class UIManager : MonoBehaviour
     //Open and Close Shop
     public void OpenShop()
     {
+        if (shop.activeSelf) return;
+
         //Player input switch
         InputSystemManager.instance.inputSystem.Player.Disable(); 
         InputSystemManager.instance.inputSystem.UI.Enable(); 
 
-        shop.SetActive(true);
-        matrix.SetActive(false);
+        ShowShopWithTransition(true, () =>
+        {
+            shop.SetActive(true);
+            matrix.SetActive(false);
 
-        //Refresh PassiveCard Pool
-        shopSkillCardPool.RefreshCards();
-
+            //Refresh PassiveCard Pool
+            shopSkillCardPool.RefreshCards();
+        });
     }
 
     public void CloseShop()
@@ -59,13 +64,25 @@ public class UIManager : MonoBehaviour
             card.sellPanel.SetActive(false);
         }
 
-        shop.SetActive(false);
-        matrix.SetActive(true);
+        ShowShopWithTransition(false, () =>
+        {
+            shop.SetActive(false);
+            matrix.SetActive(true);
+        });
+    }
+
+    private void ShowShopWithTransition(bool opening, Action swap)
+    {
+        if (GameFeedback.Instance != null)
+            GameFeedback.Instance.PlayShopTransition(swap, opening);
+        else
+            swap();
     }
 
     public void ShowResults(int score, bool cleared)
     {
         InputSystemManager.instance.inputSystem.Player.Disable();
+        InputSystemManager.instance.inputSystem.UI.Enable();
         shop.SetActive(false);
         skillCardTest.SetActive(false);
         GameFeedback.Instance.ShowResults(score, cleared, CardInventory.instance);
