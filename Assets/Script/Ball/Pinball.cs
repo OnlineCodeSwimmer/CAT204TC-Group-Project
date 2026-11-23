@@ -7,9 +7,13 @@ public class Pinball : MonoBehaviour
     private Rigidbody2D rb;
     private CircleCollider2D pinballCollider;
 
-    //Pinball Bounce Left Chance
+    //Pinball Bounce Left Chance (used By Active Card)
+    public static float activeLeftBounceOffset;
+
+    //The probability that the pinball bounces left
     public static float leftBounceChance = 0.5f;
     public bool IsTemporary { get; set; }
+
 
 
     private void Awake()
@@ -24,7 +28,9 @@ public class Pinball : MonoBehaviour
         if (other.CompareTag("Peg") && rb.linearVelocity.y < 0f)
         {
 
-            BounceFromPeg(other, Random.value < leftBounceChance ? -1f : 1f);
+            float chance = Mathf.Clamp01(leftBounceChance + activeLeftBounceOffset);
+            BounceFromPeg(other, Random.value < chance ? -1f : 1f);
+            
             //Notification ball hits the stop pin
             GameManager.instance.NotifyPinballHitPeg(this, other);
 

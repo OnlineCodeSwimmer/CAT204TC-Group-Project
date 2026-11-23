@@ -4,20 +4,23 @@ using UnityEngine.UI;
 public class CardTesting : MonoBehaviour
 {
     [Header("PassiveCard Pool Setting")]
-    public CardData[] cardDatas;
-    public GameObject cardPrefab;
+    public PassiveCardData[] passiveCardDatas;
+    public ActiveCardData[] activeCardDatas;
+    public GameObject PassivecardPrefab;
+    public GameObject ActivecardPrefab;
     public Transform testCardPool;
 
     private void Start()
     {
-        GenerateCards();
+        GeneratePassiveCards();
+        GenerateActiveCards();
     }
 
-    private void GenerateCards()
+    private void GeneratePassiveCards()
     {
-        foreach (CardData data in cardDatas)
+        foreach (PassiveCardData data in passiveCardDatas)
         {
-            PassiveCard card = PoolManager.instance.Get(cardPrefab).GetComponent<PassiveCard>();
+            PassiveCard card = PoolManager.instance.Get(PassivecardPrefab).GetComponent<PassiveCard>();
             card.transform.SetParent(testCardPool, false);
             card.transform.localScale = Vector3.one;
             card.isTestCard = true;
@@ -25,7 +28,21 @@ public class CardTesting : MonoBehaviour
         }
     }
 
-    public void RestoreCard(CardData cardData)
+    private void GenerateActiveCards()
+    {
+        ActiveCardInventory inventory = ActiveCardInventory.instance;
+
+        foreach (ActiveCardData cardData in activeCardDatas)
+        {
+            ActiveCard card = PoolManager.instance.Get(ActivecardPrefab).GetComponent<ActiveCard>();
+            card.transform.SetParent(testCardPool, false);
+            card.SetData(cardData);
+            card.isTestCard = true;
+            card.SetData(cardData);
+        }
+    }
+
+        public void RestoreCard(PassiveCardData cardData)
     {
         foreach (PassiveCard card in testCardPool.GetComponentsInChildren<PassiveCard>(true))
         {
@@ -37,13 +54,6 @@ public class CardTesting : MonoBehaviour
         }
     }
 
-    //PassiveCard Test
-    private void Test2()
-    {
-        Debug.Log("Update");
-        Debug.Log("123");
-        Debug.Log("XD");
-        Debug.Log("321");
-    }
+
 
 }

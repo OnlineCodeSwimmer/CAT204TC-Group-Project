@@ -72,7 +72,32 @@ public class GameFeedback : MonoBehaviour
     private RectTransform activeEdgeFlow;
     private float lastBurstTime = -10f;
     private Vector3 lastBurstPosition;
-    private readonly Dictionary<CardData.EffectType, GameObject> skillEffectPrefabs = new();
+    private const int MaxConcurrentEffectsPerType = 3;
+    private const float SkillEffectLifetime = 1.25f;
+    private static readonly PassiveCardData.EffectType[] PegHitEffectPool =
+    {
+        PassiveCardData.EffectType.AddOnePinball,
+        PassiveCardData.EffectType.AddPinballScore,
+        PassiveCardData.EffectType.HalfSidesCenter075,
+        PassiveCardData.EffectType.Hit40AddOnePinball,
+        PassiveCardData.EffectType.SlotMultiplier15
+    };
+    private static readonly PassiveCardData.EffectType[] SlotEntryEffectPool =
+    {
+        PassiveCardData.EffectType.FirstPinballTenTimes,
+        PassiveCardData.EffectType.PegHitScore
+    };
+    private readonly Dictionary<PassiveCardData.EffectType, GameObject> skillEffectPrefabs = new();
+    private readonly Dictionary<PassiveCardData.EffectType, Stack<GameObject>> skillEffectPool = new();
+    private readonly Dictionary<GameObject, ParticleSystem[]> skillEffectSystems = new();
+    private readonly List<PlayingSkillEffect> activeSkillEffects = new(16);
+
+    private struct PlayingSkillEffect
+    {
+        public PassiveCardData.EffectType effectType;
+        public GameObject instance;
+        public float expiresAt;
+    }
 
     private void Awake()
     {
@@ -102,13 +127,37 @@ public class GameFeedback : MonoBehaviour
     private void Start()
     {
         if (GameManager.instance != null)
+        {
             GameManager.instance.RoundEnded += StopTargetCelebration;
+            GameManager.instance.PinballHitPeg += OnPinballHitPeg;
+            GameManager.instance.PinballEnteredSlot += OnPinballEnteredSlot;
+        }
     }
 
     private void OnDestroy()
     {
         if (GameManager.instance != null)
+        {
             GameManager.instance.RoundEnded -= StopTargetCelebration;
+            GameManager.instance.PinballHitPeg -= OnPinballHitPeg;
+            GameManager.instance.PinballEnteredSlot -= OnPinballEnteredSlot;
+        }
+
+        foreach (PlayingSkillEffect active in activeSkillEffects)
+        {
+            if (active.instance != null)
+                Destroy(active.instance);
+        }
+        activeSkillEffects.Clear();
+        foreach (Stack<GameObject> pool in skillEffectPool.Values)
+        {
+            foreach (GameObject instance in pool)
+            {
+                if (instance != null)
+                    Destroy(instance);
+            }
+        }
+
         Destroy(hardSparkMaterial);
         Destroy(hardStarMaterial);
         Destroy(coinParticleMaterial);
@@ -131,6 +180,8 @@ public class GameFeedback : MonoBehaviour
 
     private void Update()
     {
+        RecycleExpiredSkillEffects();
+
         GameManager game = GameManager.instance;
         if (game == null || game.currentTargetScore <= 0f) return;
 
@@ -251,7 +302,7 @@ public class GameFeedback : MonoBehaviour
         float elapsed = 0f;
         while (card.isActiveAndEnabled && elapsed < duration)
         {
-            flash.color = WithAlpha(EffectWhite, Mathf.Sin(elapsed / duration * Mathf.PI) * 0.34f);
+            flash.color = WithAlpha(EffectWhite, Mathf.Sin(elapsed / duration * Mathf.PI) * 0.58f);
             yield return null;
             elapsed += Time.unscaledDeltaTime;
         }
@@ -292,7 +343,7 @@ public class GameFeedback : MonoBehaviour
         main.startSpeed = new ParticleSystem.MinMaxCurve(1.7f, 4.9f);
         main.startSize = new ParticleSystem.MinMaxCurve(0.03f, 0.078f);
         main.startColor = new ParticleSystem.MinMaxGradient(
-            WithAlpha(EffectWhite, 0.72f), WithAlpha(effectColor, 0.54f));
+            WithAlpha(EffectWhite, 0.96f), WithAlpha(effectColor, 0.78f));
         main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
         main.gravityModifier = 0.2f;
         main.maxParticles = 190;
@@ -325,7 +376,7 @@ public class GameFeedback : MonoBehaviour
 
         ParticleSystem.ColorOverLifetimeModule fade = sparks.colorOverLifetime;
         fade.enabled = true;
-        fade.color = CreateGoldGradient(effectColor, 0.9f);
+        fade.color = CreateGoldGradient(effectColor, 1f);
 
         ParticleSystemRenderer sparkRenderer = burst.GetComponent<ParticleSystemRenderer>();
         sparkRenderer.sharedMaterial = material;
@@ -358,7 +409,7 @@ public class GameFeedback : MonoBehaviour
         main.startLifetime = new ParticleSystem.MinMaxCurve(0.2f, 0.32f);
         main.startSpeed = 0f;
         main.startSize = new ParticleSystem.MinMaxCurve(0.2f, 0.31f);
-        main.startColor = WithAlpha(EffectWhite, 0.52f);
+        main.startColor = WithAlpha(EffectWhite, 0.82f);
         main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 0.5f);
         main.simulationSpace = ParticleSystemSimulationSpace.World;
         main.stopAction = ParticleSystemStopAction.None;
@@ -369,7 +420,7 @@ public class GameFeedback : MonoBehaviour
 
         ParticleSystem.ColorOverLifetimeModule fade = halo.colorOverLifetime;
         fade.enabled = true;
-        fade.color = CreateGoldGradient(color, 0.42f);
+        fade.color = CreateGoldGradient(color, 0.72f);
 
         ParticleSystem.SizeOverLifetimeModule size = halo.sizeOverLifetime;
         size.enabled = true;
@@ -404,7 +455,7 @@ public class GameFeedback : MonoBehaviour
         main.startSpeed = new ParticleSystem.MinMaxCurve(1.1f, 3.1f);
         main.startSize = new ParticleSystem.MinMaxCurve(0.022f, 0.055f);
         main.startColor = new ParticleSystem.MinMaxGradient(
-            WithAlpha(EffectWhite, 0.58f), WithAlpha(color, 0.44f));
+            WithAlpha(EffectWhite, 0.82f), WithAlpha(color, 0.66f));
         main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
         main.gravityModifier = 0.72f;
         main.maxParticles = 48;
@@ -422,7 +473,7 @@ public class GameFeedback : MonoBehaviour
 
         ParticleSystem.ColorOverLifetimeModule fade = shards.colorOverLifetime;
         fade.enabled = true;
-        fade.color = CreateGoldGradient(color, 0.58f);
+        fade.color = CreateGoldGradient(color, 0.82f);
 
         ParticleSystem.RotationOverLifetimeModule rotation = shards.rotationOverLifetime;
         rotation.enabled = true;
@@ -458,9 +509,10 @@ public class GameFeedback : MonoBehaviour
         }
     }
 
-    public void PlaySkillEffect(CardData.EffectType effectType, Vector3 position)
+    public void PlaySkillEffect(PassiveCardData.EffectType effectType, Vector3 position,
+        bool playSignature = true)
     {
-        if (effectType == CardData.EffectType.None) return;
+        if (effectType == PassiveCardData.EffectType.None) return;
 
         if (!skillEffectPrefabs.TryGetValue(effectType, out GameObject prefab))
         {
@@ -470,21 +522,41 @@ public class GameFeedback : MonoBehaviour
 
         if (prefab == null) return;
 
-        GameObject instance = Instantiate(prefab, position, Quaternion.identity);
-        instance.name = "Effect_" + (int)effectType + " (" + effectType + ")";
-        ParticleSystem[] systems = instance.GetComponentsInChildren<ParticleSystem>(true);
+        GameObject instance = AcquireSkillEffect(effectType, prefab);
+        instance.transform.SetPositionAndRotation(position, Quaternion.identity);
+        instance.SetActive(true);
+        bool isNewInstance = !skillEffectSystems.TryGetValue(instance, out ParticleSystem[] systems);
+        if (isNewInstance)
+        {
+            systems = instance.GetComponentsInChildren<ParticleSystem>(true);
+            skillEffectSystems.Add(instance, systems);
+        }
+
         foreach (ParticleSystem system in systems)
         {
-            NormalizeParticlePalette(system, effectType);
+            if (isNewInstance)
+                NormalizeParticlePalette(system, effectType);
+            ParticleSystem.MainModule main = system.main;
+            main.playOnAwake = false;
+            main.loop = false;
+            main.stopAction = ParticleSystemStopAction.None;
+            system.Clear(true);
             system.Play(true);
         }
 
-        if (Time.unscaledTime - lastBurstTime > 0.06f ||
-            Vector3.SqrMagnitude(lastBurstPosition - position) > 0.01f)
+        activeSkillEffects.Add(new PlayingSkillEffect
+        {
+            effectType = effectType,
+            instance = instance,
+            expiresAt = Time.unscaledTime + SkillEffectLifetime
+        });
+
+        if (playSignature && (Time.unscaledTime - lastBurstTime > 0.06f ||
+            Vector3.SqrMagnitude(lastBurstPosition - position) > 0.01f))
         {
             if (IsGoldEffect(effectType))
                 PlayCoinBurst(position + Vector3.up * 0.15f, 16, 0.88f);
-            else if (effectType == CardData.EffectType.PegHitSplitPinball)
+            else if (effectType == PassiveCardData.EffectType.PegHitSplitPinball)
                 ShowWorldGlyph("\u221E", position + Vector3.up * 0.44f, EffectIvory, false);
             else if (IsExtraBallEffect(effectType))
                 ShowWorldGlyph("+1", position + Vector3.up * 0.25f, EffectWhite, true);
@@ -493,10 +565,99 @@ public class GameFeedback : MonoBehaviour
             else if (IsFlowerEffect(effectType))
                 PlayFlowerBloom(position);
         }
+    }
 
-        // Cleanup only protects against abandoned instances. Hand-made effects
-        // can run for several seconds and still finish normally.
-        Destroy(instance, 8f);
+    private void OnPinballHitPeg(Pinball pinball, Collider2D peg)
+    {
+        if (pinball == null || peg == null) return;
+
+        PassiveCardData.EffectType effect =
+            PegHitEffectPool[Random.Range(0, PegHitEffectPool.Length)];
+        Vector2 hitPoint = peg.ClosestPoint(pinball.transform.position);
+        PlaySkillEffect(effect, hitPoint, false);
+    }
+
+    private void OnPinballEnteredSlot(ScoreSlot slot)
+    {
+        if (slot == null) return;
+
+        Vector3 position = slot.transform.position;
+        PassiveCardData.EffectType effect =
+            SlotEntryEffectPool[Random.Range(0, SlotEntryEffectPool.Length)];
+        PlaySkillEffect(effect, position, false);
+        PlaySkillEffect(PassiveCardData.EffectType.RandomDoubleSlot, position, false);
+    }
+
+    private GameObject AcquireSkillEffect(PassiveCardData.EffectType effectType,
+        GameObject prefab)
+    {
+        if (!skillEffectPool.TryGetValue(effectType, out Stack<GameObject> pool))
+        {
+            pool = new Stack<GameObject>(MaxConcurrentEffectsPerType);
+            skillEffectPool.Add(effectType, pool);
+        }
+
+        if (pool.Count == 0)
+        {
+            int activeOfType = 0;
+            int oldestIndex = -1;
+            float oldestTime = float.PositiveInfinity;
+            for (int i = 0; i < activeSkillEffects.Count; i++)
+            {
+                PlayingSkillEffect active = activeSkillEffects[i];
+                if (active.effectType != effectType) continue;
+                activeOfType++;
+                if (active.expiresAt < oldestTime)
+                {
+                    oldestTime = active.expiresAt;
+                    oldestIndex = i;
+                }
+            }
+
+            if (activeOfType >= MaxConcurrentEffectsPerType && oldestIndex >= 0)
+            {
+                GameObject oldest = activeSkillEffects[oldestIndex].instance;
+                activeSkillEffects.RemoveAt(oldestIndex);
+                ReturnSkillEffect(effectType, oldest);
+            }
+        }
+
+        GameObject instance = pool.Count > 0
+            ? pool.Pop()
+            : Instantiate(prefab);
+        instance.name = "Effect_" + (int)effectType + " (" + effectType + ")";
+        return instance;
+    }
+
+    private void RecycleExpiredSkillEffects()
+    {
+        for (int i = activeSkillEffects.Count - 1; i >= 0; i--)
+        {
+            PlayingSkillEffect active = activeSkillEffects[i];
+            if (Time.unscaledTime < active.expiresAt) continue;
+
+            activeSkillEffects.RemoveAt(i);
+            ReturnSkillEffect(active.effectType, active.instance);
+        }
+    }
+
+    private void ReturnSkillEffect(PassiveCardData.EffectType effectType, GameObject instance)
+    {
+        if (instance == null) return;
+
+        if (skillEffectSystems.TryGetValue(instance, out ParticleSystem[] systems))
+        {
+            foreach (ParticleSystem system in systems)
+                system.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+        instance.SetActive(false);
+
+        if (!skillEffectPool.TryGetValue(effectType, out Stack<GameObject> pool))
+        {
+            pool = new Stack<GameObject>(MaxConcurrentEffectsPerType);
+            skillEffectPool.Add(effectType, pool);
+        }
+        pool.Push(instance);
     }
 
     private void PlayTriangleLineBurst(Vector3 position)
@@ -513,7 +674,7 @@ public class GameFeedback : MonoBehaviour
         main.startSpeed = new ParticleSystem.MinMaxCurve(0.75f, 1.9f);
         main.startSize = new ParticleSystem.MinMaxCurve(0.055f, 0.105f);
         main.startColor = new ParticleSystem.MinMaxGradient(
-            WithAlpha(EffectWhite, 0.62f), WithAlpha(EffectAmber, 0.52f));
+            WithAlpha(EffectWhite, 0.9f), WithAlpha(EffectAmber, 0.8f));
         main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
         main.gravityModifier = 0.05f;
         main.maxParticles = 20;
@@ -531,7 +692,7 @@ public class GameFeedback : MonoBehaviour
 
         ParticleSystem.ColorOverLifetimeModule fade = triangles.colorOverLifetime;
         fade.enabled = true;
-        fade.color = CreateGoldGradient(EffectAmber, 0.56f);
+        fade.color = CreateGoldGradient(EffectAmber, 0.86f);
 
         ParticleSystem.RotationOverLifetimeModule rotation = triangles.rotationOverLifetime;
         rotation.enabled = true;
@@ -572,7 +733,7 @@ public class GameFeedback : MonoBehaviour
         flowerMain.startSpeed = 0f;
         flowerMain.startSize = new ParticleSystem.MinMaxCurve(0.34f, 0.42f);
         flowerMain.startColor = new ParticleSystem.MinMaxGradient(
-            WithAlpha(EffectWhite, 0.64f), WithAlpha(EffectRoseGold, 0.5f));
+            WithAlpha(EffectWhite, 0.9f), WithAlpha(EffectRoseGold, 0.78f));
         flowerMain.simulationSpace = ParticleSystemSimulationSpace.World;
         flowerMain.stopAction = ParticleSystemStopAction.None;
 
@@ -586,7 +747,7 @@ public class GameFeedback : MonoBehaviour
 
         ParticleSystem.ColorOverLifetimeModule flowerFade = flower.colorOverLifetime;
         flowerFade.enabled = true;
-        flowerFade.color = CreateGoldGradient(EffectRoseGold, 0.55f);
+        flowerFade.color = CreateGoldGradient(EffectRoseGold, 0.85f);
 
         ParticleSystem.SizeOverLifetimeModule flowerSize = flower.sizeOverLifetime;
         flowerSize.enabled = true;
@@ -641,7 +802,7 @@ public class GameFeedback : MonoBehaviour
         main.startSpeed = new ParticleSystem.MinMaxCurve(minSpeed, maxSpeed);
         main.startSize = new ParticleSystem.MinMaxCurve(minSize, maxSize);
         main.startColor = new ParticleSystem.MinMaxGradient(
-            WithAlpha(EffectWhite, 0.54f), WithAlpha(accent, 0.44f));
+            WithAlpha(EffectWhite, 0.84f), WithAlpha(accent, 0.7f));
         main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
         main.simulationSpace = ParticleSystemSimulationSpace.World;
         main.stopAction = ParticleSystemStopAction.None;
@@ -657,7 +818,7 @@ public class GameFeedback : MonoBehaviour
 
         ParticleSystem.ColorOverLifetimeModule fade = sparks.colorOverLifetime;
         fade.enabled = true;
-        fade.color = CreateGoldGradient(accent, 0.48f);
+        fade.color = CreateGoldGradient(accent, 0.78f);
 
         ParticleSystem.RotationOverLifetimeModule rotation = sparks.rotationOverLifetime;
         rotation.enabled = true;
@@ -672,7 +833,7 @@ public class GameFeedback : MonoBehaviour
         return sparks;
     }
 
-    public void ShowResults(int score, bool cleared, CardInventory inventory)
+    public void ShowResults(int score, bool cleared, PassiveCardInventory inventory)
     {
         if (showingResults) return;
         showingResults = true;
@@ -1043,7 +1204,7 @@ public class GameFeedback : MonoBehaviour
         main.startSpeed = new ParticleSystem.MinMaxCurve(1.15f * scale, 3.35f * scale);
         main.startSize = new ParticleSystem.MinMaxCurve(0.04f * scale, 0.095f * scale);
         main.startColor = new ParticleSystem.MinMaxGradient(
-            WithAlpha(EffectWhite, 0.7f), WithAlpha(EffectGold, 0.55f));
+            WithAlpha(EffectWhite, 0.94f), WithAlpha(EffectGold, 0.8f));
         main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
         main.gravityModifier = 0.84f;
         main.maxParticles = Mathf.Max(8, count + 4);
@@ -1061,7 +1222,7 @@ public class GameFeedback : MonoBehaviour
 
         ParticleSystem.ColorOverLifetimeModule fade = coins.colorOverLifetime;
         fade.enabled = true;
-        fade.color = CreateGoldGradient(EffectGold, 0.62f);
+        fade.color = CreateGoldGradient(EffectGold, 0.9f);
 
         ParticleSystem.RotationOverLifetimeModule rotation = coins.rotationOverLifetime;
         rotation.enabled = true;
@@ -1133,7 +1294,7 @@ public class GameFeedback : MonoBehaviour
         rules[3].rectTransform.anchorMin = new Vector2(1f, 0.06f);
         rules[3].rectTransform.anchorMax = new Vector2(1f, 0.94f);
 
-        RectTransform[] motes = new RectTransform[12];
+        RectTransform[] motes = new RectTransform[8];
         for (int i = 0; i < motes.Length; i++)
         {
             motes[i] = CreateRect("Gold Mote", edge, Center, Vector2.zero,
@@ -1144,7 +1305,7 @@ public class GameFeedback : MonoBehaviour
             AddImage(motes[i], headColor, hardStarSprite);
         }
 
-        const int inwardCount = 192;
+        const int inwardCount = 96;
         RectTransform[] inwardParticles = new RectTransform[inwardCount];
         Image[] inwardImages = new Image[inwardCount];
         float[] progress = new float[inwardCount];
@@ -1227,7 +1388,8 @@ public class GameFeedback : MonoBehaviour
                 inwardParticles[i].localScale =
                     Vector3.one * (baseSize[i] / 8f) * Mathf.Lerp(1f, 0.64f, t);
 
-                float alpha = Mathf.Clamp01(t / 0.055f) * Mathf.Pow(1f - t, 1.35f);
+                float fade = 1f - t;
+                float alpha = Mathf.Clamp01(t / 0.055f) * fade * fade;
                 alpha *= brightness[i] * (0.9f + shimmer * 0.1f);
                 inwardImages[i].color = WithAlpha(colors[i], alpha);
             }
@@ -1255,7 +1417,7 @@ public class GameFeedback : MonoBehaviour
         lifetime[index] = Random.Range(0.9f, 2.1f);
         baseSize[index] = Random.Range(3.2f, 13.5f);
         sway[index] = Random.Range(-54f, 54f);
-        brightness[index] = Random.Range(0.3f, 0.64f);
+        brightness[index] = Random.Range(0.48f, 0.82f);
         starts[index] = EdgePoint(rect, Random.value, Random.Range(0f, 5f));
         colors[index] = Random.value < 0.72f ? EffectWhite : EffectGold;
     }
@@ -1547,7 +1709,7 @@ public class GameFeedback : MonoBehaviour
     private static Gradient CreateGoldGradient(Color accent, float opacity)
     {
         accent = RestrictToEffectPalette(accent);
-        opacity *= 0.72f;
+        opacity *= 0.9f;
         Gradient gradient = new Gradient();
         gradient.SetKeys(
             new[]
@@ -1593,20 +1755,33 @@ public class GameFeedback : MonoBehaviour
         return r * r + g * g + b * b;
     }
 
-    private void NormalizeParticlePalette(ParticleSystem system, CardData.EffectType effectType)
+    private void NormalizeParticlePalette(ParticleSystem system,
+        PassiveCardData.EffectType effectType)
     {
-        Color accent = IsGoldEffect(effectType) ? EffectGold :
-            effectType == CardData.EffectType.PegHitSplitPinball ? EffectGoldRed :
-            IsTriangleEffect(effectType) ? EffectAmber :
-            IsFlowerEffect(effectType) ? EffectRoseGold : EffectIvory;
+        Color accent = effectType switch
+        {
+            PassiveCardData.EffectType.AddOnePinball => EffectIvory,
+            PassiveCardData.EffectType.AddPinballScore => EffectAmber,
+            PassiveCardData.EffectType.HalfSidesCenter075 => EffectRoseGold,
+            PassiveCardData.EffectType.Hit40AddOnePinball => EffectGoldRed,
+            PassiveCardData.EffectType.SlotMultiplier15 => EffectGold,
+            PassiveCardData.EffectType.FirstPinballTenTimes => EffectWhite,
+            PassiveCardData.EffectType.PegHitScore => EffectGoldRed,
+            PassiveCardData.EffectType.RandomDoubleSlot => EffectGold,
+            _ when IsGoldEffect(effectType) => EffectGold,
+            PassiveCardData.EffectType.PegHitSplitPinball => EffectGoldRed,
+            _ when IsTriangleEffect(effectType) => EffectAmber,
+            _ when IsFlowerEffect(effectType) => EffectRoseGold,
+            _ => EffectIvory
+        };
 
         ParticleSystem.MainModule main = system.main;
         main.startColor = new ParticleSystem.MinMaxGradient(
-            WithAlpha(EffectWhite, 0.6f), WithAlpha(accent, 0.42f));
-        main.startSizeMultiplier *= 0.68f;
+            WithAlpha(EffectWhite, 0.98f), WithAlpha(accent, 0.86f));
+        main.startSizeMultiplier *= 0.94f;
 
         ParticleSystem.ColorOverLifetimeModule colorLifetime = system.colorOverLifetime;
-        if (colorLifetime.enabled) colorLifetime.color = CreateGoldGradient(accent, 0.74f);
+        if (colorLifetime.enabled) colorLifetime.color = CreateGoldGradient(accent, 1f);
 
         ParticleSystemRenderer[] renderers = system.GetComponentsInChildren<ParticleSystemRenderer>(true);
         foreach (ParticleSystemRenderer renderer in renderers)
@@ -1618,39 +1793,39 @@ public class GameFeedback : MonoBehaviour
         }
     }
 
-    private static bool IsGoldEffect(CardData.EffectType effectType)
+    private static bool IsGoldEffect(PassiveCardData.EffectType effectType)
     {
-        return effectType == CardData.EffectType.DoubleGoldTargetUp ||
-               effectType == CardData.EffectType.RoundEndGoldChance ||
-               effectType == CardData.EffectType.Spawn16AddOneGold;
+        return effectType == PassiveCardData.EffectType.DoubleGoldTargetUp ||
+               effectType == PassiveCardData.EffectType.RoundEndGoldChance ||
+               effectType == PassiveCardData.EffectType.Spawn16AddOneGold;
     }
 
-    private static bool IsExtraBallEffect(CardData.EffectType effectType)
+    private static bool IsExtraBallEffect(PassiveCardData.EffectType effectType)
     {
-        return effectType == CardData.EffectType.AddOnePinball ||
-               effectType == CardData.EffectType.Hit40AddOnePinball ||
-               effectType == CardData.EffectType.RethrowPinball ||
-               effectType == CardData.EffectType.PegHitExtraPinball ||
-               effectType == CardData.EffectType.FirstSlotAddOnePinball;
+        return effectType == PassiveCardData.EffectType.AddOnePinball ||
+               effectType == PassiveCardData.EffectType.Hit40AddOnePinball ||
+               effectType == PassiveCardData.EffectType.RethrowPinball ||
+               effectType == PassiveCardData.EffectType.PegHitExtraPinball ||
+               effectType == PassiveCardData.EffectType.FirstSlotAddOnePinball;
     }
 
-    private static bool IsTriangleEffect(CardData.EffectType effectType)
+    private static bool IsTriangleEffect(PassiveCardData.EffectType effectType)
     {
-        return effectType == CardData.EffectType.AddPinballScore ||
-               effectType == CardData.EffectType.SlotMultiplier15 ||
-               effectType == CardData.EffectType.FirstPinballTenTimes ||
-               effectType == CardData.EffectType.PegHitScore ||
-               effectType == CardData.EffectType.RandomDoubleSlot ||
-               effectType == CardData.EffectType.AllScoreMultiplier15;
+        return effectType == PassiveCardData.EffectType.AddPinballScore ||
+               effectType == PassiveCardData.EffectType.SlotMultiplier15 ||
+               effectType == PassiveCardData.EffectType.FirstPinballTenTimes ||
+               effectType == PassiveCardData.EffectType.PegHitScore ||
+               effectType == PassiveCardData.EffectType.RandomDoubleSlot ||
+               effectType == PassiveCardData.EffectType.AllScoreMultiplier15;
     }
 
-    private static bool IsFlowerEffect(CardData.EffectType effectType)
+    private static bool IsFlowerEffect(PassiveCardData.EffectType effectType)
     {
-        return effectType == CardData.EffectType.HalfSidesCenter075 ||
-               effectType == CardData.EffectType.ThirdSlotGrowth ||
-               effectType == CardData.EffectType.RandomLeftBounceChance ||
-               effectType == CardData.EffectType.UnusedThrowBonus ||
-               effectType == CardData.EffectType.DuplicateShopSeventhSlot;
+        return effectType == PassiveCardData.EffectType.HalfSidesCenter075 ||
+               effectType == PassiveCardData.EffectType.ThirdSlotGrowth ||
+               effectType == PassiveCardData.EffectType.RandomLeftBounceChance ||
+               effectType == PassiveCardData.EffectType.UnusedThrowBonus ||
+               effectType == PassiveCardData.EffectType.DuplicateShopSeventhSlot;
     }
 
     private static Color WithAlpha(Color color, float alpha)

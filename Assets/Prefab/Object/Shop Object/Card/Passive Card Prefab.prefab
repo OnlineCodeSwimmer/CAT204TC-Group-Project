@@ -168,12 +168,12 @@ RectTransform:
   - {fileID: 2444979452100387744}
   - {fileID: 2857645160518963488}
   - {fileID: 7731240804292820169}
-  m_Father: {fileID: 3779544124397986876}
+  m_Father: {fileID: 8884127271352995161}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00076103, y: 0.00087738}
-  m_SizeDelta: {x: 180.46, y: 266.95}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2176717614428502364
 GameObject:
@@ -421,7 +421,6 @@ RectTransform:
   - {fileID: 8884127271352995161}
   - {fileID: 8790735377723074626}
   - {fileID: 7366166244048826311}
-  - {fileID: 6795648645916920570}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -448,7 +447,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 623aa8f3b434c1443ab53dc400d1cbc0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CardHover
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveCard
   data: {fileID: 11400000, guid: cc122f2f67db09042a66647f9151a74d, type: 2}
   descriptionPanel: {fileID: 4891926559198193610}
   nameText: {fileID: 6558958251675745656}
@@ -503,7 +502,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 708689835202611556}
-        m_TargetAssemblyTypeName: Card, Assembly-CSharp
+        m_TargetAssemblyTypeName: PassiveCard, Assembly-CSharp
         m_MethodName: GeneraInInventory
         m_Mode: 1
         m_Arguments:
@@ -820,8 +819,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1059,7 +1058,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6795648645916920570}
   m_Father: {fileID: 3779544124397986876}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1272,8 +1272,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

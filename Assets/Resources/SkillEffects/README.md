@@ -35,6 +35,19 @@ effect position, and plays every Particle System in its hierarchy. Effects that
 already have a positional burst use that exact position; card-only feedback
 uses the card image position.
 
+The same prefabs are also used for ambient gameplay feedback:
+
+- every valid peg hit randomly plays one of `Effect_1` through `Effect_5` at
+  the contact point;
+- every ball entering a score slot randomly plays `Effect_6` or `Effect_7`;
+- `Effect_8` is always played when a ball enters a score slot.
+
+These triggers subscribe to `GameManager.PinballHitPeg` and
+`GameManager.PinballEnteredSlot`, so they do not require changes in the ball or
+slot scripts. Ambient effects use a cached object pool (at most three active
+instances per effect type) instead of instantiating and destroying a prefab on
+every collision.
+
 `Effect_Glow.mat` and `CardEffectParticleGlow.shader` provide additive blending
 for the common glow look. The existing firework burst in `GameFeedback.Burst()`
 also uses this material when available.
@@ -52,14 +65,16 @@ renderers to flat billboards, and adds category-specific feedback:
   a few tiny petal sparks.
 
 The common burst uses small, softly feathered procedural star and diamond
-textures at reduced opacity. Its brightness comes from additive blending rather
-than large solid shapes, so it remains legible without depending on Bloom or a
-blur pass. Signature effects use slightly darker, marginally more saturated
-accents while staying within the existing effect footprint.
+textures. Its brightness comes from additive blending plus higher foreground
+opacity, so it remains legible without depending on Bloom or a blur pass.
+Signature effects use saturated white-gold accents while staying within the
+existing effect footprint.
 
 Once the target score is reached, the screen-edge flow starts a long-lived
 stream of small white-gold glow particles travelling toward the centre. Both
 the edge flow and the inward particle stream stop when `RoundEnded` fires.
+The inward stream is capped at 96 pooled UI images so the celebration remains
+visible without updating hundreds of transforms every frame.
 
 The prefabs currently stop after their particle lifetime. A safety cleanup also
 removes any instance after eight seconds.

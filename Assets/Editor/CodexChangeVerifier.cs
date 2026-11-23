@@ -129,7 +129,7 @@ public static class CodexChangeVerifier
         Require(GameObject.Find("Gold Coin Burst") != null,
             "Gold effect did not create the coin-shaped falling burst.");
 
-        GameFeedback.Instance.PlaySkillEffect(CardData.EffectType.Spawn16AddOneGold, Vector3.zero);
+        GameFeedback.Instance.PlaySkillEffect(PassiveCardData.EffectType.Spawn16AddOneGold, Vector3.zero);
         GameObject skillEffect = GameObject.Find("Effect_14 (Spawn16AddOneGold)");
         Require(skillEffect != null, "Mapped skill effect prefab was not instantiated.");
         if (skillEffect != null)
@@ -152,21 +152,21 @@ public static class CodexChangeVerifier
         Require(GameObject.Find("Arcane +1") != null, "Extra-ball effect did not show its +1 glyph.");
         Require(GameObject.Find("Arcane \u221E") != null, "Split effect did not show its infinity glyph.");
 
-        GameFeedback.Instance.PlaySkillEffect(CardData.EffectType.SlotMultiplier15,
+        GameFeedback.Instance.PlaySkillEffect(PassiveCardData.EffectType.SlotMultiplier15,
             Vector3.left * 5f);
         GameObject triangleBurst = GameObject.Find("Triangle Line Burst");
         Require(triangleBurst != null, "Multiplier effects did not create the triangle-line burst.");
         Require(triangleBurst != null && triangleBurst.GetComponentsInChildren<ParticleSystem>().Length >= 2,
             "Triangle-line burst is missing its main lines or small sparks.");
 
-        GameFeedback.Instance.PlaySkillEffect(CardData.EffectType.HalfSidesCenter075,
+        GameFeedback.Instance.PlaySkillEffect(PassiveCardData.EffectType.HalfSidesCenter075,
             Vector3.right * 5f);
         GameObject flowerBloom = GameObject.Find("Rotating Flower Bloom");
         Require(flowerBloom != null, "State effects did not create the rotating flower bloom.");
         Require(flowerBloom != null && flowerBloom.GetComponentsInChildren<ParticleSystem>().Length >= 2,
             "Flower bloom is missing its rotating ring or small petals.");
 
-        GameFeedback.Instance.ShowResults(12345, true, CardInventory.instance);
+        GameFeedback.Instance.ShowResults(12345, true, PassiveCardInventory.instance);
         RectTransform results = GameObject.Find("Tarot Reading")?.GetComponent<RectTransform>();
         Require(results != null, "The redesigned tarot results panel was not created.");
         if (results != null)

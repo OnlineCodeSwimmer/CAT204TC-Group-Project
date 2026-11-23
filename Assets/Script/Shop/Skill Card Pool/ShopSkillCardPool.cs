@@ -5,9 +5,19 @@ using UnityEngine.UI;
 
 public class ShopSkillCardPool : MonoBehaviour
 {
-    [Header("PassiveCard Pool Setting")]
-    public CardData[] cardDatas = new CardData[0];
+    public enum PoolType { Passive, Active }
+
+    [Header("Pool Type")]
+    public PoolType poolType;
+
+    [Header("Passive Card Pool Setting")]
+    public PassiveCardData[] cardDatas = new PassiveCardData[0];
     public GameObject cardPrefab;
+    public int passiveOfferCount = 3;
+
+    [Header("Active Card Pool Setting")]
+    public ActiveCardData[] activeCardDatas = new ActiveCardData[0];
+    public int activeOfferCount = 2;
 
     [Header("Refresh Flip")]
     [SerializeField, Min(0.05f)] private float flipDuration = 0.2f;
@@ -21,8 +31,6 @@ public class ShopSkillCardPool : MonoBehaviour
 
     private void Awake()
     {
-        // Positions are assigned explicitly so the whole hand can be centered and
-        // the middle card can sit slightly above the side cards.
         HorizontalLayoutGroup layout = GetComponent<HorizontalLayoutGroup>();
         if (layout != null) layout.enabled = false;
     }
@@ -38,10 +46,14 @@ public class ShopSkillCardPool : MonoBehaviour
     public void RefreshCards()
     {
         if (refreshing) return;
-        StartCoroutine(RefreshCardsRoutine());
+
+        if (poolType == PoolType.Active)
+            RefreshActiveCards();
+        else
+            StartCoroutine(RefreshPassiveCardsRoutine());
     }
 
-    private IEnumerator RefreshCardsRoutine()
+    private IEnumerator RefreshPassiveCardsRoutine()
     {
         refreshing = true;
 
@@ -57,7 +69,7 @@ public class ShopSkillCardPool : MonoBehaviour
             card.RecycleCard();
         }
 
-        List<PassiveCard> newCards = SpawnCards();
+        List<PassiveCard> newCards = SpawnPassiveCards();
         LayoutCards(newCards);
         foreach (PassiveCard card in newCards)
         {
@@ -116,21 +128,19 @@ public class ShopSkillCardPool : MonoBehaviour
         return cards;
     }
 
-    private List<PassiveCard> SpawnCards()
+    private List<PassiveCard> SpawnPassiveCards()
     {
-        CardInventory inventory = CardInventory.instance;
-        bool hasCapacityCard = inventory.CountEffect(CardData.EffectType.DuplicateShopSeventhSlot) > 0;
-        List<CardData> shuffledCards = new List<CardData>();
+        PassiveCardInventory inventory = PassiveCardInventory.instance;
+        bool hasCapacityCard = inventory.CountEffect(PassiveCardData.EffectType.DuplicateShopSeventhSlot) > 0;
+        List<PassiveCardData> shuffledCards = new List<PassiveCardData>();
 
-        foreach (CardData data in cardDatas)
+        foreach (PassiveCardData data in cardDatas)
         {
             if (data == null || shuffledCards.Contains(data)) continue;
-            if (hasCapacityCard && data.effectType == CardData.EffectType.DuplicateShopSeventhSlot) continue;
+            if (hasCapacityCard && data.effectType == PassiveCardData.EffectType.DuplicateShopSeventhSlot) continue;
             shuffledCards.Add(data);
         }
 
-        // If there is no DuplicateShopSeventhSlot card, owned cards are removed
-        // from the refresh pool so an unavailable duplicate is never offered.
         if (!hasCapacityCard)
         {
             foreach (PassiveCard ownedCard in inventory.GetComponentsInChildren<PassiveCard>(true))
@@ -140,7 +150,7 @@ public class ShopSkillCardPool : MonoBehaviour
         Shuffle(shuffledCards);
 
         List<PassiveCard> cards = new List<PassiveCard>();
-        for (int i = 0; i < Mathf.Min(3, shuffledCards.Count); i++)
+        for (int i = 0; i < Mathf.Min(passiveOfferCount, shuffledCards.Count); i++)
         {
             PassiveCard card = PoolManager.instance.Get(cardPrefab).GetComponent<PassiveCard>();
             card.transform.SetParent(transform, false);
@@ -175,13 +185,44 @@ public class ShopSkillCardPool : MonoBehaviour
         }
     }
 
-    // Knuth-Fisher-Yates Shuffle
-    private void Shuffle(List<CardData> cards)
+    private void RefreshActiveCards()
+    {
+        refreshing = true;
+
+        foreach (ActiveCard card in GetComponentsInChildren<ActiveCard>(true))
+            card.RecycleCard();
+
+        List<ActiveCardData> cards = new List<ActiveCardData>();
+        foreach (ActiveCardData data in activeCardDatas)
+        {
+            if (data != null && !cards.Contains(data)) cards.Add(data);
+        }
+
+        ActiveCardInventory inventory = ActiveCardInventory.instance;
+        if (inventory != null)
+        {
+            foreach (ActiveCard ownedCard in inventory.GetComponentsInChildren<ActiveCard>(true))
+                cards.Remove(ownedCard.data);
+        }
+
+        Shuffle(cards);
+        for (int i = 0; i < Mathf.Min(activeOfferCount, cards.Count); i++)
+        {
+            ActiveCard card = PoolManager.instance.Get(cardPrefab).GetComponent<ActiveCard>();
+            card.transform.SetParent(transform, false);
+            card.isTestCard = false;
+            card.SetData(cards[i]);
+        }
+
+        refreshing = false;
+    }
+
+    private static void Shuffle<T>(List<T> cards)
     {
         for (int i = 0; i < cards.Count - 1; i++)
         {
             int randomIndex = Random.Range(i, cards.Count);
-            CardData temp = cards[i];
+            T temp = cards[i];
             cards[i] = cards[randomIndex];
             cards[randomIndex] = temp;
         }

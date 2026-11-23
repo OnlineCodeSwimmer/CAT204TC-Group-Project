@@ -12,10 +12,12 @@ public class UIManager : MonoBehaviour
     public GameObject shop;
     public GameObject skillCardTest;
     public ShopSkillCardPool shopSkillCardPool;
+    public ShopSkillCardPool shopActiveCardPool;
 
 
     [Header("Sence Object GameObject")]
     public GameObject matrix;
+
 
     private void Awake()
     {
@@ -33,6 +35,9 @@ public class UIManager : MonoBehaviour
         InputUnsubscribe();
     }
 
+
+
+    //Shop Related
     //Open and Close Shop
     public void OpenShop()
     {
@@ -47,10 +52,25 @@ public class UIManager : MonoBehaviour
             shop.SetActive(true);
             matrix.SetActive(false);
 
-            //Refresh PassiveCard Pool
-            shopSkillCardPool.RefreshCards();
+            //Refresh passive and active card pools.
+            RefreshShopCards();
         });
     }
+
+    public void RefreshShopCardsWithGold()
+    {
+        GameManager game = GameManager.instance;
+        if (game.gold < 2) return;
+        game.gold -= 2;
+        RefreshShopCards();
+    }
+
+    private void RefreshShopCards()
+    {
+        shopSkillCardPool.RefreshCards();
+        shopActiveCardPool.RefreshCards();
+    }
+
 
     public void CloseShop()
     {
@@ -59,9 +79,16 @@ public class UIManager : MonoBehaviour
         InputSystemManager.instance.inputSystem.Player.Enable();
 
         //Immediately hide displayed sell prompts when closing the Shop
-        foreach (PassiveCard card in CardInventory.instance.GetComponentsInChildren<PassiveCard>(true))
+        foreach (PassiveCard card in PassiveCardInventory.instance.GetComponentsInChildren<PassiveCard>(true))
         {
             card.sellPanel.SetActive(false);
+        }
+
+        ActiveCardInventory activeInventory = ActiveCardInventory.instance;
+        if (activeInventory != null)
+        {
+            foreach (ActiveCard card in activeInventory.GetComponentsInChildren<ActiveCard>(true))
+                card.sellPanel.SetActive(false);
         }
 
         ShowShopWithTransition(false, () =>
@@ -85,7 +112,7 @@ public class UIManager : MonoBehaviour
         InputSystemManager.instance.inputSystem.UI.Enable();
         shop.SetActive(false);
         skillCardTest.SetActive(false);
-        GameFeedback.Instance.ShowResults(score, cleared, CardInventory.instance);
+        GameFeedback.Instance.ShowResults(score, cleared, PassiveCardInventory.instance);
     }
 
     //testCardPool
