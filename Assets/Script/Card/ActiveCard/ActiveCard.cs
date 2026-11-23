@@ -22,6 +22,12 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     //Use In Test Pool
     [HideInInspector] public bool isTestCard;
+
+    //Price Setting
+    public GameObject pricePanel;
+    public TMP_Text priceText;
+
+
     private void Awake()
     {
         originalScale = cardImage.localScale;
@@ -31,6 +37,7 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public void SetData(ActiveCardData cardData)
     {
         data = cardData;
+        priceText.text = data.price.ToString();
         nameText.text = data.cardName;
         descriptionText.text = data.description;
         cardImage.GetComponent<Image>().sprite = data.cardSprite;
@@ -39,6 +46,7 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        pricePanel.SetActive(IsShopOffer());
         cardImage.localScale = originalScale * 1.1f;
         descriptionPanel.SetActive(true);
         sellPanel.SetActive(IsTradingOpen() && GetComponentInParent<ActiveCardInventory>() != null);
@@ -60,6 +68,7 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         cardImage.localScale = originalScale;
         descriptionPanel.SetActive(false);
         sellPanel.SetActive(false);
+        pricePanel.SetActive(false);
     }
 
     public void OnCardClicked()//Button Event
@@ -75,9 +84,22 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         }
 
 
-        if (GetComponentInParent<ActiveCardInventory>() == null) return;
 
         GameManager game = GameManager.instance;
+
+        if (IsShopOffer())
+        {
+            int price = data.price;
+            if (game.gold < price) return;
+            if (!inventory.TryAddCard(data)) return;
+            game.gold -= price;
+            GetComponent<Button>().interactable = false;
+            cardImage.GetComponent<Image>().color = Color.gray;
+            enabled = false;
+            return;
+        }
+
+        if (GetComponentInParent<ActiveCardInventory>() == null) return;
 
 
         if (IsTradingOpen())
@@ -90,7 +112,12 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         }
 
         RecycleCard();
- }
+       }
+
+    private bool IsShopOffer()
+    {
+        return GetComponentInParent<ShopSkillCardPool>() != null;
+    }
 
     //Trading Related
     private bool IsTradingOpen()
@@ -175,6 +202,17 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             case ActiveCardData.EffectType.ReduceAllTargetScores5Percent:
                 game.TargetScoreCalculating += ReduceAllTargetScores5Percent;
+                game.UpdateTargetScore();
+                return true;
+
+            case ActiveCardData.EffectType.AddTemporaryPinballValue30:
+                game.temporaryPinballScoreBonus += 30f;
+                game.RoundEnded += ClearSunEffect;
+                return true;
+
+            case ActiveCardData.EffectType.ReduceCurrentRoundTargetScore20Percent:
+                game.TargetScoreCalculating += ReduceCurrentRoundTargetScore20Percent;
+                game.RoundEnded += ClearJudgementEffect;
                 game.UpdateTargetScore();
                 return true;
 
@@ -306,4 +344,24 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         targetScore *= 0.95f;
     }
 
+    //AddTemporaryPinballValue30 Card Related
+    private static void ClearSunEffect()
+    {
+        GameManager game = GameManager.instance;
+        game.temporaryPinballScoreBonus -= 30f;
+        game.RoundEnded -= ClearSunEffect;
+    }
+
+    //ReduceCurrentRoundTargetScore20Percent Card Related
+    private static void ReduceCurrentRoundTargetScore20Percent(ref float targetScore)
+    {
+        targetScore *= 0.8f;
+    }
+
+    private static void ClearJudgementEffect()
+    {
+        GameManager game = GameManager.instance;
+        game.TargetScoreCalculating -= ReduceCurrentRoundTargetScore20Percent;
+        game.RoundEnded -= ClearJudgementEffect;
+    }
 }

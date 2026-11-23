@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ef40808e4239041af90405295426ef, type: 3}
   m_Name: Double Score Cost Throw Chance
   m_EditorClassIdentifier: Assembly-CSharp::ActiveCardData
-  cardName: Justice
+  cardName: Justice (Active)
   description: Pinball score is doubled for this throw chance, but one extra throw
     chance is consumed
   cardSprite: {fileID: 21300000, guid: 5258e61c89944784b6aa2102fa879921, type: 3}
   effectType: 8
+  price: 2

@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ef40808e4239041af90405295426ef, type: 3}
   m_Name: FirstSlotMultiplier15
   m_EditorClassIdentifier: Assembly-CSharp::ActiveCardData
-  cardName: 'The Hanged Man '
+  cardName: 'The Hanged Man (Active)'
   description: The first slot a pinball enters in this throw chance gets an extra
     1.5x multiplier
   cardSprite: {fileID: 21300000, guid: a3b0f02ec4524e1d999a39549cbc2c0f, type: 3}
   effectType: 9
+  price: 2

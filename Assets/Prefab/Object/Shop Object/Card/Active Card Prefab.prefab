@@ -511,6 +511,8 @@ MonoBehaviour:
   cardImage: {fileID: 8884127271352995161}
   sellPanel: {fileID: 2091676080448563025}
   isTestCard: 0
+  pricePanel: {fileID: 2999700856335866243}
+  priceText: {fileID: 8913958007767847184}
 --- !u!1 &2999700856335866243
 GameObject:
   m_ObjectHideFlags: 0

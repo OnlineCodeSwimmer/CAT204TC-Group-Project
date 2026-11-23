@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ef40808e4239041af90405295426ef, type: 3}
   m_Name: Double Pinball Value
   m_EditorClassIdentifier: Assembly-CSharp::ActiveCardData
-  cardName: The Chariot
+  cardName: The Chariot (Active)
   description: 'Double pinball value this round
 
 '
   cardSprite: {fileID: 21300000, guid: 845d83384b344c22968f5e633163b641, type: 3}
   effectType: 4
+  price: 2

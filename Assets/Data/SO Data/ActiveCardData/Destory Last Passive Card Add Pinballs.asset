@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ef40808e4239041af90405295426ef, type: 3}
   m_Name: Destory Last Passive Card Add Pinballs
   m_EditorClassIdentifier: Assembly-CSharp::ActiveCardData
-  cardName: Death
+  cardName: Death (Active)
   description: 'Destroy the last pinball card you bought, then gain 5 pinballs.
 
 '
   cardSprite: {fileID: 21300000, guid: 2f332f5f9d4c467a831b6f732958140d, type: 3}
   effectType: 10
+  price: 2

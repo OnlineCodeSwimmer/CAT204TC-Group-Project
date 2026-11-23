@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ef40808e4239041af90405295426ef, type: 3}
   m_Name: Emperor Score Boost
   m_EditorClassIdentifier: Assembly-CSharp::ActiveCardData
-  cardName: The Emperor
+  cardName: The Emperor (Active)
   description: If all pinballs are launched in this throw chance, there is a 50%
     chance to multiply the score by 1.25x
   cardSprite: {fileID: 21300000, guid: ffe14f47664c455887a73bc74addbaed, type: 3}
   effectType: 2
+  price: 2

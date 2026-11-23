@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ef40808e4239041af90405295426ef, type: 3}
   m_Name: Reduce All Targer Scores 5 Percent
   m_EditorClassIdentifier: Assembly-CSharp::ActiveCardData
-  cardName: 'The Star '
+  cardName: 'The Star (Active)'
   description: 'Reduce all target scores by 5%
 
 '
   cardSprite: {fileID: 21300000, guid: 260470a4bbc24f908cbfba4b16e10ba8, type: 3}
   effectType: 13
+  price: 2

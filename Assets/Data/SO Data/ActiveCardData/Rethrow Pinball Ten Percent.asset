@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ef40808e4239041af90405295426ef, type: 3}
   m_Name: Rethrow Pinball Ten Percent
   m_EditorClassIdentifier: Assembly-CSharp::ActiveCardData
-  cardName: The Hermit
+  cardName: The Hermit (Active)
   description: Pinballs that land in a slot this round have a 10% chance to launch
     again
   cardSprite: {fileID: 21300000, guid: 6ccf44f7834c49669a8ef6b6387912a5, type: 3}
   effectType: 6
+  price: 2

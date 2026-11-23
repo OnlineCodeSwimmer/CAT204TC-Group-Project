@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ef40808e4239041af90405295426ef, type: 3}
   m_Name: Gain Double Current Gold
   m_EditorClassIdentifier: Assembly-CSharp::ActiveCardData
-  cardName: 'Wheel of Fortune '
+  cardName: 'Wheel of Fortune (Active)'
   description: 'Gain coins equal to twice your current coin count, up to 20 coins
 
 '
   cardSprite: {fileID: 21300000, guid: 032f4552ef3649e4bff3a22093aa510d, type: 3}
   effectType: 7
+  price: 2

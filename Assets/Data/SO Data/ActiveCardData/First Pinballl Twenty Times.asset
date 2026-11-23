@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ef40808e4239041af90405295426ef, type: 3}
   m_Name: First Pinballl Twenty Times
   m_EditorClassIdentifier: Assembly-CSharp::ActiveCardData
-  cardName: The Magician
+  cardName: The Magician (Active)
   description: "The first pinball to land in a slot this round scores 20\xD7 points"
   cardSprite: {fileID: 21300000, guid: 91c52b0dc8514530a62e60ff064207ca, type: 3}
   effectType: 0
+  price: 2

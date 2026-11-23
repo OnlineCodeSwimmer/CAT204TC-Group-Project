@@ -10,11 +10,13 @@ public class UIManager : MonoBehaviour
     [Header("UI GameObject")]
     public GameObject shop;
     public GameObject skillCardTest;
-    public ShopPassiveCardPool shopSkillCardPool;
+    public ShopSkillCardPool shopSkillCardPool;
+    public ShopSkillCardPool shopActiveCardPool;
 
 
     [Header("Sence Object GameObject")]
     public GameObject matrix;
+
 
     private void Awake()
     {
@@ -32,6 +34,9 @@ public class UIManager : MonoBehaviour
         InputUnsubscribe();
     }
 
+
+
+    //Shop Related
     //Open and Close Shop
     public void OpenShop()
     {
@@ -43,9 +48,23 @@ public class UIManager : MonoBehaviour
         matrix.SetActive(false);
 
         //Refresh PassiveCard Pool
-        shopSkillCardPool.RefreshCards();
-
+        RefreshShopCards();
     }
+
+    public void RefreshShopCardsWithGold()
+    {
+        GameManager game = GameManager.instance;
+        if (game.gold < 2) return;
+        game.gold -= 2;
+        RefreshShopCards();
+    }
+
+    private void RefreshShopCards()
+    {
+        shopSkillCardPool.RefreshCards();
+        shopActiveCardPool.RefreshCards();
+    }
+
 
     public void CloseShop()
     {

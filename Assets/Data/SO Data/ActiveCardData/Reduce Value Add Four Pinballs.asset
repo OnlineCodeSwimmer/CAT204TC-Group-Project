@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ef40808e4239041af90405295426ef, type: 3}
   m_Name: Reduce Value Add Four Pinballs
   m_EditorClassIdentifier: Assembly-CSharp::ActiveCardData
-  cardName: The Tower
+  cardName: The Tower (Active)
   description: Reduce pinball value by 50 and gain 4 pinballs
   cardSprite: {fileID: 21300000, guid: 0a25f7b07d2f4a3c81cc4815b2559743, type: 3}
   effectType: 12
+  price: 2

@@ -20,11 +20,13 @@ public class ActiveCardData : ScriptableObject
         ReduceValueAddFourPinballs,
         ReduceAllTargetScores5Percent,
         AddTemporaryPinballValue30,
+        ReduceCurrentRoundTargetScore20Percent,
     }
 
     public string cardName;
     [TextArea] public string description;
     public Sprite cardSprite;
     public EffectType effectType;
+    public int price;
 }
 
