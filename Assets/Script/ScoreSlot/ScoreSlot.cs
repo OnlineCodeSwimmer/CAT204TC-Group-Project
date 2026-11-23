@@ -14,6 +14,8 @@ public class ScoreSlot : MonoBehaviour
     {
         if (other.CompareTag("Pinball"))
         {
+            if (other.GetComponent<Pinball>().IsTemporary)
+                GameFeedback.Instance?.Burst(CardEffectVisual.TemporaryDespawn, other.transform.position);
             GameManager.instance.AddScore(this);
             GameManager.instance.NotifyPinballEnteredSlot(this); //Notify the ball is in the hole
 

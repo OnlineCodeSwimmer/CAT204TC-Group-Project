@@ -12,6 +12,7 @@ public class Pinball : MonoBehaviour
 
     //The probability that the pinball bounces left
     public static float leftBounceChance = 0.5f;
+    public bool IsTemporary { get; set; }
 
 
 
@@ -55,7 +56,8 @@ public class Pinball : MonoBehaviour
         Vector2 position = transform.position;
         position.x = peg.bounds.center.x + direction * (peg.bounds.extents.x + pinballCollider.bounds.extents.x + 0.01f);
 
-        Pinball splitBall = GameManager.instance.spawnPinballPoint.SpawnExtraBall(position).GetComponent<Pinball>();
+        Pinball splitBall = GameManager.instance.spawnPinballPoint
+            .SpawnExtraBall(position, CardEffectVisual.Split).GetComponent<Pinball>();
         splitBall.BounceFromPeg(peg, direction);
     }
 }

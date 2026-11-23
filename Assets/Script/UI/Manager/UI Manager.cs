@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,6 +16,8 @@ public class UIManager : MonoBehaviour
 
     [Header("Sence Object GameObject")]
     public GameObject matrix;
+
+    private bool shopTransitioning;
 
 
     private void Awake()
@@ -40,22 +42,27 @@ public class UIManager : MonoBehaviour
     //Open and Close Shop
     public void OpenShop()
     {
+        if (shop.activeSelf || shopTransitioning) return;
+
         //Player input switch
         InputSystemManager.instance.inputSystem.Player.Disable(); 
         InputSystemManager.instance.inputSystem.UI.Enable(); 
 
+        ShowShopWithTransition(true, FinishOpeningShop);
+    }
+
+    private void FinishOpeningShop()
+    {
         shop.SetActive(true);
         matrix.SetActive(false);
-
-        //Refresh PassiveCard Pool
         RefreshShopCards();
     }
 
     public void RefreshShopCardsWithGold()
     {
         GameManager game = GameManager.instance;
-        if (game.gold < 2) return;
-        game.gold -= 2;
+        if (!shop.activeSelf || shopTransitioning || shopSkillCardPool.IsRefreshing || game.gold < 2) return;
+        game.ChangeShopGold(-2);
         RefreshShopCards();
     }
 
@@ -68,33 +75,61 @@ public class UIManager : MonoBehaviour
 
     public void CloseShop()
     {
-        //Player input switch
-        InputSystemManager.instance.inputSystem.UI.Disable(); 
-        InputSystemManager.instance.inputSystem.Player.Enable();
-
         //Immediately hide displayed sell prompts when closing the Shop
         foreach (PassiveCard card in PassiveCardInventory.instance.GetComponentsInChildren<PassiveCard>(true))
         {
             card.sellPanel.SetActive(false);
         }
 
-        ActiveCardInventory activeInventory = ActiveCardInventory.instance;
-        
-      foreach (ActiveCard card in activeInventory.GetComponentsInChildren<ActiveCard>(true))
-      {
+        foreach (ActiveCard card in ActiveCardInventory.instance.GetComponentsInChildren<ActiveCard>(true))
+        {
             card.sellPanel.SetActive(false);
-       }
-        
+        }
 
+        ShowShopWithTransition(false, FinishClosingShop);
+    }
 
+    private void FinishClosingShop()
+    {
         shop.SetActive(false);
         matrix.SetActive(true);
+        InputSystemManager.instance.inputSystem.UI.Disable();
+        InputSystemManager.instance.inputSystem.Player.Enable();
+    }
+
+    private void ShowShopWithTransition(bool opening, Action swap)
+    {
+        shopTransitioning = true;
+        if (GameFeedback.Instance != null)
+        {
+            GameFeedback.Instance.PlayShopTransition(swap, opening, FinishShopTransition);
+        }
+        else
+        {
+            swap();
+            FinishShopTransition();
+        }
+    }
+
+    private void FinishShopTransition()
+    {
+        shopTransitioning = false;
+    }
+
+    public void ShowResults(int score, bool cleared)
+    {
+        InputSystemManager.instance.inputSystem.Player.Disable();
+        InputSystemManager.instance.inputSystem.UI.Enable();
+        shop.SetActive(false);
+        skillCardTest.SetActive(false);
+        GameFeedback.Instance.ShowResults(score, cleared, PassiveCardInventory.instance);
     }
 
     //testCardPool
     private void OpenTestCardPool(InputAction.CallbackContext context)
     {
-        if (!shop.activeSelf && !skillCardTest.activeSelf) return;
+        if (shopTransitioning || (!shop.activeSelf && !skillCardTest.activeSelf)) return;
+        if (shop.activeSelf && shopSkillCardPool.IsRefreshing) return;
 
         shop.SetActive(!shop.activeSelf);
         skillCardTest.SetActive(!shop.activeSelf);

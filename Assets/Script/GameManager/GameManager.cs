@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
 
     //Round Checking
     private bool allRoundsFinished;
+    private int completedRoundScore;
 
 
     //Event
@@ -52,7 +53,7 @@ public class GameManager : MonoBehaviour
     public event ScoreCalculationHandler ScoreCalculating; //Triggered upon scoring
     public event System.Action RoundStarted;
     public event System.Action RoundEnded;
-    public event System.Action PinballSpawned;
+    public event System.Action<Vector3> PinballSpawned;
     public event System.Action ThrowChanceEnded;
     public event GoldCalculationHandler GoldCalculating;
     public event TargetScoreCalculationHandler TargetScoreCalculating;
@@ -80,7 +81,9 @@ public class GameManager : MonoBehaviour
 
         firstPinballScored = true;
 
-        GainScore(GetCurrentPinballScore() * multiplier);
+        if (!Mathf.Approximately(slot.multiplier, multiplier))
+            GameFeedback.Instance?.Burst(CardEffectVisual.Score, slot.transform.position);
+        GainScore(GetCurrentPinballScore() * multiplier, slot.transform.position);
     }
 
     public float GetCurrentPinballScore()
@@ -88,10 +91,13 @@ public class GameManager : MonoBehaviour
         return (pinballScore + temporaryPinballScoreBonus) * pinballScoreMultiplier;
     }
 
-    public void GainScore(float amount)
+    public void GainScore(float amount, Vector3? effectPosition = null)
     {
+        float baseAmount = amount;
         ScoreCalculating?.Invoke(ref amount); 
         score += amount;
+        if (effectPosition.HasValue && !Mathf.Approximately(baseAmount, amount))
+            GameFeedback.Instance?.Burst(CardEffectVisual.Score, effectPosition.Value);
     }
 
 
@@ -100,6 +106,24 @@ public class GameManager : MonoBehaviour
     {
         GoldCalculating?.Invoke(ref amount);
         gold += Mathf.Min(amount, maxGain);
+    }
+
+    public void ChangeShopGold(int amount)
+    {
+        int previousGold = gold;
+        // Preserve the gold bonus on sales and charge the advertised price on purchases.
+        if (amount > 0) AddGold(amount);
+        else gold += amount;
+        GameFeedback.Instance?.ShowGoldChange(gold - previousGold);
+    }
+
+    public void ChangeBallValue(float amount, Vector3? effectPosition = null)
+    {
+        pinballScore += amount;
+        if (amount <= 0) return;
+        GameFeedback.Instance?.ShowBallValueChange(amount);
+        if (effectPosition.HasValue)
+            GameFeedback.Instance?.Burst(CardEffectVisual.BallValue, effectPosition.Value);
     }
 
     public void UpdateTargetScore()
@@ -127,20 +151,13 @@ public class GameManager : MonoBehaviour
         RoundEnded?.Invoke(); //Notify Round End
 
 
-        //Check if the game has failed
-        if (score < currentTargetScore)
+        completedRoundScore += (int)score;
+        bool cleared = score >= currentTargetScore;
+        if (!cleared || currentRound >= rounds)
         {
-            Debug.Log("Game Failed");
+            allRoundsFinished = true;
+            UIManager.instance.ShowResults(completedRoundScore, cleared);
             return;
-        }
-        //Check if the game has Finsih
-        if (currentRound >= targetScores.Length)
-        {
-            
-                allRoundsFinished = true;
-                Debug.Log("Finish all round");
-                return;
-            
         }
 
         AddGold(4);
@@ -169,6 +186,7 @@ public class GameManager : MonoBehaviour
         pinballNumber = pinballsPerRound;
 
         UIManager.instance.CloseShop();
+        GameFeedback.Instance?.ShowRoundChange();
     }
 
 
@@ -233,9 +251,9 @@ public class GameManager : MonoBehaviour
         PinballHitPeg?.Invoke(pinball, peg);
     }
 
-    public void NotifyPinballSpawned()
+    public void NotifyPinballSpawned(Vector3 position)
     {
-        PinballSpawned?.Invoke();
+        PinballSpawned?.Invoke(position);
     }
 
     //Test

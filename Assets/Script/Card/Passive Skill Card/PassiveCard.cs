@@ -39,6 +39,8 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private ScoreSlot doubleScoreSlot; // RandomDoubleSlot PassiveCard will use this
     private float leftBounceOffset; //RandomLeftBounceChance PassiveCard will use this
     private int activeUnusedThrowCount; //UnusedThrowBonus PassiveCard will use this
+    private CanvasGroup purchaseGroup;
+    private bool refreshAnimating;
 
 
     private void Awake()
@@ -50,6 +52,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (refreshAnimating) return;
         //Zoom in and out
         cardImage.localScale = originalScale * 1.1f;
         //Diplay Description
@@ -62,6 +65,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (refreshAnimating) return;
         //Zoom in and out
         cardImage.localScale = originalScale;
         //Hidden Description
@@ -74,6 +78,9 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void OnDisable()
     {
+        refreshAnimating = false;
+        transform.localRotation = Quaternion.identity;
+        SetPurchaseAnimation(false);
         //Size
         cardImage.localScale = originalScale;
         //Description
@@ -115,12 +122,40 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         //Purchase Related
         if (!isTestCard && GameManager.instance.gold < data.price) return;
 
-        if (!PassiveCardInventory.instance.TryAddCard(this)) return;
+        if (!PassiveCardInventory.instance.TryAddCard(this, out PassiveCard inventoryCard)) return;
 
-        if (!isTestCard) GameManager.instance.gold -= data.price;
+        GameFeedback.Instance?.PlayPurchase(this, inventoryCard);
+        if (!isTestCard) GameManager.instance.ChangeShopGold(-data.price);
         GetComponent<Button>().interactable = false;
         cardImage.GetComponent<Image>().color = Color.gray;
         enabled = false;
+    }
+
+    public void SetPurchaseAnimation(bool playing)
+    {
+        if (playing && purchaseGroup == null)
+            purchaseGroup = gameObject.AddComponent<CanvasGroup>();
+        if (purchaseGroup == null) return;
+
+        purchaseGroup.alpha = playing ? 0f : 1f;
+        purchaseGroup.interactable = !playing;
+        purchaseGroup.blocksRaycasts = !playing;
+    }
+
+    public void SetRefreshAnimation(bool playing)
+    {
+        if (purchaseGroup == null)
+            purchaseGroup = gameObject.AddComponent<CanvasGroup>();
+
+        refreshAnimating = playing;
+        purchaseGroup.alpha = 1f;
+        purchaseGroup.interactable = !playing;
+        purchaseGroup.blocksRaycasts = !playing;
+    }
+
+    public void SetRefreshRotation(float angle)
+    {
+        transform.localRotation = Quaternion.Euler(0f, angle, 0f);
     }
 
     public void RecycleCard()
@@ -154,6 +189,13 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     //PassiveCard Effect Related
     public void ApplyEffect()
     {
+        if (data.effectType == PassiveCardData.EffectType.AddOnePinball ||
+            data.effectType == PassiveCardData.EffectType.AddPinballScore ||
+            data.effectType == PassiveCardData.EffectType.HalfSidesCenter075 ||
+            data.effectType == PassiveCardData.EffectType.SlotMultiplier15 ||
+            data.effectType == PassiveCardData.EffectType.DuplicateShopSeventhSlot)
+            Flash();
+
         switch (data.effectType)
         {
             case PassiveCardData.EffectType.AddOnePinball:
@@ -161,7 +203,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
                 break;
 
             case PassiveCardData.EffectType.AddPinballScore:
-                GameManager.instance.pinballScore += 50;
+                GameManager.instance.ChangeBallValue(50);
                 break;
 
             case PassiveCardData.EffectType.HalfSidesCenter075:
@@ -251,7 +293,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
                 break;
 
             case PassiveCardData.EffectType.AddPinballScore:
-                GameManager.instance.pinballScore -= 50;
+                GameManager.instance.ChangeBallValue(-50);
                 break;
 
             case PassiveCardData.EffectType.HalfSidesCenter075:
@@ -330,7 +372,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             case PassiveCardData.EffectType.UnusedThrowBonus:
                 GameManager.instance.RoundStarted -= ApplyUnusedThrowBonus;
                 GameManager.instance.pinballsPerRound -= activeUnusedThrowCount * 2;
-                GameManager.instance.pinballScore -= activeUnusedThrowCount * 8f;
+                GameManager.instance.ChangeBallValue(-activeUnusedThrowCount * 8f);
                 break;
         }
     }
@@ -346,6 +388,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if (pinHitCount < 40) return;
 
         pinHitCount = 0;
+        Flash();
         GameManager.instance.spawnPinballPoint.SpawnExtraBall();
     }
 
@@ -358,10 +401,13 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if (slots.Length == 0) return;
 
         doubleScoreSlot = slots[Random.Range(0, slots.Length)];
+        Flash();
     }
     private void DoubleSlotScore(ScoreSlot slot, ref float multiplier)
     {
-        if (slot == doubleScoreSlot) multiplier *= 2f;
+        if (slot != doubleScoreSlot) return;
+        multiplier *= 2f;
+        Flash();
     }
 
     //HalfSidesCenter075 Skill PassiveCard Effect
@@ -406,6 +452,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private void TryRethrowPinball(ScoreSlot slot)
     {
         if (Random.value >= 0.05f) return;
+        Flash();
         GameManager.instance.spawnPinballPoint.SpawnExtraBall();
     }
 
@@ -415,23 +462,28 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         GameManager game = GameManager.instance;
         game.GainScore(game.GetCurrentPinballScore() / 20f);
+        Flash(CardEffectVisual.Score, pinball.transform.position);
     }
 
     //FirstPinballTenTimes Skill PassiveCard Effect
     private void FirstPinballTenTimes(ScoreSlot slot, ref float multiplier)
     {
-        if (!GameManager.instance.firstPinballScored) multiplier *= 10f;
+        if (GameManager.instance.firstPinballScored) return;
+        multiplier *= 10f;
+        Flash();
     }
 
     //IncreaseTargetScore20Percent Skill PassiveCard Effect
     public void DoubleGold(ref int amount)
     {
         amount *= 2;
+        if (amount != 0) Flash();
     }
 
     public void IncreaseTargetScore20Percent(ref float targetScore)
     {
         targetScore = (float)(targetScore * 1.2);
+        Flash();
     }
 
     //Third Slot Growth PassiveCard Effect
@@ -439,14 +491,17 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         if (slot.position != ScoreSlot.SlotPosition.Third) return;
 
-        GameManager.instance.pinballScore += 5 + thirdSlotTriggerCount;
+        GameManager.instance.ChangeBallValue(5 + thirdSlotTriggerCount, slot.transform.position);
         thirdSlotTriggerCount++;
+        Flash();
     }
 
     //RoundEndGoldChance Realted
     private void TryGainRoundEndGold()
     {
-        if (Random.value < 0.5f) GameManager.instance.AddGold(4);
+        if (Random.value >= 0.5f) return;
+        GameManager.instance.AddGold(4);
+        Flash();
     }
 
     //PegHitExtraPinball Effect
@@ -454,23 +509,26 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         if (Random.value >= 0.03f) return;
 
+        Flash();
         GameManager.instance.spawnPinballPoint.SpawnExtraBall();
     }
 
     //Spawn16AddOneGold Effect
-    private void RecordSpawnedPinball()
+    private void RecordSpawnedPinball(Vector3 position)
     {
         spawnedPinballCount++;
         if (spawnedPinballCount < 16) return;
 
         spawnedPinballCount = 0;
         GameManager.instance.AddGold(1);
+        Flash(CardEffectVisual.Gold, position);
     }
 
     //AllScoreMultiplier15 Effect
     public void MultiplyAllScore15(ref float amount)
     {
         amount *= 1.5f;
+        if (amount != 0f) Flash();
     }
 
     //FirstSlotAddOnePinball Effect
@@ -478,6 +536,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         if (slot.position != ScoreSlot.SlotPosition.First) return;
         GameManager.instance.pinballNumber++;
+        Flash(CardEffectVisual.BallStock, slot.transform.position);
     }
 
     //PegHitSplitPinball Effect
@@ -486,6 +545,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if (Random.value >= 0.05f) return;
 
         pinball.Split(peg);
+        Flash();
     }
 
     //RandomLeftBounceChance Effect
@@ -493,6 +553,7 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         leftBounceOffset = Random.value < 0.5f ? -0.15f : 0.15f;
         RefreshLeftBounceChance();
+        Flash();
     }
 
     private void RefreshLeftBounceChance()
@@ -513,10 +574,23 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         int bonusChange = bonusCount - activeUnusedThrowCount;
 
         game.pinballsPerRound += bonusChange * 2;
-        game.pinballScore += bonusChange * 8f;
+        game.ChangeBallValue(bonusChange * 8f);
         activeUnusedThrowCount = bonusCount;
+        if (bonusCount > 0) Flash();
     }
 
+    private void Flash()
+    {
+        GameFeedback.Instance?.FlashCard(this);
+        GameFeedback.Instance?.PlaySkillEffect(data.effectType, cardImage.position);
+    }
+
+    private void Flash(CardEffectVisual effect, Vector3 position)
+    {
+        GameFeedback.Instance?.FlashCard(this);
+        GameFeedback.Instance?.Burst(effect, position);
+        GameFeedback.Instance?.PlaySkillEffect(data.effectType, position);
+    }
 
 
 }

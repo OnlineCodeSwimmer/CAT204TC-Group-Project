@@ -29,6 +29,12 @@ public class PassiveCardInventory : MonoBehaviour
 
     public bool TryAddCard(PassiveCard card)
     {
+        return TryAddCard(card, out _);
+    }
+
+    public bool TryAddCard(PassiveCard card, out PassiveCard inventoryCard)
+    {
+        inventoryCard = null;
         //If an DuplicateShopSeventhSlot card is already in inventory, another DuplicateShopSeventhSlot card cannot be added.
         bool isCapacityCard = card.data.effectType == PassiveCardData.EffectType.DuplicateShopSeventhSlot;
         bool hasCapacityCard = CountEffect(PassiveCardData.EffectType.DuplicateShopSeventhSlot) > 0;
@@ -54,13 +60,14 @@ public class PassiveCardInventory : MonoBehaviour
         {
             if (slots[i].GetComponentInChildren<PassiveCard>(true) != null) continue;
 
-            PassiveCard inventoryCard = PoolManager.instance.Get(cardPrefab).GetComponent<PassiveCard>();
+            inventoryCard = PoolManager.instance.Get(cardPrefab).GetComponent<PassiveCard>();
             inventoryCard.isTestCard = false; //All cards entering the Inventory are regular cards
             inventoryCard.SetData(card.data);
 
             //PassiveCard Size Setting
             RectTransform cardRect = inventoryCard.GetComponent<RectTransform>();
-            cardRect.SetParent(slots[i]);
+            cardRect.SetParent(slots[i], false);
+            cardRect.localScale = Vector3.one;
             cardRect.anchoredPosition = Vector2.zero;
             cardRect.sizeDelta = new Vector2(138.2412f, 196.2f);
 
@@ -84,8 +91,9 @@ public class PassiveCardInventory : MonoBehaviour
     {
         if (!UIManager.instance.shop.activeInHierarchy && !UIManager.instance.skillCardTest.activeInHierarchy) return;
 
+        GameFeedback.Instance?.PlaySale(card);
         RemoveOwnedCard(card);
-        GameManager.instance.AddGold(2);
+        GameManager.instance.ChangeShopGold(2);
     }
 
     //Destroy the last card in the inventory
