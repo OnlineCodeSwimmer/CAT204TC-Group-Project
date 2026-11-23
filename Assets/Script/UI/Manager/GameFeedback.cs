@@ -14,8 +14,10 @@ public enum CardEffectVisual
     Split, TemporarySpawn, TemporaryDespawn, BallValue, Score, Gold, BallStock
 }
 
+// [Jinyang.Li] Core feedback host. Skill-effect triggering, random mapping and
+// pooling are separated into GameFeedback.SkillEffectTriggers.cs.
 [RequireComponent(typeof(Canvas))]
-public class GameFeedback : MonoBehaviour
+public partial class GameFeedback : MonoBehaviour
 {
     public static GameFeedback Instance { get; private set; }
 
@@ -29,6 +31,7 @@ public class GameFeedback : MonoBehaviour
     [SerializeField] private Color goldColor = new Color(1f, 0.78f, 0.34f);
     [SerializeField] private Color ballStockColor = new Color(1f, 0.44f, 0.27f);
 
+    // [Jinyang.Li] Unified tarot-style HUD and effect palette.
     private static readonly Vector2 Center = new Vector2(0.5f, 0.5f);
     private static readonly Color Ivory = new Color(1f, 0.96f, 0.84f, 1f);
     private static readonly Color Gold = new Color(1f, 0.78f, 0.32f, 1f);
@@ -72,32 +75,6 @@ public class GameFeedback : MonoBehaviour
     private RectTransform activeEdgeFlow;
     private float lastBurstTime = -10f;
     private Vector3 lastBurstPosition;
-    private const int MaxConcurrentEffectsPerType = 3;
-    private const float SkillEffectLifetime = 1.25f;
-    private static readonly PassiveCardData.EffectType[] PegHitEffectPool =
-    {
-        PassiveCardData.EffectType.AddOnePinball,
-        PassiveCardData.EffectType.AddPinballScore,
-        PassiveCardData.EffectType.HalfSidesCenter075,
-        PassiveCardData.EffectType.Hit40AddOnePinball,
-        PassiveCardData.EffectType.SlotMultiplier15
-    };
-    private static readonly PassiveCardData.EffectType[] SlotEntryEffectPool =
-    {
-        PassiveCardData.EffectType.FirstPinballTenTimes,
-        PassiveCardData.EffectType.PegHitScore
-    };
-    private readonly Dictionary<PassiveCardData.EffectType, GameObject> skillEffectPrefabs = new();
-    private readonly Dictionary<PassiveCardData.EffectType, Stack<GameObject>> skillEffectPool = new();
-    private readonly Dictionary<GameObject, ParticleSystem[]> skillEffectSystems = new();
-    private readonly List<PlayingSkillEffect> activeSkillEffects = new(16);
-
-    private struct PlayingSkillEffect
-    {
-        public PassiveCardData.EffectType effectType;
-        public GameObject instance;
-        public float expiresAt;
-    }
 
     private void Awake()
     {
@@ -213,6 +190,7 @@ public class GameFeedback : MonoBehaviour
     public void ShowBallValueChange(float amount) =>
         ShowDelta(ballValueHud, amount.ToString("+0.##"), ballValueColor);
 
+    // [Jinyang.Li] Floating +score/+gold HUD value.
     private void ShowDelta(RectTransform target, string value, Color color, Sprite icon = null)
     {
         if (target == null || !target.gameObject.activeInHierarchy) return;
@@ -238,6 +216,7 @@ public class GameFeedback : MonoBehaviour
         }, () => Destroy(popup.gameObject)));
     }
 
+    // [Jinyang.Li] Card purchase flight animation.
     public void PlayPurchase(PassiveCard source, PassiveCard destination)
     {
         Canvas.ForceUpdateCanvases();
@@ -261,6 +240,7 @@ public class GameFeedback : MonoBehaviour
         }));
     }
 
+    // [Jinyang.Li] Card sale fade-out animation.
     public void PlaySale(PassiveCard card)
     {
         RectTransform ghost = CreateCardGhost(card, out _);
@@ -282,6 +262,7 @@ public class GameFeedback : MonoBehaviour
         return ghost;
     }
 
+    // [Jinyang.Li] Bright overlay flash when a passive card activates.
     public void FlashCard(PassiveCard card)
     {
         RectTransform art = (RectTransform)card.cardImage;
@@ -309,6 +290,8 @@ public class GameFeedback : MonoBehaviour
         Destroy(flash.gameObject);
     }
 
+    // [Jinyang.Li] General world-space impact burst for score, gold, split and
+    // temporary-ball feedback.
     public void Burst(CardEffectVisual effect, Vector3 position)
     {
         Material material = hardSparkMaterial != null
@@ -334,7 +317,8 @@ public class GameFeedback : MonoBehaviour
 
         // A denser cloud of small, softly feathered sparks reads as luminous
         // without turning into a large solid shape on top of the board.
-        ParticleSystem sparks = burst.AddComponent<ParticleSystem>();
+        // [Jinyang.Li] Common world-space impact burst.
+        ParticleSystem sparks = CreateStoppedParticleSystem(burst);
         ParticleSystem.MainModule main = sparks.main;
         main.playOnAwake = false;
         main.loop = false;
@@ -396,11 +380,12 @@ public class GameFeedback : MonoBehaviour
         PlayBurstSignature(effect, position);
     }
 
+    // [Jinyang.Li] Soft star flash in the impact burst.
     private ParticleSystem AddSoftStarFlash(Transform parent, Color color)
     {
         GameObject haloObject = new GameObject("Soft Star Flash");
         haloObject.transform.SetParent(parent, false);
-        ParticleSystem halo = haloObject.AddComponent<ParticleSystem>();
+        ParticleSystem halo = CreateStoppedParticleSystem(haloObject);
 
         ParticleSystem.MainModule main = halo.main;
         main.playOnAwake = false;
@@ -441,11 +426,12 @@ public class GameFeedback : MonoBehaviour
         return halo;
     }
 
+    // [Jinyang.Li] Falling diamond shards in the impact burst.
     private ParticleSystem AddFallingCoinShards(Transform parent, Color color)
     {
         GameObject shardObject = new GameObject("Gold Edge Shards");
         shardObject.transform.SetParent(parent, false);
-        ParticleSystem shards = shardObject.AddComponent<ParticleSystem>();
+        ParticleSystem shards = CreateStoppedParticleSystem(shardObject);
 
         ParticleSystem.MainModule main = shards.main;
         main.playOnAwake = false;
@@ -492,6 +478,7 @@ public class GameFeedback : MonoBehaviour
         return glowParticleMaterial != null ? glowParticleMaterial : particleMaterial;
     }
 
+    // [Jinyang.Li] Extra symbol (+1 or infinity) for specific effect types.
     private void PlayBurstSignature(CardEffectVisual effect, Vector3 position)
     {
         switch (effect)
@@ -509,163 +496,13 @@ public class GameFeedback : MonoBehaviour
         }
     }
 
-    public void PlaySkillEffect(PassiveCardData.EffectType effectType, Vector3 position,
-        bool playSignature = true)
-    {
-        if (effectType == PassiveCardData.EffectType.None) return;
-
-        if (!skillEffectPrefabs.TryGetValue(effectType, out GameObject prefab))
-        {
-            prefab = Resources.Load<GameObject>("SkillEffects/Effect_" + (int)effectType);
-            skillEffectPrefabs.Add(effectType, prefab);
-        }
-
-        if (prefab == null) return;
-
-        GameObject instance = AcquireSkillEffect(effectType, prefab);
-        instance.transform.SetPositionAndRotation(position, Quaternion.identity);
-        instance.SetActive(true);
-        bool isNewInstance = !skillEffectSystems.TryGetValue(instance, out ParticleSystem[] systems);
-        if (isNewInstance)
-        {
-            systems = instance.GetComponentsInChildren<ParticleSystem>(true);
-            skillEffectSystems.Add(instance, systems);
-        }
-
-        foreach (ParticleSystem system in systems)
-        {
-            if (isNewInstance)
-                NormalizeParticlePalette(system, effectType);
-            ParticleSystem.MainModule main = system.main;
-            main.playOnAwake = false;
-            main.loop = false;
-            main.stopAction = ParticleSystemStopAction.None;
-            system.Clear(true);
-            system.Play(true);
-        }
-
-        activeSkillEffects.Add(new PlayingSkillEffect
-        {
-            effectType = effectType,
-            instance = instance,
-            expiresAt = Time.unscaledTime + SkillEffectLifetime
-        });
-
-        if (playSignature && (Time.unscaledTime - lastBurstTime > 0.06f ||
-            Vector3.SqrMagnitude(lastBurstPosition - position) > 0.01f))
-        {
-            if (IsGoldEffect(effectType))
-                PlayCoinBurst(position + Vector3.up * 0.15f, 16, 0.88f);
-            else if (effectType == PassiveCardData.EffectType.PegHitSplitPinball)
-                ShowWorldGlyph("\u221E", position + Vector3.up * 0.44f, EffectIvory, false);
-            else if (IsExtraBallEffect(effectType))
-                ShowWorldGlyph("+1", position + Vector3.up * 0.25f, EffectWhite, true);
-            else if (IsTriangleEffect(effectType))
-                PlayTriangleLineBurst(position);
-            else if (IsFlowerEffect(effectType))
-                PlayFlowerBloom(position);
-        }
-    }
-
-    private void OnPinballHitPeg(Pinball pinball, Collider2D peg)
-    {
-        if (pinball == null || peg == null) return;
-
-        PassiveCardData.EffectType effect =
-            PegHitEffectPool[Random.Range(0, PegHitEffectPool.Length)];
-        Vector2 hitPoint = peg.ClosestPoint(pinball.transform.position);
-        PlaySkillEffect(effect, hitPoint, false);
-    }
-
-    private void OnPinballEnteredSlot(ScoreSlot slot)
-    {
-        if (slot == null) return;
-
-        Vector3 position = slot.transform.position;
-        PassiveCardData.EffectType effect =
-            SlotEntryEffectPool[Random.Range(0, SlotEntryEffectPool.Length)];
-        PlaySkillEffect(effect, position, false);
-        PlaySkillEffect(PassiveCardData.EffectType.RandomDoubleSlot, position, false);
-    }
-
-    private GameObject AcquireSkillEffect(PassiveCardData.EffectType effectType,
-        GameObject prefab)
-    {
-        if (!skillEffectPool.TryGetValue(effectType, out Stack<GameObject> pool))
-        {
-            pool = new Stack<GameObject>(MaxConcurrentEffectsPerType);
-            skillEffectPool.Add(effectType, pool);
-        }
-
-        if (pool.Count == 0)
-        {
-            int activeOfType = 0;
-            int oldestIndex = -1;
-            float oldestTime = float.PositiveInfinity;
-            for (int i = 0; i < activeSkillEffects.Count; i++)
-            {
-                PlayingSkillEffect active = activeSkillEffects[i];
-                if (active.effectType != effectType) continue;
-                activeOfType++;
-                if (active.expiresAt < oldestTime)
-                {
-                    oldestTime = active.expiresAt;
-                    oldestIndex = i;
-                }
-            }
-
-            if (activeOfType >= MaxConcurrentEffectsPerType && oldestIndex >= 0)
-            {
-                GameObject oldest = activeSkillEffects[oldestIndex].instance;
-                activeSkillEffects.RemoveAt(oldestIndex);
-                ReturnSkillEffect(effectType, oldest);
-            }
-        }
-
-        GameObject instance = pool.Count > 0
-            ? pool.Pop()
-            : Instantiate(prefab);
-        instance.name = "Effect_" + (int)effectType + " (" + effectType + ")";
-        return instance;
-    }
-
-    private void RecycleExpiredSkillEffects()
-    {
-        for (int i = activeSkillEffects.Count - 1; i >= 0; i--)
-        {
-            PlayingSkillEffect active = activeSkillEffects[i];
-            if (Time.unscaledTime < active.expiresAt) continue;
-
-            activeSkillEffects.RemoveAt(i);
-            ReturnSkillEffect(active.effectType, active.instance);
-        }
-    }
-
-    private void ReturnSkillEffect(PassiveCardData.EffectType effectType, GameObject instance)
-    {
-        if (instance == null) return;
-
-        if (skillEffectSystems.TryGetValue(instance, out ParticleSystem[] systems))
-        {
-            foreach (ParticleSystem system in systems)
-                system.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        }
-        instance.SetActive(false);
-
-        if (!skillEffectPool.TryGetValue(effectType, out Stack<GameObject> pool))
-        {
-            pool = new Stack<GameObject>(MaxConcurrentEffectsPerType);
-            skillEffectPool.Add(effectType, pool);
-        }
-        pool.Push(instance);
-    }
-
     private void PlayTriangleLineBurst(Vector3 position)
     {
         GameObject burst = new GameObject("Triangle Line Burst");
         burst.transform.position = position;
 
-        ParticleSystem triangles = burst.AddComponent<ParticleSystem>();
+        // [Jinyang.Li] Triangle-line burst used by score and multiplier effects.
+        ParticleSystem triangles = CreateStoppedParticleSystem(burst);
         ParticleSystem.MainModule main = triangles.main;
         main.playOnAwake = false;
         main.loop = false;
@@ -724,7 +561,8 @@ public class GameFeedback : MonoBehaviour
         GameObject bloom = new GameObject("Rotating Flower Bloom");
         bloom.transform.position = position;
 
-        ParticleSystem flower = bloom.AddComponent<ParticleSystem>();
+        // [Jinyang.Li] Six-petal flower bloom used by growth/state effects.
+        ParticleSystem flower = CreateStoppedParticleSystem(bloom);
         ParticleSystem.MainModule flowerMain = flower.main;
         flowerMain.playOnAwake = false;
         flowerMain.loop = false;
@@ -793,7 +631,8 @@ public class GameFeedback : MonoBehaviour
     {
         GameObject sparkObject = new GameObject("Flower Petal Sparks");
         sparkObject.transform.SetParent(parent, false);
-        ParticleSystem sparks = sparkObject.AddComponent<ParticleSystem>();
+        // [Jinyang.Li] Small orbiting sparks for the flower effect.
+        ParticleSystem sparks = CreateStoppedParticleSystem(sparkObject);
         ParticleSystem.MainModule main = sparks.main;
         main.playOnAwake = false;
         main.loop = false;
@@ -833,6 +672,7 @@ public class GameFeedback : MonoBehaviour
         return sparks;
     }
 
+    // [Jinyang.Li] Tarot-themed round results panel.
     public void ShowResults(int score, bool cleared, PassiveCardInventory inventory)
     {
         if (showingResults) return;
@@ -1052,6 +892,7 @@ public class GameFeedback : MonoBehaviour
         AddDiamond(parent, Center, position, 8f, Parchment);
     }
 
+    // [Jinyang.Li] Shop open/close transition.
     public void PlayShopTransition(Action swap, bool opening)
     {
         StartCoroutine(AnimateShopTransition(swap, opening));
@@ -1131,6 +972,7 @@ public class GameFeedback : MonoBehaviour
         second.color = WithAlpha(EffectGold, visibility * 0.76f);
     }
 
+    // [Jinyang.Li] World-space text glyph used by extra-ball/split effects.
     private void ShowWorldGlyph(string value, Vector3 worldPosition, Color color, bool plusFlash)
     {
         if (layer == null) return;
@@ -1189,11 +1031,13 @@ public class GameFeedback : MonoBehaviour
         if (glyph != null) Destroy(glyph.gameObject);
     }
 
+    // [Jinyang.Li] Coin-shaped particle reward burst.
     private void PlayCoinBurst(Vector3 position, int count, float scale)
     {
         GameObject coinBurst = new GameObject("Gold Coin Burst");
         coinBurst.transform.position = position;
-        ParticleSystem coins = coinBurst.AddComponent<ParticleSystem>();
+        // [Jinyang.Li] Coin-shaped burst used by gold effects.
+        ParticleSystem coins = CreateStoppedParticleSystem(coinBurst);
         coins.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
         ParticleSystem.MainModule main = coins.main;
@@ -1237,6 +1081,7 @@ public class GameFeedback : MonoBehaviour
         coins.Play(true);
     }
 
+    // [Jinyang.Li] HUD coin burst when gold increases.
     private void PlayUiCoinBurst(RectTransform target)
     {
         if (target == null) return;
@@ -1267,6 +1112,7 @@ public class GameFeedback : MonoBehaviour
         if (coin != null) Destroy(coin.gameObject);
     }
 
+    // [Jinyang.Li] Golden screen-edge flow when the target score is reached.
     private void PlayTargetEdgeFlow()
     {
         targetCelebrated = true;
@@ -1482,6 +1328,7 @@ public class GameFeedback : MonoBehaviour
     private Vector2 SizeInLayer(RectTransform target) =>
         ToLayer(target, target.rect.max) - ToLayer(target, target.rect.min);
 
+    // [Jinyang.Li] Builds reusable procedural textures/materials for effects.
     private void CreateHardEdgeMaterials()
     {
         hardStarTexture = CreateStarTexture(64);
@@ -1517,6 +1364,16 @@ public class GameFeedback : MonoBehaviour
         Material material = new Material(shader) { name = materialName, mainTexture = texture };
         if (material.HasProperty("_TintColor")) material.SetColor("_TintColor", Color.white);
         return material;
+    }
+
+    // [Jinyang.Li] ParticleSystems added with AddComponent may be considered
+    // "playing" before playOnAwake is assigned. Stop them immediately so Unity
+    // accepts duration/lifetime setup without the PlayFlowerBloom warning.
+    private static ParticleSystem CreateStoppedParticleSystem(GameObject host)
+    {
+        ParticleSystem system = host.AddComponent<ParticleSystem>();
+        system.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        return system;
     }
 
     private static Texture2D CreateStarTexture(int size)
@@ -1755,6 +1612,8 @@ public class GameFeedback : MonoBehaviour
         return r * r + g * g + b * b;
     }
 
+    // [Jinyang.Li] Applies the bright white-gold effect palette and per-effect
+    // accent colors to all Resources skill-effect prefabs.
     private void NormalizeParticlePalette(ParticleSystem system,
         PassiveCardData.EffectType effectType)
     {

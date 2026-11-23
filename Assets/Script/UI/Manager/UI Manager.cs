@@ -60,9 +60,17 @@ public class UIManager : MonoBehaviour
     public void RefreshShopCardsWithGold()
     {
         GameManager game = GameManager.instance;
-        if (game.gold < 2) return;
+        // [Jinyang.Li] Do not charge gold or start a new refresh until both the
+        // passive and active card flip animations have finished.
+        if (game.gold < 2 || IsCardRefreshInProgress()) return;
         game.gold -= 2;
         RefreshShopCards();
+    }
+
+    private bool IsCardRefreshInProgress()
+    {
+        return (shopSkillCardPool != null && shopSkillCardPool.IsRefreshing) ||
+               (shopActiveCardPool != null && shopActiveCardPool.IsRefreshing);
     }
 
     private void RefreshShopCards()
@@ -100,6 +108,7 @@ public class UIManager : MonoBehaviour
 
     private void ShowShopWithTransition(bool opening, Action swap)
     {
+        // [Jinyang.Li] Animated shop transition.
         if (GameFeedback.Instance != null)
             GameFeedback.Instance.PlayShopTransition(swap, opening);
         else

@@ -48,6 +48,13 @@ slot scripts. Ambient effects use a cached object pool (at most three active
 instances per effect type) instead of instantiating and destroying a prefab on
 every collision.
 
+The trigger mapping and object pool live in
+`Assets/Script/UI/Manager/GameFeedback.SkillEffectTriggers.cs`, separate from
+the main HUD/result implementation. Every dynamically created ParticleSystem is
+stopped with `StopEmittingAndClear` before its duration or playback settings are
+changed, which avoids Unity's "Setting the duration while system is still
+playing" warning.
+
 `Effect_Glow.mat` and `CardEffectParticleGlow.shader` provide additive blending
 for the common glow look. The existing firework burst in `GameFeedback.Burst()`
 also uses this material when available.

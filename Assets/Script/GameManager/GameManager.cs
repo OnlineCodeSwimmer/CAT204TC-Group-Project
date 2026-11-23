@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour
 
         firstPinballScored = true;
 
+        // [Jinyang.Li] Score-slot multiplier feedback.
         if (!Mathf.Approximately(slot.multiplier, multiplier))
             GameFeedback.Instance?.Burst(CardEffectVisual.Score, slot.transform.position);
         GainScore(GetCurrentPinballScore() * multiplier, slot.transform.position);
@@ -96,6 +97,7 @@ public class GameManager : MonoBehaviour
         float baseAmount = amount;
         ScoreCalculating?.Invoke(ref amount); 
         score += amount;
+        // [Jinyang.Li] Show a burst when a card changes the awarded score.
         if (effectPosition.HasValue && !Mathf.Approximately(baseAmount, amount))
             GameFeedback.Instance?.Burst(CardEffectVisual.Score, effectPosition.Value);
     }
@@ -114,6 +116,7 @@ public class GameManager : MonoBehaviour
         // Preserve the gold bonus on sales and charge the advertised price on purchases.
         if (amount > 0) AddGold(amount);
         else gold += amount;
+        // [Jinyang.Li] Gold HUD delta and UI coin burst.
         GameFeedback.Instance?.ShowGoldChange(gold - previousGold);
     }
 
@@ -121,6 +124,7 @@ public class GameManager : MonoBehaviour
     {
         pinballScore += amount;
         if (amount <= 0) return;
+        // [Jinyang.Li] Ball-value HUD feedback.
         GameFeedback.Instance?.ShowBallValueChange(amount);
         if (effectPosition.HasValue)
             GameFeedback.Instance?.Burst(CardEffectVisual.BallValue, effectPosition.Value);

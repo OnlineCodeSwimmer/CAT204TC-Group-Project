@@ -17,6 +17,7 @@ public static class CodexChangeVerifier
     private static double playStartedAt;
     private static bool enteredPlayMode;
     private static bool shopOpened;
+    private static bool secondRefreshStarted;
     private static bool finished;
 
     static CodexChangeVerifier()
@@ -32,6 +33,7 @@ public static class CodexChangeVerifier
         Failures.Clear();
         enteredPlayMode = false;
         shopOpened = false;
+        secondRefreshStarted = false;
         finished = false;
         SessionState.SetBool(ActiveKey, true);
         Application.logMessageReceived -= CaptureLog;
@@ -61,6 +63,21 @@ public static class CodexChangeVerifier
             return;
         }
 
+        if (shopOpened && !secondRefreshStarted && elapsed > 1.6d)
+        {
+            secondRefreshStarted = true;
+            UIManager ui = UIManager.instance;
+            int goldBefore = GameManager.instance.gold;
+            ui.RefreshShopCardsWithGold();
+            int goldAfterFirstClick = GameManager.instance.gold;
+            ui.RefreshShopCardsWithGold();
+            Require(goldAfterFirstClick == GameManager.instance.gold,
+                "Refresh charged gold again while the first flip animation was still running.");
+            Require(goldBefore - goldAfterFirstClick == 2,
+                "The first refresh did not charge exactly two gold.");
+            return;
+        }
+
         if (!shopOpened || elapsed < 2.75d) return;
 
         finished = true;
@@ -84,6 +101,7 @@ public static class CodexChangeVerifier
         Require(GameFeedback.Instance != null, "GameFeedback.Instance is missing.");
         Require(UIManager.instance != null, "UIManager.instance is missing.");
         Require(UIManager.instance?.shopSkillCardPool != null, "ShopSkillCardPool is missing.");
+        Require(UIManager.instance?.shopActiveCardPool != null, "Active-card shop pool is missing.");
         Require(GameFeedback.Instance?.GetComponent<Canvas>() != null, "GameFeedback Canvas is missing.");
         Require(Resources.Load<Material>("SkillEffects/Effect_Glow") != null, "Effect_Glow material is missing.");
 
@@ -120,6 +138,8 @@ public static class CodexChangeVerifier
             Require(Quaternion.Angle(cards[1].transform.localRotation, Quaternion.identity) < 1f,
                 "Shop card flip did not settle back to its front face.");
         }
+
+        ValidateActiveCardRefresh();
 
         GameFeedback.Instance.Burst(CardEffectVisual.Gold, Vector3.zero);
         GameObject firework = GameObject.Find("Gold Firework");
@@ -200,7 +220,38 @@ public static class CodexChangeVerifier
 
     private static void CaptureLog(string message, string stackTrace, LogType type)
     {
-        if (type == LogType.Exception || type == LogType.Error)
+        if (type == LogType.Exception || type == LogType.Error ||
+            (type == LogType.Warning && message.StartsWith("Setting the duration")))
             Failures.Add(type + ": " + message + "\n" + stackTrace);
+    }
+
+    // [Jinyang.Li] Regression check for the second active-card shop refresh.
+    private static void ValidateActiveCardRefresh()
+    {
+        ShopSkillCardPool activePool = UIManager.instance?.shopActiveCardPool;
+        if (activePool == null) return;
+
+        HorizontalLayoutGroup layout = activePool.GetComponent<HorizontalLayoutGroup>();
+        Require(layout != null && layout.enabled,
+            "Active-card pool lost its HorizontalLayoutGroup and will drift into passive-card slots.");
+        Require(!activePool.IsRefreshing,
+            "Active-card refresh did not finish before the verification window closed.");
+
+        RectTransform poolRect = (RectTransform)activePool.transform;
+        int activeCount = 0;
+        foreach (ActiveCard card in activePool.GetComponentsInChildren<ActiveCard>(false))
+        {
+            if (!card.gameObject.activeInHierarchy) continue;
+            activeCount++;
+            RectTransform cardRect = (RectTransform)card.transform;
+            Vector2 localCenter = poolRect.InverseTransformPoint(
+                cardRect.TransformPoint(cardRect.rect.center));
+            Require(poolRect.rect.Contains(localCenter),
+                "Active-card offer drifted outside the active-card pool after refresh.");
+        }
+
+        Require(activeCount == Mathf.Min(activePool.activeOfferCount,
+                activePool.activeCardDatas.Length),
+            "Unexpected active-card offer count after the second refresh.");
     }
 }

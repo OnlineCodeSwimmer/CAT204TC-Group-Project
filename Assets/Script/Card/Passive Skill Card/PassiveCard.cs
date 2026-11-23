@@ -581,12 +581,14 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void Flash()
     {
+        // [Jinyang.Li] Passive-card activation: card flash + matching Effect_N.
         GameFeedback.Instance?.FlashCard(this);
         GameFeedback.Instance?.PlaySkillEffect(data.effectType, cardImage.position);
     }
 
     private void Flash(CardEffectVisual effect, Vector3 position)
     {
+        // [Jinyang.Li] Positional passive-card feedback (score/gold/ball stock).
         GameFeedback.Instance?.FlashCard(this);
         GameFeedback.Instance?.Burst(effect, position);
         GameFeedback.Instance?.PlaySkillEffect(data.effectType, position);

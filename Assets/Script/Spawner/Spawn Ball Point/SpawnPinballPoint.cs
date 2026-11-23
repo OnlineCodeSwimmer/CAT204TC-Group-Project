@@ -80,6 +80,7 @@ public class SpawnPinballPoint : MonoBehaviour
     {
         GameManager.instance.activePinballs++;
         GameObject ball = SpawnBall(position, true);
+        // [Jinyang.Li] Temporary extra-ball spawn effect.
         GameFeedback.Instance?.Burst(effect, position);
         return ball;
     }

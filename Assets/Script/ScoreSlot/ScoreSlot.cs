@@ -15,8 +15,10 @@ public class ScoreSlot : MonoBehaviour
         if (other.CompareTag("Pinball"))
         {
             if (other.GetComponent<Pinball>().IsTemporary)
+                // [Jinyang.Li] Temporary-ball despawn effect.
                 GameFeedback.Instance?.Burst(CardEffectVisual.TemporaryDespawn, other.transform.position);
             GameManager.instance.AddScore(this);
+            // [Jinyang.Li] Triggers random Effect_6/7 and fixed Effect_8.
             GameManager.instance.NotifyPinballEnteredSlot(this); //Notify the ball is in the hole
 
 

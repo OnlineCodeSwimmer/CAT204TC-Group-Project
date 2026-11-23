@@ -32,6 +32,7 @@ public class Pinball : MonoBehaviour
             BounceFromPeg(other, Random.value < chance ? -1f : 1f);
             
             //Notification ball hits the stop pin
+            // [Jinyang.Li] GameFeedback listens to this event to play Effect_1..5.
             GameManager.instance.NotifyPinballHitPeg(this, other);
 
         }
