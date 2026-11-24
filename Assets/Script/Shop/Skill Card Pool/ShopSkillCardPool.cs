@@ -7,7 +7,8 @@ using UnityEngine.UI;
 // The active-card data/effect system itself remains the leader's implementation.
 public class ShopSkillCardPool : MonoBehaviour
 {
-    private const float ActiveRefreshDelay = 0.12f;
+    // [Jinyang.Li] Slight stagger after the passive-card refresh begins.
+    private const float ActiveRefreshDelay = 0.24f;
 
     public enum PoolType { Passive, Active }
 

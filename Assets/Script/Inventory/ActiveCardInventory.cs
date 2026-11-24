@@ -19,6 +19,14 @@ public class ActiveCardInventory : MonoBehaviour
 
     public bool TryAddCard(ActiveCardData cardData)
     {
+        return TryAddCard(cardData, out _);
+    }
+
+    // [Jinyang.Li] Returns the destination inventory card so the purchase effect
+    // can rotate into the exact occupied slot.
+    public bool TryAddCard(ActiveCardData cardData, out ActiveCard inventoryCard)
+    {
+        inventoryCard = null;
         if (cardData == null || cardPrefab == null) return false;
 
         //Active cards: you can only hold one copy of the same card at a time.
@@ -41,6 +49,7 @@ public class ActiveCardInventory : MonoBehaviour
             cardRect.anchoredPosition3D = Vector3.zero;
             card.SetData(cardData);
             card.isTestCard = false;
+            inventoryCard = card;
             return true;
         }
 

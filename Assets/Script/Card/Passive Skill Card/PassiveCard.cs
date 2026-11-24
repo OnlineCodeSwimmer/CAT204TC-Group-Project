@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,6 +42,9 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private int activeUnusedThrowCount; //UnusedThrowBonus PassiveCard will use this
     private CanvasGroup purchaseGroup;
     private bool refreshAnimating;
+    private Coroutine wobbleRoutine;
+    private Vector3 wobbleBaseScale = Vector3.one;
+    private Quaternion wobbleBaseRotation = Quaternion.identity;
 
 
     private void Awake()
@@ -78,6 +82,13 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void OnDisable()
     {
+        if (wobbleRoutine != null)
+        {
+            StopCoroutine(wobbleRoutine);
+            wobbleRoutine = null;
+            transform.localScale = wobbleBaseScale;
+            transform.localRotation = wobbleBaseRotation;
+        }
         refreshAnimating = false;
         transform.localRotation = Quaternion.identity;
         SetPurchaseAnimation(false);
@@ -581,17 +592,59 @@ public class PassiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void Flash()
     {
-        // [Jinyang.Li] Passive-card activation: card flash + matching Effect_N.
+        // [Jinyang.Li] Passive-card activation: joker-style wobble + card flash
+        // + matching Effect_N.
+        PlaySkillWobble();
         GameFeedback.Instance?.FlashCard(this);
         GameFeedback.Instance?.PlaySkillEffect(data.effectType, cardImage.position);
     }
 
     private void Flash(CardEffectVisual effect, Vector3 position)
     {
-        // [Jinyang.Li] Positional passive-card feedback (score/gold/ball stock).
+        // [Jinyang.Li] Positional passive-card feedback with the same skill wobble.
+        PlaySkillWobble();
         GameFeedback.Instance?.FlashCard(this);
         GameFeedback.Instance?.Burst(effect, position);
         GameFeedback.Instance?.PlaySkillEffect(data.effectType, position);
+    }
+
+    // [Jinyang.Li] Joker-style trigger wobble: damped left/right rotation and a
+    // small scale bounce, then restore the card's original transform.
+    public void PlaySkillWobble()
+    {
+        if (!isActiveAndEnabled) return;
+        if (wobbleRoutine != null)
+        {
+            StopCoroutine(wobbleRoutine);
+            transform.localScale = wobbleBaseScale;
+            transform.localRotation = wobbleBaseRotation;
+        }
+        wobbleBaseScale = transform.localScale;
+        wobbleBaseRotation = transform.localRotation;
+        wobbleRoutine = StartCoroutine(WobbleRoutine());
+    }
+
+    private IEnumerator WobbleRoutine()
+    {
+        const float duration = 0.34f;
+        float elapsed = 0f;
+
+        while (elapsed < duration && isActiveAndEnabled)
+        {
+            float t = Mathf.Clamp01(elapsed / duration);
+            float damping = 1f - t;
+            float angle = Mathf.Sin(t * Mathf.PI * 5f) * 5.5f * damping;
+            float scale = 1f + Mathf.Sin(t * Mathf.PI) * 0.055f;
+            transform.localRotation = wobbleBaseRotation *
+                                      Quaternion.Euler(0f, 0f, angle);
+            transform.localScale = wobbleBaseScale * scale;
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        transform.localRotation = wobbleBaseRotation;
+        transform.localScale = wobbleBaseScale;
+        wobbleRoutine = null;
     }
 
 

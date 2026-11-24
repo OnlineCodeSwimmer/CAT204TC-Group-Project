@@ -4,7 +4,7 @@
 prefabs. They are intentionally simple placeholders so each card effect can be
 edited without changing the other cards.
 
-The number is the integer value of `CardData.EffectType`:
+The number is the integer value of `PassiveCardData.EffectType`:
 
 | File | EffectType |
 | --- | --- |
@@ -55,8 +55,14 @@ stopped with `StopEmittingAndClear` before its duration or playback settings are
 changed, which avoids Unity's "Setting the duration while system is still
 playing" warning.
 
+The active card shop starts refreshing 0.24 seconds after the passive shop, so
+the two flips remain distinct while the combined refresh still finishes quickly.
+
 Additional gameplay feedback:
 
+- active-card purchases reuse the passive-card flight animation and rotate into
+  the exact occupied slot in the active-card inventory;
+- passive-card skill triggers play a damped joker-style rotation and scale bounce;
 - peg-hit effects `Effect_1`..`Effect_5` use reduced overall scale, particle
   scale and opacity while retaining their prefab gravity settings;
 - score-slot effects `Effect_6`..`Effect_8` use a stronger scale;
@@ -87,8 +93,7 @@ renderers to flat billboards, and adds category-specific feedback:
 - split-ball effects show an infinity sigil above the split position.
 - multiplier and score effects send a small burst of rotating triangle-line
   particles outward;
-- state, growth and bounce effects open a rotating six-petal flower ring with
-  a few tiny petal sparks.
+- state, growth and bounce effects open a rotating six-petal flower.
 
 The common burst uses small, softly feathered procedural star and diamond
 textures. Its brightness comes from additive blending plus higher foreground
