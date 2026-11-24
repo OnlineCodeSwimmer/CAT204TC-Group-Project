@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector] public float currentTargetScore;
     [HideInInspector] public float score = 0f;
+    // [Jinyang.Li] Exact score awarded by the most recent score-slot entry.
+    [HideInInspector] public float LastPinballAward { get; private set; }
 
     //Pinball Setting
     [Header("Pinball Setting")]
@@ -84,7 +86,9 @@ public class GameManager : MonoBehaviour
         // [Jinyang.Li] Score-slot multiplier feedback.
         if (!Mathf.Approximately(slot.multiplier, multiplier))
             GameFeedback.Instance?.Burst(CardEffectVisual.Score, slot.transform.position);
+        float scoreBefore = score;
         GainScore(GetCurrentPinballScore() * multiplier, slot.transform.position);
+        LastPinballAward = score - scoreBefore;
     }
 
     public float GetCurrentPinballScore()
@@ -177,6 +181,7 @@ public class GameManager : MonoBehaviour
         currentRound++;
         UpdateTargetScore();
         score = 0f;
+        LastPinballAward = 0f;
 
         //Rstore Thorw Chance
         previousRoundUnusedThrows = throwChance;

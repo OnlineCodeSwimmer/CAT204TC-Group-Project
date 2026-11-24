@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f61c54a90534dd3b73e97a9ac08d51b, type: 3}
+  m_Name: TarotIconLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::TarotIconLibrary
+  icons:
+  - {fileID: 6934086728263231946, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -229256013063241344, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -3885610455112514396, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -7441382367286639308, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: 1618293649664528702, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: 8049885976776599914, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: 4014287730522540239, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: 4743126897691936252, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -4764484233546665588, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -5290367587390873264, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -770413965161706305, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: 5426972220834646583, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -3349645178535924709, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: 3111377950246234702, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: 4797985456115717453, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: 2159787861337585587, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -1716160622732779056, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -1526501209924749334, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -924327008972603792, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -7199854994828347765, guid: 686c059a39631bb41b228769ae212ff5, type: 3}
+  - {fileID: -1837473001184885940, guid: 686c059a39631bb41b228769ae212ff5, type: 3}

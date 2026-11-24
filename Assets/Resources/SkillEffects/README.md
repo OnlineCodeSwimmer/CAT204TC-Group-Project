@@ -55,6 +55,25 @@ stopped with `StopEmittingAndClear` before its duration or playback settings are
 changed, which avoids Unity's "Setting the duration while system is still
 playing" warning.
 
+Additional gameplay feedback:
+
+- peg-hit effects `Effect_1`..`Effect_5` use reduced overall scale, particle
+  scale and opacity while retaining their prefab gravity settings;
+- score-slot effects `Effect_6`..`Effect_8` use a stronger scale;
+- `Effect_8` is converted at runtime into equal-sized streamline particles that
+  rotate outward from the slot center;
+- split-ball feedback adds a larger low-saturation red rotating flower bloom
+  centered on the peg, with six round petals and no outer orbit ring;
+- reaching 100, 200, 500, 1000, 1500 and then every additional 500 points shows
+  a centered, slightly raised muted dark-gold milestone number in three stages:
+  appear, hold, then enlarge and fade. The number uses a hard-edged dynamic
+  system font and a single state-driven display, so a newer milestone replaces
+  the value immediately and resets the hold phase instead of waiting for the
+  old number;
+- a slot that accumulates at least 150 points within 1.2 seconds flashes one of
+  the `icon_0`..`icon_20` tarot sprites, with a short cooldown. The icon uses a
+  high-priority nested canvas, a warm gold tint and a larger fade enlargement.
+
 `Effect_Glow.mat` and `CardEffectParticleGlow.shader` provide additive blending
 for the common glow look. The existing firework burst in `GameFeedback.Burst()`
 also uses this material when available.
@@ -76,6 +95,12 @@ textures. Its brightness comes from additive blending plus higher foreground
 opacity, so it remains legible without depending on Bloom or a blur pass.
 Signature effects use saturated white-gold accents while staying within the
 existing effect footprint.
+
+The particle prefab preview uses the prefab's original round particle texture.
+During play, `NormalizeParticlePalette()` replaces that texture with procedural
+star/diamond textures, switches renderers to 2D billboards, and applies the
+white-gold palette. That is why the same prefab can look like a soft 3D round
+particle in the Inspector but appear as a hard 2D geometric shape in game.
 
 Once the target score is reached, the screen-edge flow starts a long-lived
 stream of small white-gold glow particles travelling toward the centre. Both

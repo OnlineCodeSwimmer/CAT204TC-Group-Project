@@ -104,6 +104,9 @@ public static class CodexChangeVerifier
         Require(UIManager.instance?.shopActiveCardPool != null, "Active-card shop pool is missing.");
         Require(GameFeedback.Instance?.GetComponent<Canvas>() != null, "GameFeedback Canvas is missing.");
         Require(Resources.Load<Material>("SkillEffects/Effect_Glow") != null, "Effect_Glow material is missing.");
+        TarotIconLibrary iconLibrary = Resources.Load<TarotIconLibrary>("TarotIconLibrary");
+        Require(iconLibrary != null && iconLibrary.icons.Length >= 21,
+            "Tarot icon_0..icon_20 library is missing or incomplete.");
 
         GameObject[] effectPrefabs = Resources.LoadAll<GameObject>("SkillEffects");
         Require(effectPrefabs.Length >= 20, "Fewer than 20 skill effect prefabs were found.");
@@ -185,6 +188,53 @@ public static class CodexChangeVerifier
         Require(flowerBloom != null, "State effects did not create the rotating flower bloom.");
         Require(flowerBloom != null && flowerBloom.GetComponentsInChildren<ParticleSystem>().Length >= 2,
             "Flower bloom is missing its rotating ring or small petals.");
+
+        GameFeedback.Instance.PlaySkillEffect(
+            PassiveCardData.EffectType.RandomDoubleSlot, Vector3.down * 3f, false);
+        GameObject slotBurst = GameObject.Find("Effect_8 (RandomDoubleSlot)");
+        Require(slotBurst != null, "Score-slot Effect_8 did not start.");
+        if (slotBurst != null)
+        {
+            ParticleSystemRenderer slotRenderer = slotBurst.GetComponent<ParticleSystemRenderer>();
+            Require(slotRenderer != null &&
+                    slotRenderer.renderMode == ParticleSystemRenderMode.Stretch,
+                "Effect_8 was not converted to streamline particles.");
+        }
+
+        ScoreSlot[] scoreSlots = UnityEngine.Object.FindObjectsByType<ScoreSlot>(
+            FindObjectsInactive.Exclude);
+        ScoreSlot bestSlot = null;
+        foreach (ScoreSlot slot in scoreSlots)
+        {
+            if (bestSlot == null || slot.multiplier > bestSlot.multiplier)
+                bestSlot = slot;
+        }
+        if (bestSlot != null)
+        {
+            GameManager.instance.AddScore(bestSlot);
+            GameManager.instance.NotifyPinballEnteredSlot(bestSlot);
+            Require(GameObject.Find("Score Slot Tarot Flash") != null,
+                "High-scoring slot did not flash a tarot icon.");
+        }
+
+        GameManager.instance.score = 100f;
+        GameFeedback.Instance.SendMessage("Update");
+        GameObject milestone = GameObject.Find("Score Milestone");
+        Require(milestone != null,
+            "Reaching 100 points did not display the centered milestone number.");
+        if (milestone != null)
+        {
+            Text milestoneText = milestone.GetComponentInChildren<Text>();
+            Require(milestoneText != null && milestoneText.font != null,
+                "Milestone number did not use the hard-edged font component.");
+
+            GameManager.instance.score = 1000f;
+            GameFeedback.Instance.SendMessage("Update");
+            Require(GameObject.Find("Score Milestone") == milestone,
+                "A newer milestone created another overlay instead of iterating in place.");
+            Require(milestoneText != null && milestoneText.text == "1,000",
+                "The active milestone did not switch directly to the newer score.");
+        }
 
         GameFeedback.Instance.ShowResults(12345, true, PassiveCardInventory.instance);
         RectTransform results = GameObject.Find("Tarot Reading")?.GetComponent<RectTransform>();

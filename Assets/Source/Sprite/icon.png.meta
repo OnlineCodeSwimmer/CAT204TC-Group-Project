@@ -1,0 +1,1475 @@
+fileFormatVersion: 2
+guid: 686c059a39631bb41b228769ae212ff5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6934086728263231946
+    second: icon_0
+  - first:
+      213: -229256013063241344
+    second: icon_1
+  - first:
+      213: -3885610455112514396
+    second: icon_2
+  - first:
+      213: -7441382367286639308
+    second: icon_3
+  - first:
+      213: 1618293649664528702
+    second: icon_4
+  - first:
+      213: 8049885976776599914
+    second: icon_5
+  - first:
+      213: 4014287730522540239
+    second: icon_6
+  - first:
+      213: 4743126897691936252
+    second: icon_7
+  - first:
+      213: -4764484233546665588
+    second: icon_8
+  - first:
+      213: -5290367587390873264
+    second: icon_9
+  - first:
+      213: -770413965161706305
+    second: icon_10
+  - first:
+      213: 5426972220834646583
+    second: icon_11
+  - first:
+      213: -3349645178535924709
+    second: icon_12
+  - first:
+      213: 3111377950246234702
+    second: icon_13
+  - first:
+      213: 4797985456115717453
+    second: icon_14
+  - first:
+      213: 2159787861337585587
+    second: icon_15
+  - first:
+      213: -1716160622732779056
+    second: icon_16
+  - first:
+      213: -1526501209924749334
+    second: icon_17
+  - first:
+      213: -924327008972603792
+    second: icon_18
+  - first:
+      213: -7199854994828347765
+    second: icon_19
+  - first:
+      213: -1837473001184885940
+    second: icon_20
+  - first:
+      213: 7621616821842055696
+    second: icon_21
+  - first:
+      213: 546032832440536679
+    second: icon_22
+  - first:
+      213: 4611804096804191474
+    second: icon_23
+  - first:
+      213: -2878611675290672999
+    second: icon_24
+  - first:
+      213: 2012603403740337808
+    second: icon_25
+  - first:
+      213: 4037386846454389401
+    second: icon_26
+  - first:
+      213: 3131462886605394980
+    second: icon_27
+  - first:
+      213: -7891146628521642482
+    second: icon_28
+  - first:
+      213: -6816452762887876926
+    second: icon_29
+  - first:
+      213: 5934751610709005063
+    second: icon_30
+  - first:
+      213: -8770669887257262683
+    second: icon_31
+  - first:
+      213: 2848703626835829184
+    second: icon_32
+  - first:
+      213: 2217700674121979931
+    second: icon_33
+  - first:
+      213: 8784748321381093978
+    second: icon_34
+  - first:
+      213: -107017877920308700
+    second: icon_35
+  - first:
+      213: 8108817586207554404
+    second: icon_36
+  - first:
+      213: -184344643626652581
+    second: icon_37
+  - first:
+      213: 5296625000953886181
+    second: icon_38
+  - first:
+      213: -2797863517705874178
+    second: icon_39
+  - first:
+      213: 1598861958287286395
+    second: icon_40
+  - first:
+      213: 961341161114665051
+    second: icon_41
+  - first:
+      213: 6486822007602913870
+    second: icon_42
+  - first:
+      213: -5102674690984291919
+    second: icon_43
+  - first:
+      213: -6978210826525416454
+    second: icon_44
+  - first:
+      213: -7122343688644831495
+    second: icon_45
+  - first:
+      213: 318902631733109550
+    second: icon_46
+  - first:
+      213: -7908086550202134589
+    second: icon_47
+  - first:
+      213: -483051780649511166
+    second: icon_48
+  - first:
+      213: -6215579143488269388
+    second: icon_49
+  - first:
+      213: 8265795547982450223
+    second: icon_50
+  - first:
+      213: 8260489618747276431
+    second: icon_51
+  - first:
+      213: -8556222564715788543
+    second: icon_52
+  - first:
+      213: -5346968513893012664
+    second: icon_53
+  - first:
+      213: 1557369486814040597
+    second: icon_54
+  - first:
+      213: 5871476789121330003
+    second: icon_55
+  - first:
+      213: -3880464647801180534
+    second: icon_56
+  - first:
+      213: -6907229443390180988
+    second: icon_57
+  - first:
+      213: -674690339440975900
+    second: icon_58
+  - first:
+      213: -8450085832163554618
+    second: icon_59
+  - first:
+      213: 5649456371208689661
+    second: icon_60
+  - first:
+      213: -8775255934355559568
+    second: icon_61
+  - first:
+      213: -2126967884414511514
+    second: icon_62
+  - first:
+      213: 6348147748878046198
+    second: icon_63
+  - first:
+      213: -7452054717920679433
+    second: icon_64
+  - first:
+      213: 5020932839866294903
+    second: icon_65
+  - first:
+      213: -8332354050944156342
+    second: icon_66
+  - first:
+      213: -615038323351539499
+    second: icon_67
+  - first:
+      213: -6888709434326676788
+    second: icon_68
+  - first:
+      213: -6148233492340197790
+    second: icon_69
+  - first:
+      213: 4402289063958767102
+    second: icon_70
+  - first:
+      213: 8172389424442211114
+    second: icon_71
+  - first:
+      213: -5804490749463610629
+    second: icon_72
+  - first:
+      213: -1409954863871982896
+    second: icon_73
+  - first:
+      213: -2640173872217149559
+    second: icon_74
+  - first:
+      213: 8040469664292803843
+    second: icon_75
+  - first:
+      213: 8912255413367707951
+    second: icon_76
+  - first:
+      213: 236892776172281949
+    second: icon_77
+  - first:
+      213: -4472925305128777450
+    second: icon_78
+  - first:
+      213: -9131140966591227683
+    second: icon_79
+  - first:
+      213: -2882005465459478741
+    second: icon_80
+  - first:
+      213: -6132657980292356179
+    second: icon_81
+  - first:
+      213: 4934282456014638625
+    second: icon_82
+  - first:
+      213: -4137955234826873704
+    second: icon_83
+  - first:
+      213: 29567881777305944
+    second: icon_84
+  - first:
+      213: -227690813440315548
+    second: icon_85
+  - first:
+      213: 3308682458247303384
+    second: icon_86
+  - first:
+      213: 3939576127641066194
+    second: icon_87
+  - first:
+      213: 8254890077814759500
+    second: icon_88
+  - first:
+      213: 7452839051267525277
+    second: icon_89
+  - first:
+      213: -3483304229868306205
+    second: icon_90
+  - first:
+      213: 8926536011035145912
+    second: icon_91
+  - first:
+      213: -7530584594002756295
+    second: icon_92
+  - first:
+      213: -7872413457820161358
+    second: icon_93
+  - first:
+      213: 6283985906541101984
+    second: icon_94
+  - first:
+      213: -8640841057204151037
+    second: icon_95
+  - first:
+      213: 3295507350314382357
+    second: icon_96
+  - first:
+      213: 8737453853647954896
+    second: icon_97
+  - first:
+      213: 3580539146858299261
+    second: icon_98
+  - first:
+      213: 6200874120767557504
+    second: icon_99
+  - first:
+      213: -446929059569426554
+    second: icon_100
+  - first:
+      213: -4500364512901026752
+    second: icon_101
+  - first:
+      213: -5471621424490855535
+    second: icon_102
+  - first:
+      213: 5401812631841824691
+    second: icon_103
+  - first:
+      213: -7415226294450939768
+    second: icon_104
+  - first:
+      213: -2496878305258886954
+    second: icon_105
+  - first:
+      213: -7749532346070853644
+    second: icon_106
+  - first:
+      213: 2905169196780963323
+    second: icon_107
+  - first:
+      213: 3713152026600955945
+    second: icon_108
+  - first:
+      213: 2265641900217923473
+    second: icon_109
+  - first:
+      213: -1344370366154752360
+    second: icon_110
+  - first:
+      213: 1319236244826509854
+    second: icon_111
+  - first:
+      213: 8793399860916734134
+    second: icon_112
+  - first:
+      213: -2067442915106384105
+    second: icon_113
+  - first:
+      213: 8336996560630002406
+    second: icon_114
+  - first:
+      213: 1520575620568616173
+    second: icon_115
+  - first:
+      213: 747366898582339173
+    second: icon_116
+  - first:
+      213: 5237676572740137
+    second: icon_117
+  - first:
+      213: 7932017819459843533
+    second: icon_118
+  - first:
+      213: 2249508692622967926
+    second: icon_119
+  - first:
+      213: 3392945970255189527
+    second: icon_120
+  - first:
+      213: -4776403093799499746
+    second: icon_121
+  - first:
+      213: 5116667607297804591
+    second: icon_122
+  - first:
+      213: 2484142977041324968
+    second: icon_123
+  - first:
+      213: 1038705653301716870
+    second: icon_124
+  - first:
+      213: -3978130381895791639
+    second: icon_125
+  - first:
+      213: -2719806277195755571
+    second: icon_126
+  - first:
+      213: 1209643859837833951
+    second: icon_127
+  - first:
+      213: 5382247390770674455
+    second: icon_128
+  - first:
+      213: -2603650678293295515
+    second: icon_129
+  - first:
+      213: 6616950212470547035
+    second: icon_130
+  - first:
+      213: 8336789264916583286
+    second: icon_131
+  - first:
+      213: -3898997966064580252
+    second: icon_132
+  - first:
+      213: 6894791497152343565
+    second: icon_133
+  - first:
+      213: 5162260399632360454
+    second: icon_134
+  - first:
+      213: 8602916106517618563
+    second: icon_135
+  - first:
+      213: 4359213738039069002
+    second: icon_136
+  - first:
+      213: 2515269472832086877
+    second: icon_137
+  - first:
+      213: -5571790610749090364
+    second: icon_138
+  - first:
+      213: -866952715051072120
+    second: icon_139
+  - first:
+      213: -4296089441429753442
+    second: icon_140
+  - first:
+      213: 1208440187494865398
+    second: icon_141
+  - first:
+      213: 720842244107530810
+    second: icon_142
+  - first:
+      213: -858447266365374921
+    second: icon_143
+  - first:
+      213: -1418564750229611200
+    second: icon_144
+  - first:
+      213: -3855912242336869735
+    second: icon_145
+  - first:
+      213: 4806674056611452972
+    second: icon_146
+  - first:
+      213: 8755175133063584110
+    second: icon_147
+  - first:
+      213: 5509223128267800025
+    second: icon_148
+  - first:
+      213: -4123745142423782552
+    second: icon_149
+  - first:
+      213: 842329962735796414
+    second: icon_150
+  - first:
+      213: 6245908764203642470
+    second: icon_151
+  - first:
+      213: 2330348540808401094
+    second: icon_152
+  - first:
+      213: 6871584393650111724
+    second: icon_153
+  - first:
+      213: 2304611815530866859
+    second: icon_154
+  - first:
+      213: 7386498174187647198
+    second: icon_155
+  - first:
+      213: 4117071273995225238
+    second: icon_156
+  - first:
+      213: -3292283524193757019
+    second: icon_157
+  - first:
+      213: -4518900070485382084
+    second: icon_158
+  - first:
+      213: -8109052552715744872
+    second: icon_159
+  - first:
+      213: -2565943224177621552
+    second: icon_160
+  - first:
+      213: 6099527761619754354
+    second: icon_161
+  - first:
+      213: -1900958269430650564
+    second: icon_162
+  - first:
+      213: 5454996427681571710
+    second: icon_163
+  - first:
+      213: -3190170295261364064
+    second: icon_164
+  - first:
+      213: 347431681300619668
+    second: icon_165
+  - first:
+      213: -8056677608429645991
+    second: icon_166
+  - first:
+      213: 792503692903253555
+    second: icon_167
+  - first:
+      213: -3982053428938174442
+    second: icon_168
+  - first:
+      213: 148338101953902215
+    second: icon_169
+  - first:
+      213: -9067817162681559797
+    second: icon_170
+  - first:
+      213: -5156767188905035777
+    second: icon_171
+  - first:
+      213: -921560429829428203
+    second: icon_172
+  - first:
+      213: 5428284739979757681
+    second: icon_173
+  - first:
+      213: -8453012007957164961
+    second: icon_174
+  - first:
+      213: 5727580070784436790
+    second: icon_175
+  - first:
+      213: 4024522334616474915
+    second: icon_176
+  - first:
+      213: -2057397298284178905
+    second: icon_177
+  - first:
+      213: 4749485356384990493
+    second: icon_178
+  - first:
+      213: -4803119991220070560
+    second: icon_179
+  - first:
+      213: 2650853346848796130
+    second: icon_180
+  - first:
+      213: 3650752840189757941
+    second: icon_181
+  - first:
+      213: -5053753272391229191
+    second: icon_182
+  - first:
+      213: 5173142096277478437
+    second: icon_183
+  - first:
+      213: -3593915647595410978
+    second: icon_184
+  - first:
+      213: 8192431738456978183
+    second: icon_185
+  - first:
+      213: 781237249348967547
+    second: icon_186
+  - first:
+      213: -5853080611888296896
+    second: icon_187
+  - first:
+      213: 6393197535912556341
+    second: icon_188
+  - first:
+      213: 2364583677539134731
+    second: icon_189
+  - first:
+      213: 5572487385468747612
+    second: icon_190
+  - first:
+      213: 3543504114467347735
+    second: icon_191
+  - first:
+      213: -362670822527711962
+    second: icon_192
+  - first:
+      213: -1882688299479342769
+    second: icon_193
+  - first:
+      213: 1870129640328097745
+    second: icon_194
+  - first:
+      213: 8883920952921005055
+    second: icon_195
+  - first:
+      213: -7228802917832322759
+    second: icon_196
+  - first:
+      213: -5035670277133816918
+    second: icon_197
+  - first:
+      213: 2803699788237263269
+    second: icon_198
+  - first:
+      213: -4399625958174216826
+    second: icon_199
+  - first:
+      213: -7639608101391529255
+    second: icon_200
+  - first:
+      213: -4250862132633433116
+    second: icon_201
+  - first:
+      213: 5635678935252254764
+    second: icon_202
+  - first:
+      213: -3949540105048699822
+    second: icon_203
+  - first:
+      213: 7562138542779364499
+    second: icon_204
+  - first:
+      213: -2805692694707955387
+    second: icon_205
+  - first:
+      213: 6188595514011248047
+    second: icon_206
+  - first:
+      213: 4958438077506785322
+    second: icon_207
+  - first:
+      213: -3012487916719252504
+    second: icon_208
+  - first:
+      213: -9150723131299888072
+    second: icon_209
+  - first:
+      213: 3537477349942485273
+    second: icon_210
+  - first:
+      213: 7423823774619500682
+    second: icon_211
+  - first:
+      213: 1900370210269342600
+    second: icon_212
+  - first:
+      213: 2964590430360816181
+    second: icon_213
+  - first:
+      213: 1746739004670700581
+    second: icon_214
+  - first:
+      213: -3398018830782193964
+    second: icon_215
+  - first:
+      213: 4607041269615325382
+    second: icon_216
+  - first:
+      213: -8716436398794220649
+    second: icon_217
+  - first:
+      213: -3154169224794875007
+    second: icon_218
+  - first:
+      213: -549621861224649467
+    second: icon_219
+  - first:
+      213: -8835847012525843902
+    second: icon_220
+  - first:
+      213: -5934282592989842237
+    second: icon_221
+  - first:
+      213: -1119993016239534819
+    second: icon_222
+  - first:
+      213: -1903317169235066025
+    second: icon_223
+  - first:
+      213: 5216816975387371014
+    second: icon_224
+  - first:
+      213: 461057478670669122
+    second: icon_225
+  - first:
+      213: 9197247679728728515
+    second: icon_226
+  - first:
+      213: 2125729621880085749
+    second: icon_227
+  - first:
+      213: 1815258332078221269
+    second: icon_228
+  - first:
+      213: -1548519344294021666
+    second: icon_229
+  - first:
+      213: 4996669044284306784
+    second: icon_230
+  - first:
+      213: -4450917781567345043
+    second: icon_231
+  - first:
+      213: -791608555813018221
+    second: icon_232
+  - first:
+      213: -2023486695224036352
+    second: icon_233
+  - first:
+      213: -2475193295241821467
+    second: icon_234
+  - first:
+      213: 6906767845095827963
+    second: icon_235
+  - first:
+      213: -2500518428497418452
+    second: icon_236
+  - first:
+      213: 4233694528696806264
+    second: icon_237
+  - first:
+      213: 3143345865157640737
+    second: icon_238
+  - first:
+      213: -4721474706443221576
+    second: icon_239
+  - first:
+      213: 2239028483245141907
+    second: icon_240
+  - first:
+      213: -5474364270097254728
+    second: icon_241
+  - first:
+      213: -8605128703525488100
+    second: icon_242
+  - first:
+      213: -4465570224414795763
+    second: icon_243
+  - first:
+      213: 4906463037510633570
+    second: icon_244
+  - first:
+      213: 3198668591911930131
+    second: icon_245
+  - first:
+      213: 2258563669372250748
+    second: icon_246
+  - first:
+      213: 7757568672791861157
+    second: icon_247
+  - first:
+      213: 8044744782556028071
+    second: icon_248
+  - first:
+      213: 5262939535419747588
+    second: icon_249
+  - first:
+      213: -4258684844176637075
+    second: icon_250
+  - first:
+      213: -4772751387142791209
+    second: icon_251
+  - first:
+      213: 147357018908387022
+    second: icon_252
+  - first:
+      213: 727708735848330815
+    second: icon_253
+  - first:
+      213: 6067675925878467464
+    second: icon_254
+  - first:
+      213: -6348926698447479920
+    second: icon_255
+  - first:
+      213: 6641532120507791198
+    second: icon_256
+  - first:
+      213: -4994237544880645538
+    second: icon_257
+  - first:
+      213: -8790355599338130827
+    second: icon_258
+  - first:
+      213: -5882135530857840738
+    second: icon_259
+  - first:
+      213: 4659525472339953636
+    second: icon_260
+  - first:
+      213: 2363091781348714623
+    second: icon_261
+  - first:
+      213: -7379008682080132633
+    second: icon_262
+  - first:
+      213: -4931892490371013833
+    second: icon_263
+  - first:
+      213: -8271784745688891350
+    second: icon_264
+  - first:
+      213: 7553861226452837199
+    second: icon_265
+  - first:
+      213: 2876288573262252460
+    second: icon_266
+  - first:
+      213: -7861091879362236728
+    second: icon_267
+  - first:
+      213: 5106263809889189782
+    second: icon_268
+  - first:
+      213: -4251343021186715948
+    second: icon_269
+  - first:
+      213: 7780991957729606188
+    second: icon_270
+  - first:
+      213: -7147522805358349231
+    second: icon_271
+  - first:
+      213: 3592973762278531609
+    second: icon_272
+  - first:
+      213: -146947523424731541
+    second: icon_273
+  - first:
+      213: -8020756938420508177
+    second: icon_274
+  - first:
+      213: 7817635755885829808
+    second: icon_275
+  - first:
+      213: 9060451507814961906
+    second: icon_276
+  - first:
+      213: 8824275647122722150
+    second: icon_277
+  - first:
+      213: -5335393916306913427
+    second: icon_278
+  - first:
+      213: -8565993552702372795
+    second: icon_279
+  - first:
+      213: -8622096285890095420
+    second: icon_280
+  - first:
+      213: 5877088903670107127
+    second: icon_281
+  - first:
+      213: -4483545457592596420
+    second: icon_282
+  - first:
+      213: -5631311201818678829
+    second: icon_283
+  - first:
+      213: -4770338237751598201
+    second: icon_284
+  - first:
+      213: 3149683113273040249
+    second: icon_285
+  - first:
+      213: 1227922836367347439
+    second: icon_286
+  - first:
+      213: -7503749341322307220
+    second: icon_287
+  - first:
+      213: 4368039228981148071
+    second: icon_288
+  - first:
+      213: 1049991679002866801
+    second: icon_289
+  - first:
+      213: -8092189639841264347
+    second: icon_290
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: icon_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 738
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac961e71423da3060800000000000000
+      internalID: 6934086728263231946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_1
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 738
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0814ebaeed481dcf0800000000000000
+      internalID: -229256013063241344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_2
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 738
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a4897fb0e9831ac0800000000000000
+      internalID: -3885610455112514396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_3
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 738
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4354600c926eab890800000000000000
+      internalID: -7441382367286639308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_4
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 738
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3156821085557610800000000000000
+      internalID: 1618293649664528702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_5
+      rect:
+        serializedVersion: 2
+        x: 1185
+        y: 738
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a69ea2055a0f6bf60800000000000000
+      internalID: 8049885976776599914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 492
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc8410c1c6d95b730800000000000000
+      internalID: 4014287730522540239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_7
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 492
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf5478588c8f2d140800000000000000
+      internalID: 4743126897691936252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_8
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 492
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c81708935d621edb0800000000000000
+      internalID: -4764484233546665588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_9
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 492
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 051a35675b6d496b0800000000000000
+      internalID: -5290367587390873264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_10
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 492
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbc498c9490fe45f0800000000000000
+      internalID: -770413965161706305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_11
+      rect:
+        serializedVersion: 2
+        x: 1185
+        y: 492
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73a03c44b7a705b40800000000000000
+      internalID: 5426972220834646583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 246
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1c24c1157ba381d0800000000000000
+      internalID: -3349645178535924709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_13
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 246
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4ae86ec2c5dd2b20800000000000000
+      internalID: 3111377950246234702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_14
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 246
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d45944df95ed59240800000000000000
+      internalID: 4797985456115717453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_15
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 246
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b73a39ed9b19fd10800000000000000
+      internalID: 2159787861337585587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_16
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 246
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d1ef789109fe28e0800000000000000
+      internalID: -1716160622732779056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_17
+      rect:
+        serializedVersion: 2
+        x: 1185
+        y: 246
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae73b31cc37c0dae0800000000000000
+      internalID: -1526501209924749334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07e73ed8b712c23f0800000000000000
+      internalID: -924327008972603792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_19
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 0
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b863fe6570af41c90800000000000000
+      internalID: -7199854994828347765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_20
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 0
+        width: 193
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4301007a0cff76e0800000000000000
+      internalID: -1837473001184885940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: da58e2616f80fa241a629014f13cfdb7
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":4.0},"gridSpriteSize":{"x":193.0,"y":220.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":44.0,"y":26.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      icon_0: 6934086728263231946
+      icon_1: -229256013063241344
+      icon_10: -770413965161706305
+      icon_11: 5426972220834646583
+      icon_12: -3349645178535924709
+      icon_13: 3111377950246234702
+      icon_14: 4797985456115717453
+      icon_15: 2159787861337585587
+      icon_16: -1716160622732779056
+      icon_17: -1526501209924749334
+      icon_18: -924327008972603792
+      icon_19: -7199854994828347765
+      icon_2: -3885610455112514396
+      icon_20: -1837473001184885940
+      icon_3: -7441382367286639308
+      icon_4: 1618293649664528702
+      icon_5: 8049885976776599914
+      icon_6: 4014287730522540239
+      icon_7: 4743126897691936252
+      icon_8: -4764484233546665588
+      icon_9: -5290367587390873264
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

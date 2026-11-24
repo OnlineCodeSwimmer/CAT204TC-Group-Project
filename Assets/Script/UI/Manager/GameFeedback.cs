@@ -14,8 +14,13 @@ public enum CardEffectVisual
     Split, TemporarySpawn, TemporaryDespawn, BallValue, Score, Gold, BallStock
 }
 
-// [Jinyang.Li] Core feedback host. Skill-effect triggering, random mapping and
-// pooling are separated into GameFeedback.SkillEffectTriggers.cs.
+// [Jinyang.Li] Core feedback host and owner of these features:
+// - HUD score/gold/value popups and card purchase/sale animations
+// - impact bursts, split infinity glyph, flower bloom, coins and target edge flow
+// - tarot results screen and animated shop transition
+// - procedural particle textures, materials and palette normalization
+// Skill-effect triggering, random mapping and pooling are separated into
+// GameFeedback.SkillEffectTriggers.cs.
 [RequireComponent(typeof(Canvas))]
 public partial class GameFeedback : MonoBehaviour
 {
@@ -35,6 +40,8 @@ public partial class GameFeedback : MonoBehaviour
     private static readonly Vector2 Center = new Vector2(0.5f, 0.5f);
     private static readonly Color Ivory = new Color(1f, 0.96f, 0.84f, 1f);
     private static readonly Color Gold = new Color(1f, 0.78f, 0.32f, 1f);
+    private static readonly Color DarkGold = new Color(0.62f, 0.43f, 0.14f, 1f);
+    private static readonly Color MutedDarkGold = new Color(0.54f, 0.48f, 0.38f, 1f);
     private static readonly Color BrightGold = new Color(1f, 0.88f, 0.52f, 1f);
     private static readonly Color GoldRed = new Color(0.88f, 0.29f, 0.16f, 1f);
     private static readonly Color Crimson = new Color(0.45f, 0.06f, 0.055f, 1f);
@@ -58,6 +65,7 @@ public partial class GameFeedback : MonoBehaviour
     private Material coinParticleMaterial;
     private Material triangleLineMaterial;
     private Material flowerPetalMaterial;
+    private Material streamlineMaterial;
     private Sprite hardStarSprite;
     private Sprite hardDiamondSprite;
     private Sprite coinParticleSprite;
@@ -70,6 +78,7 @@ public partial class GameFeedback : MonoBehaviour
     private Texture2D orbitRingTexture;
     private Texture2D triangleLineTexture;
     private Texture2D flowerPetalTexture;
+    private Texture2D streamlineTexture;
     private int celebratedRound = -1;
     private bool targetCelebrated;
     private RectTransform activeEdgeFlow;
@@ -140,6 +149,7 @@ public partial class GameFeedback : MonoBehaviour
         Destroy(coinParticleMaterial);
         Destroy(triangleLineMaterial);
         Destroy(flowerPetalMaterial);
+        Destroy(streamlineMaterial);
         if (hardStarSprite != null) Destroy(hardStarSprite);
         if (hardDiamondSprite != null) Destroy(hardDiamondSprite);
         if (coinParticleSprite != null) Destroy(coinParticleSprite);
@@ -152,6 +162,8 @@ public partial class GameFeedback : MonoBehaviour
         if (orbitRingTexture != null) Destroy(orbitRingTexture);
         if (triangleLineTexture != null) Destroy(triangleLineTexture);
         if (flowerPetalTexture != null) Destroy(flowerPetalTexture);
+        if (streamlineTexture != null) Destroy(streamlineTexture);
+        if (milestoneFontOwned && milestoneFont != null) Destroy(milestoneFont);
         if (Instance == this) Instance = null;
     }
 
@@ -160,7 +172,10 @@ public partial class GameFeedback : MonoBehaviour
         RecycleExpiredSkillEffects();
 
         GameManager game = GameManager.instance;
-        if (game == null || game.currentTargetScore <= 0f) return;
+        if (game == null) return;
+
+        UpdateScoreMilestones(game);
+        if (game.currentTargetScore <= 0f) return;
 
         if (celebratedRound != game.currentRound)
         {
@@ -496,6 +511,13 @@ public partial class GameFeedback : MonoBehaviour
         }
     }
 
+    // [Jinyang.Li] Split flowers are anchored to the peg center, not the new
+    // ball's spawn offset.
+    public void PlaySplitFlower(Vector3 pegCenter)
+    {
+        PlayFlowerBloom(pegCenter);
+    }
+
     private void PlayTriangleLineBurst(Vector3 position)
     {
         GameObject burst = new GameObject("Triangle Line Burst");
@@ -556,12 +578,15 @@ public partial class GameFeedback : MonoBehaviour
         Destroy(burst, 2.2f);
     }
 
+    // [Jinyang.Li] Red rotating split flower. Its parent stays fixed at the peg
+    // center while the single flower particle rotates and scales up.
     private void PlayFlowerBloom(Vector3 position)
     {
         GameObject bloom = new GameObject("Rotating Flower Bloom");
         bloom.transform.position = position;
 
-        // [Jinyang.Li] Six-petal flower bloom used by growth/state effects.
+        // [Jinyang.Li] Red six-petal split flower. It stays centered on the peg,
+        // rotates in place, and uses low-saturation/low-opacity color.
         ParticleSystem flower = CreateStoppedParticleSystem(bloom);
         ParticleSystem.MainModule flowerMain = flower.main;
         flowerMain.playOnAwake = false;
@@ -569,9 +594,10 @@ public partial class GameFeedback : MonoBehaviour
         flowerMain.duration = 0.06f;
         flowerMain.startLifetime = 0.76f;
         flowerMain.startSpeed = 0f;
-        flowerMain.startSize = new ParticleSystem.MinMaxCurve(0.34f, 0.42f);
+        flowerMain.startSize = new ParticleSystem.MinMaxCurve(1.08f, 1.24f);
         flowerMain.startColor = new ParticleSystem.MinMaxGradient(
-            WithAlpha(EffectWhite, 0.9f), WithAlpha(EffectRoseGold, 0.78f));
+            WithAlpha(new Color(0.84f, 0.42f, 0.36f), 0.52f),
+            WithAlpha(new Color(0.48f, 0.2f, 0.17f), 0.4f));
         flowerMain.simulationSpace = ParticleSystemSimulationSpace.World;
         flowerMain.stopAction = ParticleSystemStopAction.None;
 
@@ -585,7 +611,22 @@ public partial class GameFeedback : MonoBehaviour
 
         ParticleSystem.ColorOverLifetimeModule flowerFade = flower.colorOverLifetime;
         flowerFade.enabled = true;
-        flowerFade.color = CreateGoldGradient(EffectRoseGold, 0.85f);
+        Gradient softFlowerGradient = new Gradient();
+        softFlowerGradient.SetKeys(
+            new[]
+            {
+                new GradientColorKey(new Color(0.92f, 0.66f, 0.58f), 0f),
+                new GradientColorKey(new Color(0.76f, 0.34f, 0.28f), 0.35f),
+                new GradientColorKey(new Color(0.42f, 0.17f, 0.14f), 1f)
+            },
+            new[]
+            {
+                new GradientAlphaKey(0f, 0f),
+                new GradientAlphaKey(0.48f, 0.08f),
+                new GradientAlphaKey(0.4f, 0.62f),
+                new GradientAlphaKey(0f, 1f)
+            });
+        flowerFade.color = softFlowerGradient;
 
         ParticleSystem.SizeOverLifetimeModule flowerSize = flower.sizeOverLifetime;
         flowerSize.enabled = true;
@@ -598,7 +639,7 @@ public partial class GameFeedback : MonoBehaviour
 
         ParticleSystem.RotationOverLifetimeModule flowerRotation = flower.rotationOverLifetime;
         flowerRotation.enabled = true;
-        flowerRotation.z = 1.35f;
+        flowerRotation.z = 1.8f;
 
         ParticleSystemRenderer flowerRenderer = bloom.GetComponent<ParticleSystemRenderer>();
         flowerRenderer.sharedMaterial = flowerPetalMaterial != null
@@ -606,20 +647,13 @@ public partial class GameFeedback : MonoBehaviour
             : hardStarMaterial;
         flowerRenderer.renderMode = ParticleSystemRenderMode.Billboard;
         flowerRenderer.sortingOrder = 25;
-        flowerRenderer.maxParticleSize = 0.32f;
-
-        ParticleSystem petals = AddSignatureSparks(bloom.transform, EffectRoseGold, 12, 0.022f, 0.052f,
-            0.55f, 1.35f);
-        ParticleSystemRenderer petalRenderer = petals.GetComponent<ParticleSystemRenderer>();
-        petalRenderer.sharedMaterial = flowerPetalMaterial != null
-            ? flowerPetalMaterial
-            : hardSparkMaterial;
+        flowerRenderer.maxParticleSize = 2.2f;
 
         flower.Play(true);
-        petals.Play(true);
-        Destroy(bloom, 2.2f);
+        Destroy(bloom, 1.6f);
     }
 
+    // [Jinyang.Li] Small auxiliary sparks used by triangle-line effects.
     private ParticleSystem AddSignatureSparks(
         Transform parent,
         Color accent,
@@ -1338,6 +1372,7 @@ public partial class GameFeedback : MonoBehaviour
         orbitRingTexture = CreateOrbitRingTexture(96);
         triangleLineTexture = CreateTriangleLineTexture(64);
         flowerPetalTexture = CreateFlowerPetalTexture(96);
+        streamlineTexture = CreateStreamlineTexture(64, 16);
         hardStarSprite = Sprite.Create(hardStarTexture,
             new Rect(0f, 0f, hardStarTexture.width, hardStarTexture.height), Center, 100f);
         hardDiamondSprite = Sprite.Create(hardDiamondTexture,
@@ -1353,6 +1388,7 @@ public partial class GameFeedback : MonoBehaviour
         coinParticleMaterial = CreateParticleMaterial(coinParticleTexture, "Soft Gold Coin");
         triangleLineMaterial = CreateParticleMaterial(triangleLineTexture, "Triangle Line Burst");
         flowerPetalMaterial = CreateParticleMaterial(flowerPetalTexture, "Rotating Flower Bloom");
+        streamlineMaterial = CreateParticleMaterial(streamlineTexture, "Slot Entry Streamline");
     }
 
     private static Material CreateParticleMaterial(Texture2D texture, string materialName)
@@ -1466,6 +1502,34 @@ public partial class GameFeedback : MonoBehaviour
         return texture;
     }
 
+    // [Jinyang.Li] Soft elongated particle texture used by Effect_8.
+    private static Texture2D CreateStreamlineTexture(int width, int height)
+    {
+        Texture2D texture = new Texture2D(width, height, TextureFormat.RGBA32, false)
+        {
+            name = "Slot Entry Streamline",
+            filterMode = FilterMode.Bilinear,
+            wrapMode = TextureWrapMode.Clamp
+        };
+        Color32[] pixels = new Color32[width * height];
+        for (int y = 0; y < height; y++)
+        {
+            float ny = (y + 0.5f) / height * 2f - 1f;
+            float vertical = Mathf.Pow(Mathf.Clamp01(1f - ny * ny), 2.4f);
+            for (int x = 0; x < width; x++)
+            {
+                float nx = (x + 0.5f) / width * 2f - 1f;
+                float taper = Mathf.Pow(Mathf.Clamp01(1f - nx * nx), 0.42f);
+                float endGlow = Mathf.Clamp01((1f - Mathf.Abs(nx)) / 0.08f);
+                pixels[y * width + x] = AlphaPixel(vertical * taper * endGlow);
+            }
+        }
+        texture.SetPixels32(pixels);
+        texture.Apply(false, false);
+        return texture;
+    }
+
+    // [Jinyang.Li] Builds the six round-petal flower mask with no outer ring.
     private static Texture2D CreateFlowerPetalTexture(int size)
     {
         Texture2D texture = NewFeedbackTexture(size, "Rotating Flower Bloom");
@@ -1483,17 +1547,16 @@ public partial class GameFeedback : MonoBehaviour
                     float angle = petalIndex * Mathf.PI / 3f;
                     Vector2 direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
                     Vector2 perpendicular = new Vector2(-direction.y, direction.x);
-                    float radial = Vector2.Dot(point, direction) - 0.33f;
+                    float radial = Vector2.Dot(point, direction) - 0.4f;
                     float sideways = Vector2.Dot(point, perpendicular);
-                    float ellipse = radial * radial / (0.29f * 0.29f) +
-                                    sideways * sideways / (0.14f * 0.14f);
-                    float petal = 1f - Mathf.Clamp01((ellipse - 0.88f) / 0.14f);
+                    // Round petals with no surrounding orbit ring.
+                    float ellipse = (radial * radial + sideways * sideways) / (0.23f * 0.23f);
+                    float petal = 1f - Mathf.Clamp01((ellipse - 0.82f) / 0.18f);
                     alpha = Mathf.Max(alpha, petal);
                 }
 
-                float ring = 1f - Mathf.Clamp01((Mathf.Abs(radius - 0.76f) - 0.022f) / 0.026f);
                 float center = 1f - Mathf.Clamp01((radius - 0.09f) / 0.05f);
-                alpha = Mathf.Max(alpha, Mathf.Max(ring, center * 0.88f));
+                alpha = Mathf.Max(alpha, center * 0.82f);
                 pixels[y * size + x] = AlphaPixel(alpha);
             }
         }
