@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// [Jinyang.Li] Passive-card center/flip refresh and active-card layout fix.
+// The active-card data/effect system itself remains the leader's implementation.
 public class ShopSkillCardPool : MonoBehaviour
 {
+    private const float ActiveRefreshDelay = 0.12f;
+
     public enum PoolType { Passive, Active }
+
     [Header("Pool Type")]
     public PoolType poolType;
 
@@ -30,34 +35,46 @@ public class ShopSkillCardPool : MonoBehaviour
 
     private void Awake()
     {
-        if (poolType != PoolType.Passive) return;
-        // Positions are assigned explicitly so the whole hand can be centered and
-        // the middle card can sit slightly above the side cards.
+        // [Jinyang.Li] Only the passive-card hand uses manual centering.
+        // The active-card pool must keep its scene HorizontalLayoutGroup, otherwise
+        // refreshed active cards fall back to the prefab position and overlap the
+        // passive-card slots.
         HorizontalLayoutGroup layout = GetComponent<HorizontalLayoutGroup>();
-        if (layout != null) layout.enabled = false;
-    }
-
-    private void OnDisable()
-    {
-        IsRefreshing = false;
+        if (poolType == PoolType.Passive && layout != null)
+            layout.enabled = false;
     }
 
     public void RefreshCards()
     {
-        if (poolType == PoolType.Active)
-        {
-            RefreshActiveCards();
-            return;
-        }
-
         if (IsRefreshing) return;
-        StartCoroutine(RefreshCardsRoutine());
+
+        IsRefreshing = true;
+        if (poolType == PoolType.Active)
+            StartCoroutine(RefreshActiveCardsRoutine());
+        else
+            StartCoroutine(RefreshPassiveCardsRoutine());
     }
 
-    private IEnumerator RefreshCardsRoutine()
+    private void OnDisable()
     {
-        IsRefreshing = true;
+        StopAllCoroutines();
+        IsRefreshing = false;
 
+        foreach (ActiveCard card in GetComponentsInChildren<ActiveCard>(true))
+        {
+            card.SetRefreshRotation(0f);
+            card.SetRefreshAnimation(false);
+        }
+        foreach (PassiveCard card in GetComponentsInChildren<PassiveCard>(true))
+        {
+            card.SetRefreshRotation(0f);
+            card.SetRefreshAnimation(false);
+        }
+    }
+
+    private IEnumerator RefreshPassiveCardsRoutine()
+    {
+        // [Jinyang.Li] Passive-card flip refresh and centered layout.
         List<PassiveCard> oldCards = GetShopCardsByHorizontalPosition();
         foreach (PassiveCard card in oldCards)
             card.SetRefreshAnimation(true);
@@ -70,7 +87,7 @@ public class ShopSkillCardPool : MonoBehaviour
             card.RecycleCard();
         }
 
-        List<PassiveCard> newCards = SpawnCards();
+        List<PassiveCard> newCards = SpawnPassiveCards();
         LayoutCards(newCards);
         foreach (PassiveCard card in newCards)
         {
@@ -135,7 +152,7 @@ public class ShopSkillCardPool : MonoBehaviour
         return left.transform.position.x.CompareTo(right.transform.position.x);
     }
 
-    private List<PassiveCard> SpawnCards()
+    private List<PassiveCard> SpawnPassiveCards()
     {
         PassiveCardInventory inventory = PassiveCardInventory.instance;
         bool hasCapacityCard = inventory.CountEffect(PassiveCardData.EffectType.DuplicateShopSeventhSlot) > 0;
@@ -148,8 +165,6 @@ public class ShopSkillCardPool : MonoBehaviour
             shuffledCards.Add(data);
         }
 
-        // If there is no DuplicateShopSeventhSlot card, owned cards are removed
-        // from the refresh pool so an unavailable duplicate is never offered.
         if (!hasCapacityCard)
         {
             foreach (PassiveCard ownedCard in inventory.GetComponentsInChildren<PassiveCard>(true))
@@ -194,38 +209,98 @@ public class ShopSkillCardPool : MonoBehaviour
         }
     }
 
-    private void RefreshActiveCards()
+    private IEnumerator RefreshActiveCardsRoutine()
     {
-        //Recycle Card
+        List<ActiveCard> oldCards = new List<ActiveCard>();
         foreach (ActiveCard card in GetComponentsInChildren<ActiveCard>(true))
         {
+            if (!card.gameObject.activeInHierarchy) continue;
+            card.SetRefreshAnimation(true);
+            oldCards.Add(card);
+        }
+
+        // Disable old offers immediately, then stagger their flip after the passive hand.
+        yield return new WaitForSecondsRealtime(ActiveRefreshDelay);
+        yield return AnimateActiveFlip(oldCards, 0f, 90f);
+
+        foreach (ActiveCard card in oldCards)
+        {
+            card.SetRefreshRotation(0f);
             card.RecycleCard();
         }
-        // Filter Cards Before Shuffling
+
         List<ActiveCardData> cards = new List<ActiveCardData>();
         foreach (ActiveCardData data in activeCardDatas)
         {
-            if (!cards.Contains(data)) cards.Add(data);
+            if (data != null && !cards.Contains(data)) cards.Add(data);
         }
 
-        foreach (ActiveCard ownedCard in ActiveCardInventory.instance.GetComponentsInChildren<ActiveCard>(true))
+        ActiveCardInventory inventory = ActiveCardInventory.instance;
+        if (inventory != null)
         {
-            cards.Remove(ownedCard.data);
+            foreach (ActiveCard ownedCard in inventory.GetComponentsInChildren<ActiveCard>(true))
+                cards.Remove(ownedCard.data);
         }
 
-        //Shuffle Card
         Shuffle(cards);
+        List<ActiveCard> newCards = new List<ActiveCard>();
         for (int i = 0; i < Mathf.Min(activeOfferCount, cards.Count); i++)
         {
             ActiveCard card = PoolManager.instance.Get(cardPrefab).GetComponent<ActiveCard>();
             card.transform.SetParent(transform, false);
+            card.transform.localRotation = Quaternion.identity;
+            card.transform.localScale = cardPrefab.transform.localScale;
             card.isTestCard = false;
             card.SetData(cards[i]);
+            newCards.Add(card);
         }
+
+        // LayoutGroup does not always rebuild when a recycled object is enabled
+        // in the same frame. Force one rebuild so a second refresh stays aligned.
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
+        Canvas.ForceUpdateCanvases();
+
+        foreach (ActiveCard card in newCards)
+        {
+            card.SetRefreshRotation(90f);
+            card.SetRefreshAnimation(true);
+        }
+
+        yield return AnimateActiveFlip(newCards, 90f, 0f);
+
+        foreach (ActiveCard card in newCards)
+        {
+            card.SetRefreshRotation(0f);
+            card.SetRefreshAnimation(false);
+        }
+
+        IsRefreshing = false;
     }
 
-    // Knuth-Durstenfeld shuffle
-    private void Shuffle<T>(List<T> cards)
+    private IEnumerator AnimateActiveFlip(List<ActiveCard> cards,
+        float fromAngle, float toAngle)
+    {
+        if (cards.Count == 0) yield break;
+
+        float duration = Mathf.Max(0.05f, flipDuration);
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float t = Mathf.Clamp01(elapsed / duration);
+            float eased = t * t * (3f - 2f * t);
+            float angle = Mathf.Lerp(fromAngle, toAngle, eased);
+            foreach (ActiveCard card in cards)
+                card.SetRefreshRotation(angle);
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        foreach (ActiveCard card in cards)
+            card.SetRefreshRotation(toAngle);
+    }
+
+    private static void Shuffle<T>(List<T> cards)
     {
         for (int i = 0; i < cards.Count - 1; i++)
         {

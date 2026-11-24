@@ -1,5 +1,6 @@
 Shader "Custom/CardEffectParticleGlow"
 {
+    // [Jinyang.Li] Additive 2D particle shader for the white-gold skill effects.
     Properties
     {
         _MainTex ("Particle Texture", 2D) = "white" {}

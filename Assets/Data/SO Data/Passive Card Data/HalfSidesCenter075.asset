@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13fe337465b7b334bab3020fb14d8935, type: 3}
   m_Name: HalfSidesCenter075
-  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveCardData
   cardName: Risk Management
   description: Reduces the multipliers of the slots at both ends andincreases the
     multiplier of the center slot

@@ -81,7 +81,7 @@ public static class CodexSmokeTest
     {
         Require(GameManager.instance != null, "GameManager.instance is missing.");
         Require(UIManager.instance != null, "UIManager.instance is missing.");
-        Require(CardInventory.instance != null, "CardInventory.instance is missing.");
+        Require(PassiveCardInventory.instance != null, "PassiveCardInventory.instance is missing.");
         Require(PoolManager.instance != null, "PoolManager.instance is missing.");
         Require(GameFeedback.Instance != null, "GameFeedback.Instance is missing.");
 

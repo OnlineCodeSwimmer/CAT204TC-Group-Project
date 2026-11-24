@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13fe337465b7b334bab3020fb14d8935, type: 3}
   m_Name: Third Slot Growth
-  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveCardData
   cardName: C++
   description: When a pinball lands in the third slot from the left or the third
     slot from the right, its value is permanently increased. The first boost grants

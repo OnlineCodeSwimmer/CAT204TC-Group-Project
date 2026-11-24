@@ -447,7 +447,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 623aa8f3b434c1443ab53dc400d1cbc0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CardHover
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveCard
   data: {fileID: 11400000, guid: cc122f2f67db09042a66647f9151a74d, type: 2}
   descriptionPanel: {fileID: 4891926559198193610}
   nameText: {fileID: 6558958251675745656}
@@ -502,7 +502,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 708689835202611556}
-        m_TargetAssemblyTypeName: Card, Assembly-CSharp
+        m_TargetAssemblyTypeName: PassiveCard, Assembly-CSharp
         m_MethodName: GeneraInInventory
         m_Mode: 1
         m_Arguments:

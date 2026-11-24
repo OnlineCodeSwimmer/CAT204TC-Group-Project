@@ -32,6 +32,7 @@ public class Pinball : MonoBehaviour
             BounceFromPeg(other, Random.value < chance ? -1f : 1f);
             
             //Notification ball hits the stop pin
+            // [Jinyang.Li] GameFeedback listens to this event to play Effect_1..5.
             GameManager.instance.NotifyPinballHitPeg(this, other);
 
         }
@@ -56,6 +57,8 @@ public class Pinball : MonoBehaviour
         Vector2 position = transform.position;
         position.x = peg.bounds.center.x + direction * (peg.bounds.extents.x + pinballCollider.bounds.extents.x + 0.01f);
 
+        // [Jinyang.Li] Flower bloom is centered on the peg, not the split ball.
+        GameFeedback.Instance?.PlaySplitFlower(peg.bounds.center);
         Pinball splitBall = GameManager.instance.spawnPinballPoint
             .SpawnExtraBall(position, CardEffectVisual.Split).GetComponent<Pinball>();
         splitBall.BounceFromPeg(peg, direction);

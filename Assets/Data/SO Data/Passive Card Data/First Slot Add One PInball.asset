@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13fe337465b7b334bab3020fb14d8935, type: 3}
   m_Name: First Slot Add One PInball
-  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveCardData
   cardName: Rank First
   description: Each time a pinball enters the first slot on the left or the first
     slot on the right, gain +1 pinball

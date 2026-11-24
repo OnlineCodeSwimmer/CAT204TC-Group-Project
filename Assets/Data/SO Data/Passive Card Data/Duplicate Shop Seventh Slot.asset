@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13fe337465b7b334bab3020fb14d8935, type: 3}
   m_Name: Duplicate Shop Seventh Slot
-  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveCardData
   cardName: Capacity Expansion
   description: Cards you already own can appear in the shop refresh. Unlocking the
     seventh card slot , but this card can only be placed in the first six card slots

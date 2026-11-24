@@ -61,9 +61,14 @@ public class UIManager : MonoBehaviour
     public void RefreshShopCardsWithGold()
     {
         GameManager game = GameManager.instance;
-        if (!shop.activeSelf || shopTransitioning || shopSkillCardPool.IsRefreshing || game.gold < 2) return;
+        if (!shop.activeSelf || shopTransitioning || IsCardRefreshInProgress() || game.gold < 2) return;
         game.ChangeShopGold(-2);
         RefreshShopCards();
+    }
+
+    private bool IsCardRefreshInProgress()
+    {
+        return shopSkillCardPool.IsRefreshing || shopActiveCardPool.IsRefreshing;
     }
 
     private void RefreshShopCards()
@@ -129,7 +134,7 @@ public class UIManager : MonoBehaviour
     private void OpenTestCardPool(InputAction.CallbackContext context)
     {
         if (shopTransitioning || (!shop.activeSelf && !skillCardTest.activeSelf)) return;
-        if (shop.activeSelf && shopSkillCardPool.IsRefreshing) return;
+        if (shop.activeSelf && IsCardRefreshInProgress()) return;
 
         shop.SetActive(!shop.activeSelf);
         skillCardTest.SetActive(!shop.activeSelf);

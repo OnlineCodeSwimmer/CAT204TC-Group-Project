@@ -27,6 +27,10 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public GameObject pricePanel;
     public TMP_Text priceText;
 
+    // [Jinyang.Li] Active-card shop refresh flip state.
+    private CanvasGroup refreshGroup;
+    private bool refreshAnimating;
+
 
     private void Awake()
     {
@@ -46,6 +50,7 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (refreshAnimating) return;
         pricePanel.SetActive(IsShopOffer());
         cardImage.localScale = originalScale * 1.1f;
         descriptionPanel.SetActive(true);
@@ -54,12 +59,39 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (refreshAnimating) return;
         ResetHover();
     }
 
     private void OnDisable()
     {
+        refreshAnimating = false;
+        transform.localRotation = Quaternion.identity;
+        if (refreshGroup != null)
+        {
+            refreshGroup.alpha = 1f;
+            refreshGroup.interactable = true;
+            refreshGroup.blocksRaycasts = true;
+        }
         ResetHover();
+    }
+
+    // [Jinyang.Li] Shared hooks for the active-card flip refresh.
+    public void SetRefreshAnimation(bool playing)
+    {
+        if (refreshGroup == null)
+            refreshGroup = gameObject.AddComponent<CanvasGroup>();
+
+        refreshAnimating = playing;
+        refreshGroup.alpha = 1f;
+        refreshGroup.interactable = !playing;
+        refreshGroup.blocksRaycasts = !playing;
+        if (playing) ResetHover();
+    }
+
+    public void SetRefreshRotation(float angle)
+    {
+        transform.localRotation = Quaternion.Euler(0f, angle, 0f);
     }
 
     //Hover Related
@@ -232,6 +264,13 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         cardRect.sizeDelta = prefabRect.sizeDelta;
         cardRect.localScale = prefabRect.localScale;
         cardRect.localRotation = prefabRect.localRotation;
+        refreshAnimating = false;
+        if (refreshGroup != null)
+        {
+            refreshGroup.alpha = 1f;
+            refreshGroup.interactable = true;
+            refreshGroup.blocksRaycasts = true;
+        }
 
         Image image = cardImage.GetComponent<Image>();
         Image prefabImage = prefab.cardImage.GetComponent<Image>();

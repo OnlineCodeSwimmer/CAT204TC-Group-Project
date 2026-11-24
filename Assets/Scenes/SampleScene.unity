@@ -3473,7 +3473,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f3d7b67b840a2247add1697ad9a26ba, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CardInventory
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveCardInventory
   slots:
   - {fileID: 1497925145}
   - {fileID: 1969837793}
@@ -6458,7 +6458,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -40, y: -642}
+  m_AnchoredPosition: {x: -4, y: -642}
   m_SizeDelta: {x: 935.969, y: 206.064}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1112265324
@@ -6515,6 +6515,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 70400805538bd7142aa908de40e20ede, type: 2}
   - {fileID: 11400000, guid: 7c0b376fb44a5e447aa3bb9ac24c5439, type: 2}
   activeOfferCount: 3
+  flipDuration: 0.2
+  centerFlipDelay: 0.045
+  cardSpacing: 272
+  centerCardHeight: 18
 --- !u!114 &1112265325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11153,7 +11157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -430, y: -356}
+  m_AnchoredPosition: {x: -391, y: -356}
   m_SizeDelta: {x: 240, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2031002401
@@ -11663,7 +11667,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -429, y: -178}
+  m_AnchoredPosition: {x: -390, y: -178}
   m_SizeDelta: {x: 240, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2070107741
