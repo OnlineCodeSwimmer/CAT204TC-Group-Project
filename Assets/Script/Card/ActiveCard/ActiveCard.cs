@@ -94,6 +94,18 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         transform.localRotation = Quaternion.Euler(0f, angle, 0f);
     }
 
+    // [Jinyang.Li] Hides the destination card while the purchase ghost flies in.
+    public void SetPurchaseAnimation(bool playing)
+    {
+        if (refreshGroup == null)
+            refreshGroup = gameObject.AddComponent<CanvasGroup>();
+
+        refreshGroup.alpha = playing ? 0f : 1f;
+        refreshGroup.interactable = !playing;
+        refreshGroup.blocksRaycasts = !playing;
+        if (playing) ResetHover();
+    }
+
     //Hover Related
     private void ResetHover()
     {
@@ -123,7 +135,8 @@ public class ActiveCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         {
             int price = data.price;
             if (game.gold < price) return;
-            if (!inventory.TryAddCard(data)) return;
+            if (!inventory.TryAddCard(data, out ActiveCard inventoryCard)) return;
+            GameFeedback.Instance?.PlayPurchase(this, inventoryCard);
             game.gold -= price;
             GetComponent<Button>().interactable = false;
             cardImage.GetComponent<Image>().color = Color.gray;

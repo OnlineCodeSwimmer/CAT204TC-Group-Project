@@ -255,6 +255,33 @@ public partial class GameFeedback : MonoBehaviour
         }));
     }
 
+    // [Jinyang.Li] Active-card purchase animation matching the passive-card
+    // behavior: the shop card rotates into its active inventory slot.
+    public void PlayPurchase(ActiveCard source, ActiveCard destination)
+    {
+        Canvas.ForceUpdateCanvases();
+        RectTransform ghost = CreateActiveCardGhost(source, out Image border);
+        Vector2 start = ghost.anchoredPosition;
+        Vector2 size = ghost.sizeDelta;
+        RectTransform target = (RectTransform)destination.cardImage;
+        destination.SetPurchaseAnimation(true);
+
+        StartCoroutine(Animate(0.6f, t =>
+        {
+            float travel = Mathf.SmoothStep(0f, 1f,
+                Mathf.InverseLerp(0.12f, 1f, t));
+            ghost.anchoredPosition = Vector2.Lerp(start,
+                ToLayer(target, target.rect.center), travel);
+            ghost.sizeDelta = Vector2.Lerp(size, SizeInLayer(target), travel);
+            ghost.localRotation = Quaternion.Euler(0f, travel * 360f, 0f);
+            border.color = WithAlpha(goldColor, Mathf.Lerp(1f, 0.25f, t));
+        }, () =>
+        {
+            destination.SetPurchaseAnimation(false);
+            Destroy(ghost.gameObject);
+        }));
+    }
+
     // [Jinyang.Li] Card sale fade-out animation.
     public void PlaySale(PassiveCard card)
     {
@@ -274,6 +301,16 @@ public partial class GameFeedback : MonoBehaviour
             ToLayer(source, source.rect.center), SizeInLayer(source));
         border = AddImage(Stretch("Gold Edge", ghost, 4f), goldColor);
         AddImage(Stretch("Card Art", ghost), Color.white, card.data.cardSprite);
+        return ghost;
+    }
+
+    private RectTransform CreateActiveCardGhost(ActiveCard card, out Image border)
+    {
+        RectTransform source = (RectTransform)card.cardImage;
+        RectTransform ghost = CreateRect("Active Card Transaction", layer, Center,
+            ToLayer(source, source.rect.center), SizeInLayer(source));
+        border = AddImage(Stretch("Gold Edge", ghost, 4f), goldColor);
+        AddImage(Stretch("Active Card Art", ghost), Color.white, card.data.cardSprite);
         return ghost;
     }
 
